@@ -111,8 +111,8 @@
             padding-bottom: 80px;
         }
 
-        /* ===== LOGIN SCREEN ===== */
-        #loginScreen {
+        /* ===== LOGIN/REGISTER SCREEN ===== */
+        #authScreen {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -125,83 +125,82 @@
             right: 0;
             bottom: 0;
             z-index: 999;
+            overflow-y: auto;
         }
-        #loginScreen .login-card {
+        #authScreen .auth-card {
             background: var(--bg-card);
             border-radius: var(--radius-lg);
             padding: 32px 24px;
             width: 100%;
-            max-width: 380px;
+            max-width: 400px;
             box-shadow: var(--shadow-dropdown);
             border: 1px solid var(--border-color);
             text-align: center;
         }
-        #loginScreen .login-card h2 {
+        #authScreen .auth-card h2 {
             font-size: 1.5rem;
             color: var(--text-primary);
             margin-bottom: 4px;
         }
-        #loginScreen .login-card .subtitle {
+        #authScreen .auth-card .subtitle {
             font-size: 0.85rem;
             color: var(--text-muted);
             margin-bottom: 20px;
         }
-        #loginScreen .login-card .form-group {
+        #authScreen .auth-card .form-group {
             margin-bottom: 14px;
             text-align: left;
         }
-        #loginScreen .login-card .form-group label {
+        #authScreen .auth-card .form-group label {
             display: block;
             font-size: 0.75rem;
             font-weight: 600;
             color: var(--text-secondary);
             margin-bottom: 4px;
         }
-        #loginScreen .login-card .form-group input {
+        #authScreen .auth-card .form-group input {
             width: 100%;
             padding: 12px 14px;
             border: 2px solid var(--border-color);
             border-radius: var(--radius-sm);
-            font-size: 1.2rem;
+            font-size: 1rem;
             background: var(--bg-input);
             color: var(--text-primary);
             transition: var(--transition);
-            text-align: center;
-            letter-spacing: 8px;
-            font-weight: 700;
         }
-        #loginScreen .login-card .form-group input:focus {
+        #authScreen .auth-card .form-group input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
         }
-        #loginScreen .login-card .btn-primary {
-            margin-top: 8px;
+        #authScreen .auth-card .btn-primary {
+            margin-top: 4px;
         }
-        #loginScreen .login-card .login-error {
+        #authScreen .auth-card .auth-error {
             color: var(--danger);
             font-size: 0.8rem;
             margin-top: 8px;
             display: none;
         }
-        #loginScreen .login-card .login-error.show {
+        #authScreen .auth-card .auth-error.show {
             display: block;
         }
-        #loginScreen .login-card .usuario-info {
-            background: var(--bg-card-alt);
-            padding: 10px;
-            border-radius: var(--radius-sm);
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 14px;
-        }
-        #loginScreen .login-card .pin-hint {
-            font-size: 0.7rem;
+        #authScreen .auth-card .auth-switch {
+            margin-top: 16px;
+            font-size: 0.85rem;
             color: var(--text-muted);
-            margin-top: 12px;
+        }
+        #authScreen .auth-card .auth-switch a {
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        #authScreen .auth-card .auth-switch a:hover {
+            text-decoration: underline;
         }
 
-        /* ===== APP CONTENT (oculto hasta login) ===== */
+        /* ===== APP CONTENT ===== */
         #appContent {
             display: none;
         }
@@ -246,6 +245,10 @@
             padding: 2px 10px;
             border-radius: 20px;
             font-weight: 600;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .header-actions {
             display: flex;
@@ -888,30 +891,53 @@
 </head>
 <body>
 
-    <!-- ===== LOGIN SCREEN ===== -->
-    <div id="loginScreen">
-        <div class="login-card">
-            <h2>🔐 Gestor de Pagos</h2>
-            <p class="subtitle">Ingresa tu PIN para acceder a tus datos</p>
+    <!-- ===== AUTH SCREEN (LOGIN / REGISTER) ===== -->
+    <div id="authScreen">
+        <div class="auth-card">
+            <h2 id="authTitle">🔐 Gestor de Pagos</h2>
+            <p class="subtitle" id="authSubtitle">Inicia sesión para acceder a tus datos</p>
             
-            <div class="usuario-info">
-                💡 Usa un PIN de 4 dígitos<br>
-                <small style="color:var(--text-muted);">Ej: 1234, 0000, 9876</small>
+            <!-- Login Form -->
+            <div id="loginForm">
+                <div class="form-group">
+                    <label>👤 Usuario o Email</label>
+                    <input type="text" id="loginUsuario" placeholder="Ej: juanperez o juan@email.com" autofocus>
+                </div>
+                <div class="form-group">
+                    <label>🔑 Contraseña</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••">
+                </div>
+                <button class="btn-primary" id="btnLogin">🚪 Iniciar Sesión</button>
+                <div class="auth-error" id="loginError">❌ Usuario o contraseña incorrectos.</div>
+                <div class="auth-switch">
+                    ¿No tienes cuenta? <a id="switchToRegister">Regístrate aquí</a>
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label>🔑 PIN de acceso</label>
-                <input type="password" id="pinInput" maxlength="4" inputmode="numeric" placeholder="• • • •" autofocus>
+
+            <!-- Register Form -->
+            <div id="registerForm" style="display:none;">
+                <div class="form-group">
+                    <label>👤 Nombre de usuario</label>
+                    <input type="text" id="registerUsuario" placeholder="Ej: juanperez">
+                </div>
+                <div class="form-group">
+                    <label>📧 Email (opcional)</label>
+                    <input type="email" id="registerEmail" placeholder="Ej: juan@email.com">
+                </div>
+                <div class="form-group">
+                    <label>🔑 Contraseña</label>
+                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
+                </div>
+                <div class="form-group">
+                    <label>🔐 Confirmar Contraseña</label>
+                    <input type="password" id="registerConfirm" placeholder="Repite la contraseña">
+                </div>
+                <button class="btn-primary" id="btnRegister">📝 Registrarse</button>
+                <div class="auth-error" id="registerError">❌ Error en el registro.</div>
+                <div class="auth-switch">
+                    ¿Ya tienes cuenta? <a id="switchToLogin">Inicia sesión aquí</a>
+                </div>
             </div>
-            
-            <button class="btn-primary" id="btnLogin">🚪 Entrar</button>
-            
-            <div class="login-error" id="loginError">❌ PIN incorrecto. Intenta de nuevo.</div>
-            
-            <p class="pin-hint">
-                💡 Si es tu primera vez, usa cualquier PIN de 4 dígitos.<br>
-                Tus datos se guardarán con ese PIN.
-            </p>
         </div>
     </div>
 
@@ -1271,60 +1297,236 @@
 
     <script>
         // ============================================================
-        // SISTEMA DE SESIONES POR PIN
+        // 🔐 SISTEMA DE AUTENTICACIÓN SEGURO
         // ============================================================
 
-        // El PIN del usuario actual
-        let usuarioActual = null;
-
-        function mostrarLogin() {
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('appContent').classList.remove('show');
-            document.getElementById('pinInput').value = '';
-            document.getElementById('pinInput').focus();
-            document.getElementById('loginError').classList.remove('show');
+        // Función simple de hash para contraseñas (no es criptográficamente perfecta,
+        // pero es suficiente para localStorage. En producción usar bcrypt en servidor)
+        function hashPassword(password) {
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convertir a 32bit
+            }
+            return 'hash_' + Math.abs(hash).toString(36) + '_' + password.length;
         }
 
-        function ocultarLogin() {
-            document.getElementById('loginScreen').style.display = 'none';
+        // Obtener usuarios registrados
+        function getUsuarios() {
+            try {
+                return JSON.parse(localStorage.getItem('gestor_usuarios')) || {};
+            } catch {
+                return {};
+            }
+        }
+
+        function guardarUsuarios(usuarios) {
+            localStorage.setItem('gestor_usuarios', JSON.stringify(usuarios));
+        }
+
+        // Registrar nuevo usuario
+        function registrarUsuario(usuario, password, email = '') {
+            const usuarios = getUsuarios();
+            
+            // Verificar si el usuario ya existe
+            if (usuarios[usuario]) {
+                return { success: false, error: 'El usuario ya existe' };
+            }
+            
+            // Guardar usuario con contraseña hasheada
+            usuarios[usuario] = {
+                password: hashPassword(password),
+                email: email,
+                fechaRegistro: new Date().toISOString()
+            };
+            
+            guardarUsuarios(usuarios);
+            return { success: true };
+        }
+
+        // Verificar login
+        function verificarLogin(usuario, password) {
+            const usuarios = getUsuarios();
+            
+            if (!usuarios[usuario]) {
+                return { success: false, error: 'Usuario no encontrado' };
+            }
+            
+            const hashIngresado = hashPassword(password);
+            if (usuarios[usuario].password !== hashIngresado) {
+                return { success: false, error: 'Contraseña incorrecta' };
+            }
+            
+            return { success: true, usuario: usuario };
+        }
+
+        // ============================================================
+        // GESTIÓN DE SESIÓN
+        // ============================================================
+
+        let usuarioActual = null;
+
+        function mostrarAuth() {
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('appContent').classList.remove('show');
+        }
+
+        function ocultarAuth() {
+            document.getElementById('authScreen').style.display = 'none';
             document.getElementById('appContent').classList.add('show');
         }
 
         function iniciarSesion() {
-            const pin = document.getElementById('pinInput').value.trim();
+            const usuario = document.getElementById('loginUsuario').value.trim();
+            const password = document.getElementById('loginPassword').value;
             
-            if (!pin || pin.length < 4) {
-                document.getElementById('loginError').textContent = '❌ Ingresa un PIN de 4 dígitos.';
-                document.getElementById('loginError').classList.add('show');
+            if (!usuario || !password) {
+                mostrarErrorLogin('Completa todos los campos.');
                 return;
             }
-
-            // Guardar el usuario actual
-            usuarioActual = pin;
             
-            // Mostrar el PIN en el badge
-            document.getElementById('usuarioBadge').textContent = '👤 ' + pin;
+            const result = verificarLogin(usuario, password);
             
-            // Cargar los datos de este usuario
-            cargarDatosUsuario(pin);
+            if (!result.success) {
+                mostrarErrorLogin(result.error);
+                return;
+            }
             
-            ocultarLogin();
-            mostrarToast('✅ Bienvenido ' + pin, 'success');
-            
-            // Inicializar la aplicación
+            usuarioActual = usuario;
+            document.getElementById('usuarioBadge').textContent = '👤 ' + usuario;
+            ocultarAuth();
+            cargarDatosUsuario(usuario);
+            mostrarToast('✅ Bienvenido ' + usuario, 'success');
             initApp();
+            limpiarCamposLogin();
+        }
+
+        function registrarNuevoUsuario() {
+            const usuario = document.getElementById('registerUsuario').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirm = document.getElementById('registerConfirm').value;
+            
+            if (!usuario || usuario.length < 3) {
+                mostrarErrorRegistro('El usuario debe tener al menos 3 caracteres.');
+                return;
+            }
+            
+            if (password.length < 6) {
+                mostrarErrorRegistro('La contraseña debe tener al menos 6 caracteres.');
+                return;
+            }
+            
+            if (password !== confirm) {
+                mostrarErrorRegistro('Las contraseñas no coinciden.');
+                return;
+            }
+            
+            // Validar que el usuario solo tenga letras, números y guión bajo
+            if (!/^[a-zA-Z0-9_]+$/.test(usuario)) {
+                mostrarErrorRegistro('El usuario solo puede contener letras, números y guión bajo.');
+                return;
+            }
+            
+            const result = registrarUsuario(usuario, password, email);
+            
+            if (!result.success) {
+                mostrarErrorRegistro(result.error);
+                return;
+            }
+            
+            mostrarToast('✅ Usuario registrado correctamente. Ahora inicia sesión.', 'success');
+            mostrarLoginForm();
+            document.getElementById('loginUsuario').value = usuario;
+            document.getElementById('loginPassword').focus();
+            limpiarCamposRegistro();
         }
 
         function cerrarSesion() {
-            if (!confirm('¿Cerrar sesión? Los datos se guardarán.')) return;
-            
-            // Guardar datos antes de salir
+            if (!confirm('¿Cerrar sesión?')) return;
             guardarDatosUsuario(usuarioActual);
-            
             usuarioActual = null;
-            mostrarLogin();
+            mostrarAuth();
             mostrarToast('👋 Sesión cerrada', 'info');
+            mostrarLoginForm();
         }
+
+        // ============================================================
+        // UI DE AUTH
+        // ============================================================
+
+        function mostrarLoginForm() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('authTitle').textContent = '🔐 Gestor de Pagos';
+            document.getElementById('authSubtitle').textContent = 'Inicia sesión para acceder a tus datos';
+            document.getElementById('loginError').classList.remove('show');
+            document.getElementById('loginUsuario').focus();
+        }
+
+        function mostrarRegisterForm() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('authTitle').textContent = '📝 Crear Cuenta';
+            document.getElementById('authSubtitle').textContent = 'Regístrate para comenzar a usar el gestor';
+            document.getElementById('registerError').classList.remove('show');
+            document.getElementById('registerUsuario').focus();
+        }
+
+        function mostrarErrorLogin(mensaje) {
+            document.getElementById('loginError').textContent = '❌ ' + mensaje;
+            document.getElementById('loginError').classList.add('show');
+        }
+
+        function mostrarErrorRegistro(mensaje) {
+            document.getElementById('registerError').textContent = '❌ ' + mensaje;
+            document.getElementById('registerError').classList.add('show');
+        }
+
+        function limpiarCamposLogin() {
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginError').classList.remove('show');
+        }
+
+        function limpiarCamposRegistro() {
+            document.getElementById('registerUsuario').value = '';
+            document.getElementById('registerEmail').value = '';
+            document.getElementById('registerPassword').value = '';
+            document.getElementById('registerConfirm').value = '';
+            document.getElementById('registerError').classList.remove('show');
+        }
+
+        // ============================================================
+        // EVENTOS DE AUTH
+        // ============================================================
+
+        document.getElementById('btnLogin').addEventListener('click', iniciarSesion);
+        document.getElementById('btnRegister').addEventListener('click', registrarNuevoUsuario);
+        document.getElementById('switchToRegister').addEventListener('click', mostrarRegisterForm);
+        document.getElementById('switchToLogin').addEventListener('click', mostrarLoginForm);
+
+        // Enter en campos de login
+        document.getElementById('loginUsuario').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+        });
+        document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') iniciarSesion();
+        });
+
+        // Enter en campos de registro
+        document.getElementById('registerUsuario').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('registerEmail').focus();
+        });
+        document.getElementById('registerEmail').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('registerPassword').focus();
+        });
+        document.getElementById('registerPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('registerConfirm').focus();
+        });
+        document.getElementById('registerConfirm').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') registrarNuevoUsuario();
+        });
 
         // ============================================================
         // FUNCIONES PARA GUARDAR/CARGAR DATOS POR USUARIO
@@ -1349,17 +1551,10 @@
         }
 
         function cargarDatosUsuario(usuario) {
-            // Cargar todos los datos del usuario
             clientes = loadUserData(usuario, 'clientes');
             recibos = loadUserData(usuario, 'recibos');
             transferencias = loadUserData(usuario, 'transferencias');
             finanzas = loadUserData(usuario, 'finanzas');
-            
-            // Guardar en las variables globales
-            window.clientes = clientes;
-            window.recibos = recibos;
-            window.transferencias = transferencias;
-            window.finanzas = finanzas;
         }
 
         function guardarDatosUsuario(usuario) {
@@ -1368,16 +1563,6 @@
             saveUserData(usuario, 'recibos', recibos);
             saveUserData(usuario, 'transferencias', transferencias);
             saveUserData(usuario, 'finanzas', finanzas);
-        }
-
-        // ============================================================
-        // FUNCIONES DE PERSISTENCIA (guardado automático)
-        // ============================================================
-
-        function persistAll() {
-            if (usuarioActual) {
-                guardarDatosUsuario(usuarioActual);
-            }
         }
 
         // ============================================================
@@ -1446,10 +1631,9 @@
         actualizarEstadoConexion();
 
         // ============================================================
-        // FUNCIONES DE LA APLICACIÓN (código original adaptado)
+        // FUNCIONES DE LA APLICACIÓN
         // ============================================================
 
-        // Variables globales
         let clientes = [];
         let recibos = [];
         let transferencias = [];
@@ -1516,6 +1700,12 @@
 
         function actualizarClientesHeader() {
             document.getElementById('clientesCountHeader').textContent = clientes.length;
+        }
+
+        function persistAll() {
+            if (usuarioActual) {
+                guardarDatosUsuario(usuarioActual);
+            }
         }
 
         function setupEnterListener(inputId, buttonId) {
@@ -2391,18 +2581,6 @@
         document.getElementById('btnLogout').addEventListener('click', cerrarSesion);
 
         // ============================================================
-        // LOGIN
-        // ============================================================
-
-        document.getElementById('btnLogin').addEventListener('click', iniciarSesion);
-        document.getElementById('pinInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                iniciarSesion();
-            }
-        });
-
-        // ============================================================
         // CLIENTES
         // ============================================================
 
@@ -2788,7 +2966,7 @@
         setupEnterListener('finanzaDescripcion', 'btnRegistrarFinanza');
 
         // ============================================================
-        // INICIALIZACIÓN DE LA APP
+        // INICIALIZACIÓN
         // ============================================================
 
         function initApp() {
@@ -2797,10 +2975,8 @@
             document.getElementById('recibirFecha').value = hoy;
             document.getElementById('transferirFecha').value = hoy;
             
-            // Reordenar números por si hay huecos
             reordenarNumerosOperaciones();
             
-            // Cargar modo oscuro guardado
             if (localStorage.getItem('gestor_dark_mode') === 'true') {
                 aplicarModoOscuro(true);
             }
@@ -2813,14 +2989,12 @@
         }
 
         // ============================================================
-        // VERIFICAR SESIÓN AL CARGAR
+        // INICIAR APLICACIÓN
         // ============================================================
 
-        // Al cargar la página, verificar si hay un PIN guardado
-        window.addEventListener('load', function() {
-            // Mostrar siempre la pantalla de login primero
-            mostrarLogin();
-        });
+        // Mostrar pantalla de autenticación al cargar
+        mostrarAuth();
+        mostrarLoginForm();
 
         // ============================================================
         // SERVICE WORKER (opcional)
