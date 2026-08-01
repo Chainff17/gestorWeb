@@ -1,0 +1,2834 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Gestor de Pagos</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        :root {
+            --bg-body: #f0f2f5;
+            --bg-header: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-alt: #f8f9fc;
+            --bg-input: #f1f3f7;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a6a;
+            --text-muted: #8888a8;
+            --border-color: #e8ecf1;
+            --shadow: 0 2px 12px rgba(0,0,0,0.06);
+            --shadow-dropdown: 0 12px 40px rgba(0,0,0,0.15);
+            --primary: #6c5ce7;
+            --primary-light: #a29bfe;
+            --primary-dark: #4a3db8;
+            --success: #00b894;
+            --danger: #fd79a8;
+            --warning: #fdcb6e;
+            --gradient: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            --badge-bg: #e8ecf1;
+            --badge-text: #4a4a6a;
+            --recibo-bg: #dbeafe;
+            --recibo-text: #1e40af;
+            --transfer-bg: #fce7f3;
+            --transfer-text: #9d174d;
+            --comision-bg: #d1fae5;
+            --comision-text: #065f46;
+            --ingreso-bg: #dbeafe;
+            --ingreso-text: #1e40af;
+            --gasto-bg: #fee2e2;
+            --gasto-text: #991b1b;
+            --btn-primary-bg: #6c5ce7;
+            --btn-primary-text: #ffffff;
+            --btn-secondary-bg: #e8ecf1;
+            --btn-secondary-text: #4a4a6a;
+            --btn-danger-bg: #fd79a8;
+            --btn-success-bg: #00b894;
+            --btn-hover: #f1f3f7;
+            --saldo-negativo: #fd79a8;
+            --menu-bg: #ffffff;
+            --menu-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-lg: 24px;
+            --transition: all 0.25s ease;
+            --online-color: #00b894;
+            --offline-color: #fd79a8;
+        }
+        body.dark-mode {
+            --bg-body: #0d0d1a;
+            --bg-header: #1a1a2e;
+            --bg-card: #1a1a2e;
+            --bg-card-alt: #252540;
+            --bg-input: #252540;
+            --text-primary: #e8e8f0;
+            --text-secondary: #b0b0c8;
+            --text-muted: #707090;
+            --border-color: #2d2d4a;
+            --shadow: 0 2px 12px rgba(0,0,0,0.3);
+            --shadow-dropdown: 0 12px 40px rgba(0,0,0,0.5);
+            --badge-bg: #2d2d4a;
+            --badge-text: #b0b0c8;
+            --recibo-bg: #1e3a5f;
+            --recibo-text: #93c5fd;
+            --transfer-bg: #4c1d3b;
+            --transfer-text: #f9a8d4;
+            --comision-bg: #064e3b;
+            --comision-text: #6ee7b7;
+            --ingreso-bg: #1e3a5f;
+            --ingreso-text: #93c5fd;
+            --gasto-bg: #7f1d1d;
+            --gasto-text: #fca5a5;
+            --btn-primary-bg: #6c5ce7;
+            --btn-primary-text: #ffffff;
+            --btn-secondary-bg: #2d2d4a;
+            --btn-secondary-text: #b0b0c8;
+            --btn-danger-bg: #fd79a8;
+            --btn-success-bg: #00b894;
+            --btn-hover: #2d2d4a;
+            --saldo-negativo: #fd79a8;
+            --menu-bg: #1a1a2e;
+            --menu-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+            --online-color: #55efc4;
+            --offline-color: #fd79a8;
+        }
+        body {
+            background: var(--bg-body);
+            padding: 0;
+            max-width: 480px;
+            margin: 0 auto;
+            color: var(--text-primary);
+            transition: var(--transition);
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 80px;
+        }
+
+        /* ===== LOGIN SCREEN ===== */
+        #loginScreen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: var(--bg-body);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 999;
+        }
+        #loginScreen .login-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 32px 24px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: var(--shadow-dropdown);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        #loginScreen .login-card h2 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        #loginScreen .login-card .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        #loginScreen .login-card .form-group {
+            margin-bottom: 14px;
+            text-align: left;
+        }
+        #loginScreen .login-card .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        #loginScreen .login-card .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 1.2rem;
+            background: var(--bg-input);
+            color: var(--text-primary);
+            transition: var(--transition);
+            text-align: center;
+            letter-spacing: 8px;
+            font-weight: 700;
+        }
+        #loginScreen .login-card .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+        }
+        #loginScreen .login-card .btn-primary {
+            margin-top: 8px;
+        }
+        #loginScreen .login-card .login-error {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 8px;
+            display: none;
+        }
+        #loginScreen .login-card .login-error.show {
+            display: block;
+        }
+        #loginScreen .login-card .usuario-info {
+            background: var(--bg-card-alt);
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+        #loginScreen .login-card .pin-hint {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 12px;
+        }
+
+        /* ===== APP CONTENT (oculto hasta login) ===== */
+        #appContent {
+            display: none;
+        }
+        #appContent.show {
+            display: block;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: var(--bg-header);
+            padding: 12px 16px 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .header-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .header-title span {
+            font-weight: 300;
+            color: var(--text-muted);
+            font-size: 0.65rem;
+        }
+        .header-title .usuario-badge {
+            font-size: 0.55rem;
+            background: var(--primary);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-dark-mode {
+            background: var(--bg-input);
+            border: none;
+            border-radius: 30px;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+        .btn-dark-mode:active { transform: scale(0.92); }
+        .btn-logout {
+            background: var(--bg-input);
+            border: none;
+            border-radius: 30px;
+            padding: 4px 8px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        .btn-logout:active { transform: scale(0.92); }
+        .btn-logout:hover { color: var(--danger); }
+
+        .menu-hamburguesa {
+            background: var(--bg-input);
+            border: none;
+            border-radius: 10px;
+            padding: 4px 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: var(--transition);
+            line-height: 1.4;
+        }
+        .menu-hamburguesa:active { transform: scale(0.92); background: var(--btn-hover); }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-dropdown);
+            padding: 8px 0;
+            min-width: 180px;
+            z-index: 1000;
+            border: 1px solid var(--border-color);
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        .dropdown-menu.open { display: block; }
+        .dropdown-menu button {
+            display: block;
+            width: 100%;
+            padding: 10px 16px;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .dropdown-menu button:active,
+        .dropdown-menu button:hover { background: var(--btn-hover); }
+        .dropdown-menu button.active-drop {
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+        }
+
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px 10px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .header-info .datetime {
+            font-weight: 500;
+            color: var(--text-muted);
+            font-size: 0.65rem;
+        }
+        .header-info .clientes-count {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .header-info .clientes-count .num {
+            background: var(--primary);
+            color: white;
+            border-radius: 30px;
+            padding: 0 8px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+        }
+        .header-info .status {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+            font-size: 0.65rem;
+        }
+        .header-info .status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-dot 2s infinite;
+        }
+        .header-info .status .dot.online {
+            background: var(--online-color);
+        }
+        .header-info .status .dot.offline {
+            background: var(--offline-color);
+            animation: none;
+        }
+        .header-info .status .online-text {
+            color: var(--online-color);
+        }
+        .header-info .status .offline-text {
+            color: var(--offline-color);
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        /* ===== MENÚ INFERIOR ===== */
+        .bottom-menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 480px;
+            margin: 0 auto;
+            background: var(--menu-bg);
+            border-top: 1px solid var(--border-color);
+            box-shadow: var(--menu-shadow);
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 4px 10px;
+            z-index: 200;
+            border-radius: 20px 20px 0 0;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: var(--bg-card);
+        }
+        .bottom-menu button {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px 6px;
+            font-size: 0.55rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            gap: 1px;
+            min-width: 40px;
+            border-radius: var(--radius-sm);
+            position: relative;
+        }
+        .bottom-menu button .icon {
+            font-size: 1.3rem;
+            line-height: 1.2;
+        }
+        .bottom-menu button.active {
+            color: var(--btn-primary-bg);
+            background: var(--bg-input);
+        }
+        .bottom-menu button:active { transform: scale(0.92); }
+        .bottom-menu button .badge-menu {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: var(--danger);
+            color: white;
+            font-size: 0.5rem;
+            border-radius: 30px;
+            padding: 0 5px;
+            min-width: 14px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        /* ===== SECCIONES ===== */
+        .section {
+            display: none;
+            padding: 12px 16px 20px;
+        }
+        .section.visible { display: block; }
+
+        /* ===== TARJETAS ===== */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .card-header h3 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .card-header .badge-count {
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            border-radius: 20px;
+            padding: 2px 12px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        /* ===== CLIENTES ===== */
+        .cliente-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card-alt);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+        .cliente-card .info .nombre {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+        .cliente-card .info .comision {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .cliente-card .saldo {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+        .cliente-card .saldo.negativo { color: var(--saldo-negativo); }
+        .cliente-card .acciones {
+            display: flex;
+            gap: 4px;
+        }
+        .cliente-card .acciones button {
+            background: none;
+            border: none;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+        .cliente-card .acciones button:active { background: var(--btn-hover); }
+        .cliente-card .acciones .btn-eliminar { color: var(--danger); }
+
+        /* ===== OPERACIONES ===== */
+        .operacion-card {
+            background: var(--bg-card-alt);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+        .operacion-card .tipo {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .operacion-card .monto {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .operacion-card .detalle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .operacion-card .fecha {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+        .operacion-card .numero-op {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            background: var(--badge-bg);
+            padding: 1px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        /* ===== ESTILOS PARA BOTONES DE PESTAÑAS ===== */
+        .tab-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+        }
+        .tab-btn.active {
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            border-color: var(--btn-primary-bg);
+        }
+        .tab-btn:active { transform: scale(0.97); }
+
+        /* ===== FORMULARIOS ===== */
+        .form-group {
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 3px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            background: var(--bg-input);
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+        }
+        .form-group input.readonly-field {
+            background: var(--bg-card-alt);
+            color: var(--text-muted);
+        }
+        .form-group input.edit-mode {
+            border-color: var(--primary);
+            background: var(--bg-card);
+        }
+
+        /* ===== BOTONES ===== */
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-primary:active { transform: scale(0.97); opacity: 0.8; }
+        .btn-secondary {
+            background: var(--btn-secondary-bg);
+            color: var(--btn-secondary-text);
+        }
+        .btn-danger { background: var(--btn-danger-bg); color: white; }
+        .btn-success { background: var(--btn-success-bg); color: white; }
+        .btn-small {
+            width: auto;
+            padding: 5px 12px;
+            font-size: 0.7rem;
+            border: none;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-small:active { transform: scale(0.94); }
+
+        /* ===== SALDO ===== */
+        .saldo-total {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 4px 0 2px;
+            color: var(--text-primary);
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .saldo-label {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== BADGES ===== */
+        .badge {
+            background: var(--badge-bg);
+            color: var(--badge-text);
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-size: 0.65rem;
+            font-weight: 500;
+        }
+        .badge-recibo { background: var(--recibo-bg); color: var(--recibo-text); }
+        .badge-transferencia { background: var(--transfer-bg); color: var(--transfer-text); }
+        .badge-comision { background: var(--comision-bg); color: var(--comision-text); }
+        .badge-ingreso { background: var(--ingreso-bg); color: var(--ingreso-text); }
+        .badge-gasto { background: var(--gasto-bg); color: var(--gasto-text); }
+
+        /* ===== FILTROS ===== */
+        .filtros-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+            align-items: flex-end;
+        }
+        .filtros-row .form-group {
+            flex: 1;
+            min-width: 80px;
+            margin-bottom: 0;
+        }
+        .filtros-row .form-group label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .filtros-row .form-group input,
+        .filtros-row .form-group select {
+            padding: 6px 8px;
+            font-size: 0.8rem;
+        }
+
+        /* ===== TARJETAS DE RESUMEN ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .stat-card {
+            background: var(--bg-card-alt);
+            border-radius: var(--radius-sm);
+            padding: 12px 10px;
+            text-align: center;
+            border-left: 4px solid var(--primary);
+        }
+        .stat-card .monto {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .stat-card .label {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-card.total {
+            background: var(--gradient);
+            color: white;
+            border-left-color: transparent;
+        }
+        .stat-card.total .label { color: rgba(255,255,255,0.7); }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-msg {
+            text-align: center;
+            padding: 24px 12px;
+            color: var(--text-muted);
+        }
+        .empty-msg .icono {
+            font-size: 2rem;
+            margin-bottom: 4px;
+            opacity: 0.5;
+        }
+        .empty-msg p {
+            font-size: 0.85rem;
+        }
+
+        /* ===== AVISO ===== */
+        .aviso-negativo {
+            display: none;
+            background: var(--gasto-bg);
+            color: var(--gasto-text);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            margin-bottom: 8px;
+        }
+        .aviso-negativo.visible { display: block; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 400px) {
+            .bottom-menu button {
+                font-size: 0.45rem;
+                padding: 2px 4px;
+                min-width: 32px;
+            }
+            .bottom-menu button .icon { font-size: 1rem; }
+            .header-title { font-size: 0.9rem; }
+            .header-info { font-size: 0.6rem; }
+        }
+
+        /* ===== TOAST NOTIFICATION ===== */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-dropdown);
+            border: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            font-weight: 500;
+            z-index: 300;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            max-width: 90%;
+            text-align: center;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+        .toast.info {
+            border-left: 4px solid var(--primary);
+        }
+
+        /* ===== MODAL DE EDICIÓN ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 500;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        .modal {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            max-width: 420px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-dropdown);
+            border: 1px solid var(--border-color);
+        }
+        .modal h3 {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+        .modal .form-group {
+            margin-bottom: 12px;
+        }
+        .modal .form-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .modal .modal-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .modal .modal-actions button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .modal .modal-actions button:active { transform: scale(0.97); }
+        .modal .modal-actions .btn-modal-cancel {
+            background: var(--btn-secondary-bg);
+            color: var(--btn-secondary-text);
+        }
+        .modal .modal-actions .btn-modal-save {
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== LOGIN SCREEN ===== -->
+    <div id="loginScreen">
+        <div class="login-card">
+            <h2>🔐 Gestor de Pagos</h2>
+            <p class="subtitle">Ingresa tu PIN para acceder a tus datos</p>
+            
+            <div class="usuario-info">
+                💡 Usa un PIN de 4 dígitos<br>
+                <small style="color:var(--text-muted);">Ej: 1234, 0000, 9876</small>
+            </div>
+            
+            <div class="form-group">
+                <label>🔑 PIN de acceso</label>
+                <input type="password" id="pinInput" maxlength="4" inputmode="numeric" placeholder="• • • •" autofocus>
+            </div>
+            
+            <button class="btn-primary" id="btnLogin">🚪 Entrar</button>
+            
+            <div class="login-error" id="loginError">❌ PIN incorrecto. Intenta de nuevo.</div>
+            
+            <p class="pin-hint">
+                💡 Si es tu primera vez, usa cualquier PIN de 4 dígitos.<br>
+                Tus datos se guardarán con ese PIN.
+            </p>
+        </div>
+    </div>
+
+    <!-- ===== TOAST NOTIFICATION ===== -->
+    <div id="toast" class="toast"></div>
+
+    <!-- ===== MODAL DE EDICIÓN ===== -->
+    <div class="modal-overlay" id="modalEditar">
+        <div class="modal">
+            <h3 id="modalTitulo">✏️ Editar Operación</h3>
+            <div class="form-group">
+                <label>Cliente</label>
+                <select id="modalCliente"></select>
+            </div>
+            <div class="form-group">
+                <label>Monto</label>
+                <input type="number" id="modalMonto" step="0.01" min="0">
+            </div>
+            <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" id="modalFecha">
+            </div>
+            <div id="modalCamposExtra"></div>
+            <div class="modal-actions">
+                <button class="btn-modal-cancel" id="modalCancelar">Cancelar</button>
+                <button class="btn-modal-save" id="modalGuardar">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== APP CONTENT ===== -->
+    <div id="appContent">
+
+        <!-- ===== HEADER ===== -->
+        <header>
+            <div class="header-top">
+                <div class="header-title">
+                    💳 Gestor de Pagos <span>v2.0</span>
+                    <span class="usuario-badge" id="usuarioBadge">👤 USUARIO</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-dark-mode" id="btnDarkMode" title="Alternar modo oscuro">🌙</button>
+                    <button class="btn-logout" id="btnLogout" title="Cerrar sesión">🚪</button>
+                    <button class="menu-hamburguesa" id="menuHamburguesa" title="Menú">☰</button>
+                </div>
+            </div>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <button data-section="clientes">👥 Clientes</button>
+                <button data-section="operaciones">🔄 Operaciones</button>
+                <button data-section="saldo">💰 Saldo</button>
+                <button data-section="historial">📜 Historial</button>
+                <button data-section="finanzas">💹 Finanzas</button>
+                <button data-section="bd">🗄️ Base de Datos</button>
+            </div>
+            <div class="header-info">
+                <span class="datetime" id="fechaHora">--/--/---- --:--</span>
+                <span class="clientes-count">
+                    👥 <span id="clientesCountHeader">0</span>
+                </span>
+                <span class="status" id="statusIndicator">
+                    <span class="dot online" id="statusDot"></span>
+                    <span id="statusText">Online</span>
+                </span>
+            </div>
+        </header>
+
+        <!-- ===== MENÚ INFERIOR ===== -->
+        <nav class="bottom-menu" id="bottomMenu">
+            <button data-section="clientes" class="active">
+                <span class="icon">👥</span> Clientes
+            </button>
+            <button data-section="operaciones">
+                <span class="icon">🔄</span> Operaciones
+            </button>
+            <button data-section="saldo">
+                <span class="icon">💰</span> Saldo
+            </button>
+            <button data-section="historial">
+                <span class="icon">📜</span> Historial
+            </button>
+            <button data-section="finanzas">
+                <span class="icon">💹</span> Finanzas
+            </button>
+            <button data-section="bd">
+                <span class="icon">🗄️</span> BD
+            </button>
+        </nav>
+
+        <!-- ===== CONTENIDO ===== -->
+
+        <!-- SECCIÓN CLIENTES -->
+        <div id="section-clientes" class="section visible">
+            <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
+                <button class="btn-small btn-primary" id="btnMostrarAgregarCliente" style="flex:1;">➕ Agregar</button>
+                <button class="btn-small btn-secondary" id="btnMostrarListaClientes" style="flex:1;">📋 Ver Clientes</button>
+            </div>
+
+            <div id="sub-agregar-cliente" class="card">
+                <h3 style="margin-bottom:10px;">Agregar Cliente</h3>
+                <div class="form-group">
+                    <label>Nombre del cliente</label>
+                    <input type="text" id="clienteNombre" placeholder="Ej: Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label>Comisión (%)</label>
+                    <input type="number" id="clienteComision" step="0.1" min="0" value="1.5">
+                </div>
+                <button class="btn-primary" id="btnAgregarCliente">Agregar</button>
+            </div>
+
+            <div id="sub-ver-clientes" class="card" style="display:none;">
+                <div class="card-header">
+                    <h3>Clientes</h3>
+                    <span class="badge-count" id="totalClientes">0</span>
+                </div>
+                <div id="listaClientesResumen"></div>
+            </div>
+
+            <div id="sub-comisiones" class="card" style="display:none;">
+                <h3>Comisiones</h3>
+                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">Edita la comisión de cada cliente</p>
+                <div id="listaComisiones"></div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN OPERACIONES -->
+        <div id="section-operaciones" class="section">
+            <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
+                <button class="tab-btn active" id="btnMostrarRecibir">📥 Recibir</button>
+                <button class="tab-btn" id="btnMostrarTransferir">📤 Transferir</button>
+            </div>
+
+            <div id="sub-recibir" class="card">
+                <h3 style="margin-bottom:10px;">📥 Registrar Recibo</h3>
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <select id="recibirCliente"></select>
+                </div>
+                <div class="form-group">
+                    <label>Monto a recibir</label>
+                    <input type="number" id="recibirMonto" placeholder="0.00" step="0.01" min="0" autofocus>
+                </div>
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" id="recibirFecha">
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                    <div class="form-group">
+                        <label>Comisión</label>
+                        <input type="text" id="recibirComision" class="readonly-field" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Cliente recibe</label>
+                        <input type="text" id="recibirNeto" class="readonly-field" readonly>
+                    </div>
+                </div>
+                <div style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); margin:6px 0; text-align:center; font-weight:500; font-size:0.9rem;">
+                    <span id="recibirSaldoActualizado">Saldo actual: $0.00</span>
+                </div>
+                <button class="btn-primary" id="btnRegistrarRecibo">Registrar Recibo</button>
+            </div>
+
+            <div id="sub-transferir" class="card" style="display:none;">
+                <h3 style="margin-bottom:10px;">📤 Registrar Transferencia</h3>
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <select id="transferirCliente"></select>
+                </div>
+                <div class="form-group">
+                    <label>Monto a transferir</label>
+                    <input type="number" id="transferirMonto" placeholder="0.00" step="0.01" min="0" autofocus>
+                </div>
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" id="transferirFecha">
+                </div>
+                <div class="form-group">
+                    <label>Saldo disponible</label>
+                    <input type="text" id="transferirSaldoDisponible" class="readonly-field" readonly>
+                </div>
+                <div style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); margin:6px 0; text-align:center; font-weight:500; font-size:0.9rem;">
+                    <span id="transferirSaldoRestante">Saldo restante: $0.00</span>
+                </div>
+                <div class="aviso-negativo" id="avisoSaldoNegativo">⚠️ Saldo negativo. Se usará dinero propio.</div>
+                <button class="btn-primary" id="btnRegistrarTransferencia">Registrar Transferencia</button>
+            </div>
+
+            <div id="sub-lista-recibos" class="card">
+                <div class="card-header">
+                    <h3>📋 Recibos Registrados</h3>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <button class="btn-small btn-secondary" id="btnInvertirRecibos" style="font-size:0.6rem;">⬆️ Más recientes</button>
+                        <span class="badge-count" id="contadorRecibosOperaciones">0</span>
+                    </div>
+                </div>
+                <div id="listaRecibosOperaciones"></div>
+            </div>
+
+            <div id="sub-lista-transferencias" class="card" style="display:none;">
+                <div class="card-header">
+                    <h3>📋 Transferencias Registradas</h3>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <button class="btn-small btn-secondary" id="btnInvertirTransferencias" style="font-size:0.6rem;">⬆️ Más recientes</button>
+                        <span class="badge-count" id="contadorTransferenciasOperaciones">0</span>
+                    </div>
+                </div>
+                <div id="listaTransferenciasOperaciones"></div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN SALDO -->
+        <div id="section-saldo" class="section">
+            <div class="card" style="background:var(--gradient); border:none; color:white;">
+                <div class="saldo-total" style="-webkit-text-fill-color:white; color:white;" id="saldoTotal">$0.00</div>
+                <div class="saldo-label" style="color:rgba(255,255,255,0.7);">Saldo total de todos los clientes</div>
+            </div>
+            <div class="card">
+                <h3 style="margin-bottom:10px;">Saldo por Cliente</h3>
+                <div id="saldosPorCliente"></div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN HISTORIAL -->
+        <div id="section-historial" class="section">
+            <div class="card">
+                <h3 style="margin-bottom:10px;">Historial Completo</h3>
+                <div class="filtros-row">
+                    <div class="form-group">
+                        <label>Cliente</label>
+                        <select id="historialCliente"><option value="todos">Todos</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="date" id="historialFecha">
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <select id="historialTipo">
+                            <option value="todos">Todos</option>
+                            <option value="recibo">Recibo</option>
+                            <option value="transferencia">Transferencia</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:flex; gap:4px; flex-wrap:wrap; margin-bottom:10px;">
+                    <button class="btn-small btn-secondary" id="btnInvertirOrden">⬆️ Invertir</button>
+                    <button class="btn-small btn-success" id="btnExportarExcelHistorial" style="background:#1d6f42; color:white;">📊 Excel</button>
+                    <button class="btn-small btn-danger" id="btnExportarPDFHistorial" style="background:#b22234; color:white;">📄 PDF</button>
+                </div>
+                <div id="listaHistorial"></div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN FINANZAS -->
+        <div id="section-finanzas" class="section">
+            <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
+                <button class="btn-small btn-primary" id="btnMostrarResumenFinanzas" style="flex:1;">📊 Resumen</button>
+                <button class="btn-small btn-secondary" id="btnMostrarRegistrarFinanza" style="flex:1;">➕ Registrar</button>
+            </div>
+
+            <div id="sub-resumen-finanzas" class="card">
+                <div class="stats-grid">
+                    <div class="stat-card comisiones">
+                        <div class="label">Comisiones</div>
+                        <div class="monto" id="totalComisiones">$0.00</div>
+                    </div>
+                    <div class="stat-card ingresos">
+                        <div class="label">Ingresos</div>
+                        <div class="monto" id="totalIngresos">$0.00</div>
+                    </div>
+                    <div class="stat-card gastos">
+                        <div class="label">Gastos</div>
+                        <div class="monto" id="totalGastos">$0.00</div>
+                    </div>
+                    <div class="stat-card total">
+                        <div class="label">Saldo Total</div>
+                        <div class="monto" id="saldoFinanzas">$0.00</div>
+                    </div>
+                </div>
+                <div style="margin-top:10px;">
+                    <div class="card-header">
+                        <h3>Movimientos Financieros</h3>
+                        <span class="badge-count" id="contadorFinanzas">0</span>
+                    </div>
+                    <div class="filtros-row">
+                        <div class="form-group">
+                            <label>Tipo</label>
+                            <select id="filtroFinanzasTipo">
+                                <option value="todos">Todos</option>
+                                <option value="comision">Comisiones</option>
+                                <option value="ingreso">Ingresos</option>
+                                <option value="gasto">Gastos</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha</label>
+                            <input type="date" id="filtroFinanzasFecha">
+                        </div>
+                        <div style="display:flex; align-items:flex-end; padding-bottom:4px;">
+                            <button class="btn-small btn-secondary" id="btnInvertirFinanzas">⬆️</button>
+                        </div>
+                    </div>
+                    <div id="listaFinanzas"></div>
+                </div>
+            </div>
+
+            <div id="sub-registrar-finanza" class="card" style="display:none;">
+                <h3 style="margin-bottom:10px;">Registrar Movimiento</h3>
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <select id="finanzaTipo">
+                        <option value="ingreso">Ingreso</option>
+                        <option value="gasto">Gasto</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Monto</label>
+                    <input type="number" id="finanzaMonto" placeholder="0.00" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <input type="text" id="finanzaDescripcion" placeholder="Ej: Pago de luz">
+                </div>
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" id="finanzaFecha">
+                </div>
+                <button class="btn-primary" id="btnRegistrarFinanza">Registrar</button>
+            </div>
+        </div>
+
+        <!-- SECCIÓN BASE DE DATOS -->
+        <div id="section-bd" class="section">
+            <div class="card">
+                <h3 style="margin-bottom:10px;">🗄️ Base de Datos</h3>
+                <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
+                    <div class="stat-card"><div class="monto" id="statClientes">0</div><div class="label">Clientes</div></div>
+                    <div class="stat-card"><div class="monto" id="statRecibos">0</div><div class="label">Recibos</div></div>
+                    <div class="stat-card"><div class="monto" id="statTransferencias">0</div><div class="label">Transferencias</div></div>
+                    <div class="stat-card"><div class="monto" id="statFinanzas">0</div><div class="label">Finanzas</div></div>
+                </div>
+                <button class="btn-small btn-success" id="btnExportarJSON" style="width:100%; margin-bottom:6px;">📤 Exportar JSON</button>
+                <button class="btn-small btn-secondary" id="btnImportarJSON" style="width:100%; margin-bottom:6px;">📥 Importar JSON</button>
+                <input type="file" id="inputImportarJSON" accept=".json" style="display:none;">
+                <div style="margin-top:6px;">
+                    <label style="font-size:0.75rem; font-weight:500;">Importar Excel/CSV</label>
+                    <div style="display:flex; gap:4px;">
+                        <input type="file" id="inputImportarExcel" accept=".xlsx,.xls,.csv" style="flex:1; padding:4px; font-size:0.8rem;">
+                        <button class="btn-small btn-success" id="btnImportarExcel">Importar</button>
+                    </div>
+                </div>
+                <button class="btn-small btn-danger" id="btnBorrarTodo" style="width:100%; margin-top:10px;">🗑️ Borrar todos los datos</button>
+                <div id="bdMensaje" style="margin-top:6px; padding:6px; border-radius:8px; display:none; font-size:0.8rem;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // SISTEMA DE SESIONES POR PIN
+        // ============================================================
+
+        // El PIN del usuario actual
+        let usuarioActual = null;
+
+        function mostrarLogin() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('appContent').classList.remove('show');
+            document.getElementById('pinInput').value = '';
+            document.getElementById('pinInput').focus();
+            document.getElementById('loginError').classList.remove('show');
+        }
+
+        function ocultarLogin() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appContent').classList.add('show');
+        }
+
+        function iniciarSesion() {
+            const pin = document.getElementById('pinInput').value.trim();
+            
+            if (!pin || pin.length < 4) {
+                document.getElementById('loginError').textContent = '❌ Ingresa un PIN de 4 dígitos.';
+                document.getElementById('loginError').classList.add('show');
+                return;
+            }
+
+            // Guardar el usuario actual
+            usuarioActual = pin;
+            
+            // Mostrar el PIN en el badge
+            document.getElementById('usuarioBadge').textContent = '👤 ' + pin;
+            
+            // Cargar los datos de este usuario
+            cargarDatosUsuario(pin);
+            
+            ocultarLogin();
+            mostrarToast('✅ Bienvenido ' + pin, 'success');
+            
+            // Inicializar la aplicación
+            initApp();
+        }
+
+        function cerrarSesion() {
+            if (!confirm('¿Cerrar sesión? Los datos se guardarán.')) return;
+            
+            // Guardar datos antes de salir
+            guardarDatosUsuario(usuarioActual);
+            
+            usuarioActual = null;
+            mostrarLogin();
+            mostrarToast('👋 Sesión cerrada', 'info');
+        }
+
+        // ============================================================
+        // FUNCIONES PARA GUARDAR/CARGAR DATOS POR USUARIO
+        // ============================================================
+
+        function getStorageKey(usuario, tipo) {
+            return 'gestor_' + usuario + '_' + tipo;
+        }
+
+        function loadUserData(usuario, tipo) {
+            try {
+                const key = getStorageKey(usuario, tipo);
+                return JSON.parse(localStorage.getItem(key)) || [];
+            } catch {
+                return [];
+            }
+        }
+
+        function saveUserData(usuario, tipo, data) {
+            const key = getStorageKey(usuario, tipo);
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        function cargarDatosUsuario(usuario) {
+            // Cargar todos los datos del usuario
+            clientes = loadUserData(usuario, 'clientes');
+            recibos = loadUserData(usuario, 'recibos');
+            transferencias = loadUserData(usuario, 'transferencias');
+            finanzas = loadUserData(usuario, 'finanzas');
+            
+            // Guardar en las variables globales
+            window.clientes = clientes;
+            window.recibos = recibos;
+            window.transferencias = transferencias;
+            window.finanzas = finanzas;
+        }
+
+        function guardarDatosUsuario(usuario) {
+            if (!usuario) return;
+            saveUserData(usuario, 'clientes', clientes);
+            saveUserData(usuario, 'recibos', recibos);
+            saveUserData(usuario, 'transferencias', transferencias);
+            saveUserData(usuario, 'finanzas', finanzas);
+        }
+
+        // ============================================================
+        // FUNCIONES DE PERSISTENCIA (guardado automático)
+        // ============================================================
+
+        function persistAll() {
+            if (usuarioActual) {
+                guardarDatosUsuario(usuarioActual);
+            }
+        }
+
+        // ============================================================
+        // TOAST NOTIFICATION
+        // ============================================================
+
+        function mostrarToast(mensaje, tipo = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = mensaje;
+            toast.className = 'toast ' + tipo + ' show';
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================================
+        // MODO OSCURO
+        // ============================================================
+
+        function aplicarModoOscuro(activar) {
+            if (activar) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('btnDarkMode').textContent = '☀️';
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.getElementById('btnDarkMode').textContent = '🌙';
+            }
+            localStorage.setItem('gestor_dark_mode', activar ? 'true' : 'false');
+        }
+
+        function toggleDarkMode() {
+            const activar = !document.body.classList.contains('dark-mode');
+            aplicarModoOscuro(activar);
+        }
+
+        // ============================================================
+        // RELOJ Y ESTADO DE CONEXIÓN
+        // ============================================================
+
+        function actualizarReloj() {
+            const now = new Date();
+            const fecha = now.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const hora = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('fechaHora').textContent = `${fecha} ${hora}`;
+        }
+        setInterval(actualizarReloj, 10000);
+        actualizarReloj();
+
+        function actualizarEstadoConexion() {
+            const online = navigator.onLine;
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+            if (online) {
+                dot.className = 'dot online';
+                text.textContent = 'Online';
+                text.className = 'online-text';
+            } else {
+                dot.className = 'dot offline';
+                text.textContent = 'Offline';
+                text.className = 'offline-text';
+            }
+        }
+        window.addEventListener('online', actualizarEstadoConexion);
+        window.addEventListener('offline', actualizarEstadoConexion);
+        actualizarEstadoConexion();
+
+        // ============================================================
+        // FUNCIONES DE LA APLICACIÓN (código original adaptado)
+        // ============================================================
+
+        // Variables globales
+        let clientes = [];
+        let recibos = [];
+        let transferencias = [];
+        let finanzas = [];
+        let ordenHistorialAsc = false;
+        let ordenFinanzasAsc = false;
+        let ordenRecibosAsc = false;
+        let ordenTransferenciasAsc = false;
+        let operacionEditando = null;
+
+        function generarId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        }
+
+        function getCliente(id) { return clientes.find(c => c.id === id); }
+        function getClientePorNombre(nombre) { return clientes.find(c => c.nombre.toLowerCase() === nombre.toLowerCase()); }
+        function getSaldoCliente(id) { const c = getCliente(id); return c ? c.saldo : 0; }
+        function actualizarSaldoCliente(id, delta) {
+            const c = getCliente(id);
+            if (c) { c.saldo = (c.saldo || 0) + delta; persistAll(); }
+        }
+        function formatearMoneda(valor) { return '$' + Number(valor).toFixed(2); }
+        function formatearFecha(ts) { return new Date(ts).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
+
+        function agregarMovimientoFinanciero(tipo, monto, descripcion, clienteId = null, reciboId = null, fecha = null) {
+            const mov = { id: generarId(), tipo, monto, descripcion, clienteId, reciboId, fecha: fecha || Date.now() };
+            finanzas.push(mov);
+            persistAll();
+            return mov;
+        }
+
+        function eliminarMovimientoPorRecibo(reciboId) { finanzas = finanzas.filter(m => m.reciboId !== reciboId); persistAll(); }
+        function eliminarMovimientoFinanciero(id) { finanzas = finanzas.filter(m => m.id !== id); persistAll(); }
+
+        function reordenarNumerosOperaciones() {
+            const operaciones = [];
+            recibos.forEach(r => operaciones.push({ ...r, tipo: 'recibo' }));
+            transferencias.forEach(t => operaciones.push({ ...t, tipo: 'transferencia' }));
+            operaciones.sort((a, b) => a.fecha - b.fecha);
+            
+            operaciones.forEach((op, index) => {
+                const nuevoNumero = index + 1;
+                if (op.tipo === 'recibo') {
+                    const recibo = recibos.find(r => r.id === op.id);
+                    if (recibo) recibo.numeroOp = nuevoNumero;
+                } else {
+                    const transferencia = transferencias.find(t => t.id === op.id);
+                    if (transferencia) transferencia.numeroOp = nuevoNumero;
+                }
+            });
+            persistAll();
+        }
+
+        function obtenerSiguienteNumeroOperacion() {
+            const numerosUsados = new Set();
+            recibos.forEach(r => numerosUsados.add(r.numeroOp));
+            transferencias.forEach(t => numerosUsados.add(t.numeroOp));
+            let numero = 1;
+            while (numerosUsados.has(numero)) {
+                numero++;
+            }
+            return numero;
+        }
+
+        function actualizarClientesHeader() {
+            document.getElementById('clientesCountHeader').textContent = clientes.length;
+        }
+
+        function setupEnterListener(inputId, buttonId) {
+            const input = document.getElementById(inputId);
+            const button = document.getElementById(buttonId);
+            if (input && button) {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.keyCode === 13) {
+                        e.preventDefault();
+                        button.click();
+                    }
+                });
+            }
+        }
+
+        // ============================================================
+        // RENDERIZADO
+        // ============================================================
+
+        function renderComisiones() {
+            const container = document.getElementById('listaComisiones');
+            if (!container) return;
+            if (clientes.length === 0) {
+                container.innerHTML = '<div class="empty-msg"><p>No hay clientes</p></div>';
+                return;
+            }
+            let html = '';
+            clientes.forEach(c => {
+                html += `
+                    <div class="cliente-card">
+                        <div class="info">
+                            <div class="nombre">${c.nombre}</div>
+                            <div class="comision">Comisión: ${c.comision}%</div>
+                        </div>
+                        <div style="display:flex; gap:4px; align-items:center;">
+                            <input type="number" step="0.1" min="0" value="${c.comision}" data-id="${c.id}" style="width:55px; padding:4px 6px; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-input); color:var(--text-primary); font-size:0.85rem;">
+                            <button class="btn-small btn-primary" data-id="${c.id}" style="width:auto; padding:3px 8px; font-size:0.65rem;">✓</button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            container.querySelectorAll('.btn-small.btn-primary[data-id]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const input = document.querySelector(`input[data-id="${id}"]`);
+                    const nuevoValor = parseFloat(input.value);
+                    if (isNaN(nuevoValor) || nuevoValor < 0) { mostrarToast('Ingresa una comisión válida.', 'error'); return; }
+                    const cliente = getCliente(id);
+                    if (cliente) { cliente.comision = nuevoValor; persistAll(); renderComisiones(); actualizarSelectores(); mostrarToast('Comisión actualizada.', 'success'); }
+                });
+            });
+        }
+
+        function renderResumenClientes() {
+            const container = document.getElementById('listaClientesResumen');
+            if (!container) return;
+            document.getElementById('totalClientes').textContent = clientes.length;
+            if (clientes.length === 0) {
+                container.innerHTML = '<div class="empty-msg"><p>No hay clientes registrados</p></div>';
+                return;
+            }
+            let html = '';
+            clientes.forEach(c => {
+                const recibosCliente = recibos.filter(r => r.clienteId === c.id);
+                const transferenciasCliente = transferencias.filter(t => t.clienteId === c.id);
+                const saldo = c.saldo || 0;
+                const esNegativo = saldo < 0;
+                html += `
+                    <div class="cliente-card">
+                        <div class="info">
+                            <div class="nombre">${c.nombre}</div>
+                            <div class="comision">Comisión: ${c.comision}% · Recibos: ${recibosCliente.length} · Transf: ${transferenciasCliente.length}</div>
+                        </div>
+                        <div style="display:flex; gap:4px; align-items:center;">
+                            <span class="saldo ${esNegativo ? 'negativo' : ''}">${formatearMoneda(saldo)}</span>
+                            <button class="btn-eliminar" data-id="${c.id}" style="background:none; border:none; color:var(--danger); font-size:0.9rem; cursor:pointer;">✕</button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            container.querySelectorAll('.btn-eliminar').forEach(btn => {
+                btn.addEventListener('click', function() { eliminarCliente(this.dataset.id); });
+            });
+        }
+
+        function eliminarCliente(id) {
+            const cliente = getCliente(id);
+            if (!cliente) return;
+            if (!confirm(`¿Eliminar a ${cliente.nombre}? Se borrarán todas sus operaciones.`)) return;
+            const recibosAEliminar = recibos.filter(r => r.clienteId === id);
+            recibosAEliminar.forEach(r => eliminarMovimientoPorRecibo(r.id));
+            recibos = recibos.filter(r => r.clienteId !== id);
+            transferencias = transferencias.filter(t => t.clienteId !== id);
+            clientes = clientes.filter(c => c.id !== id);
+            reordenarNumerosOperaciones();
+            persistAll();
+            recargarTodo();
+            mostrarToast('Cliente eliminado.', 'success');
+        }
+
+        function actualizarSelectores() {
+            const selects = ['recibirCliente', 'transferirCliente', 'historialCliente', 'modalCliente'];
+            selects.forEach(id => {
+                const sel = document.getElementById(id);
+                if (!sel) return;
+                const valorActual = sel.value;
+                sel.innerHTML = id === 'historialCliente' ? '<option value="todos">Todos</option>' : '';
+                clientes.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = c.nombre;
+                    sel.appendChild(opt);
+                });
+                if (clientes.some(c => c.id === valorActual)) sel.value = valorActual;
+                else if (clientes.length > 0 && id !== 'historialCliente') sel.value = clientes[0].id;
+                if (id === 'recibirCliente') { actualizarCamposRecibo(); actualizarSaldoOperacionRecibir(); }
+                if (id === 'transferirCliente') { actualizarSaldoDisponible(); actualizarSaldoOperacionTransferir(); actualizarSaldoRestanteTransferir(); }
+            });
+        }
+
+        function actualizarCamposRecibo() {
+            const clienteId = document.getElementById('recibirCliente').value;
+            const monto = parseFloat(document.getElementById('recibirMonto').value) || 0;
+            const cliente = getCliente(clienteId);
+            let comision = 0, neto = 0;
+            if (cliente && monto > 0) { comision = monto * (cliente.comision / 100); neto = monto - comision; }
+            document.getElementById('recibirComision').value = formatearMoneda(comision);
+            document.getElementById('recibirNeto').value = formatearMoneda(neto);
+        }
+
+        function actualizarSaldoOperacionRecibir() {
+            const clienteId = document.getElementById('recibirCliente').value;
+            const cliente = getCliente(clienteId);
+            document.getElementById('recibirSaldoActualizado').textContent = `Saldo actual: ${cliente ? formatearMoneda(cliente.saldo || 0) : '$0.00'}`;
+        }
+
+        function actualizarSaldoDisponible() {
+            const clienteId = document.getElementById('transferirCliente').value;
+            const saldo = getSaldoCliente(clienteId);
+            document.getElementById('transferirSaldoDisponible').value = formatearMoneda(saldo);
+        }
+
+        function actualizarSaldoOperacionTransferir() {
+            const clienteId = document.getElementById('transferirCliente').value;
+            const cliente = getCliente(clienteId);
+            document.getElementById('transferirSaldoDisponible').value = cliente ? formatearMoneda(cliente.saldo || 0) : '$0.00';
+        }
+
+        function actualizarSaldoRestanteTransferir() {
+            const clienteId = document.getElementById('transferirCliente').value;
+            const monto = parseFloat(document.getElementById('transferirMonto').value) || 0;
+            const cliente = getCliente(clienteId);
+            let saldoRestante = 0, esNegativo = false;
+            if (cliente) { saldoRestante = (cliente.saldo || 0) - monto; if (saldoRestante < 0) esNegativo = true; }
+            const elemento = document.getElementById('transferirSaldoRestante');
+            const aviso = document.getElementById('avisoSaldoNegativo');
+            if (elemento) {
+                elemento.innerHTML = `Saldo restante: <strong>${formatearMoneda(saldoRestante)}</strong>`;
+                elemento.style.color = esNegativo ? 'var(--saldo-negativo)' : 'var(--text-primary)';
+                aviso.style.display = esNegativo ? 'block' : 'none';
+            }
+        }
+
+        function renderUltimosRecibos() {
+            const container = document.getElementById('listaRecibos');
+            if (!container) return;
+            const lista = [...recibos].sort((a, b) => b.numeroOp - a.numeroOp).slice(0, 10);
+            document.getElementById('contadorRecibos').textContent = recibos.length;
+            if (lista.length === 0) {
+                container.innerHTML = '<div class="empty-msg"><p>No hay recibos</p></div>';
+                return;
+            }
+            let html = '';
+            lista.forEach(r => {
+                const cliente = getCliente(r.clienteId);
+                html += `
+                    <div class="operacion-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="tipo"><span class="badge badge-recibo">Recibo</span> ${cliente ? cliente.nombre : 'Eliminado'}</span>
+                            <span class="numero-op">#${r.numeroOp}</span>
+                        </div>
+                        <div class="monto">${formatearMoneda(r.monto)}</div>
+                        <div class="detalle">Comisión: ${formatearMoneda(r.comision)} · Neto: ${formatearMoneda(r.neto)}</div>
+                        <div class="fecha">${formatearFecha(r.fecha)}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderUltimasTransferencias() {
+            const container = document.getElementById('listaTransferencias');
+            if (!container) return;
+            const lista = [...transferencias].sort((a, b) => b.numeroOp - a.numeroOp).slice(0, 10);
+            document.getElementById('contadorTransferencias').textContent = transferencias.length;
+            if (lista.length === 0) {
+                container.innerHTML = '<div class="empty-msg"><p>No hay transferencias</p></div>';
+                return;
+            }
+            let html = '';
+            lista.forEach(t => {
+                const cliente = getCliente(t.clienteId);
+                const saldoRestante = t.saldoAntes - t.monto;
+                html += `
+                    <div class="operacion-card" style="border-left-color:var(--danger);">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="tipo"><span class="badge badge-transferencia">Transferencia</span> ${cliente ? cliente.nombre : 'Eliminado'}</span>
+                            <span class="numero-op">#${t.numeroOp}</span>
+                        </div>
+                        <div class="monto">${formatearMoneda(t.monto)}</div>
+                        <div class="detalle">Saldo restante: ${formatearMoneda(saldoRestante)}</div>
+                        <div class="fecha">${formatearFecha(t.fecha)}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderSaldo() {
+            const total = clientes.reduce((acc, c) => acc + (c.saldo || 0), 0);
+            document.getElementById('saldoTotal').textContent = formatearMoneda(total);
+            const container = document.getElementById('saldosPorCliente');
+            if (!container) return;
+            if (clientes.length === 0) {
+                container.innerHTML = '<div class="empty-msg"><p>No hay clientes</p></div>';
+                return;
+            }
+            let html = '';
+            clientes.forEach(c => {
+                const saldo = c.saldo || 0;
+                html += `
+                    <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border-color); font-size:0.9rem;">
+                        <span>${c.nombre}</span>
+                        <span style="${saldo < 0 ? 'color:var(--saldo-negativo);' : ''} font-weight:600;">${formatearMoneda(saldo)}</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function actualizarFiltroHistorialClientes() {
+            const sel = document.getElementById('historialCliente');
+            if (!sel) return;
+            const valorActual = sel.value;
+            sel.innerHTML = '<option value="todos">Todos</option>';
+            clientes.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.nombre;
+                sel.appendChild(opt);
+            });
+            if (clientes.some(c => c.id === valorActual)) sel.value = valorActual;
+        }
+
+        function obtenerDatosHistorialFiltrados() {
+            const clienteId = document.getElementById('historialCliente').value;
+            const fechaStr = document.getElementById('historialFecha').value;
+            const tipo = document.getElementById('historialTipo').value;
+            let ops = [];
+            recibos.forEach(r => ops.push({ 
+                id: r.id, 
+                tipo: 'recibo', 
+                clienteId: r.clienteId, 
+                monto: r.monto, 
+                comision: r.comision, 
+                neto: r.neto, 
+                fecha: r.fecha, 
+                saldoAntes: null,
+                numeroOp: r.numeroOp 
+            }));
+            transferencias.forEach(t => ops.push({ 
+                id: t.id, 
+                tipo: 'transferencia', 
+                clienteId: t.clienteId, 
+                monto: t.monto, 
+                comision: null, 
+                neto: null, 
+                fecha: t.fecha, 
+                saldoAntes: t.saldoAntes,
+                numeroOp: t.numeroOp 
+            }));
+            if (clienteId !== 'todos') ops = ops.filter(op => op.clienteId === clienteId);
+            if (fechaStr) {
+                const fi = new Date(fechaStr); fi.setHours(0,0,0,0);
+                const ff = new Date(fechaStr); ff.setHours(23,59,59,999);
+                ops = ops.filter(op => { const d = new Date(op.fecha); return d >= fi && d <= ff; });
+            }
+            if (tipo !== 'todos') ops = ops.filter(op => op.tipo === tipo);
+            ops.sort((a, b) => ordenHistorialAsc ? a.numeroOp - b.numeroOp : b.numeroOp - a.numeroOp);
+            return ops;
+        }
+
+        function renderHistorial() {
+            const ops = obtenerDatosHistorialFiltrados();
+            const container = document.getElementById('listaHistorial');
+            if (!container) return;
+            if (ops.length === 0) {
+                container.innerHTML = '<div class="empty-msg"><p>No hay movimientos</p></div>';
+                return;
+            }
+            let html = '';
+            ops.forEach(op => {
+                const cliente = getCliente(op.clienteId);
+                const nombre = cliente ? cliente.nombre : 'Eliminado';
+                const badgeClass = op.tipo === 'recibo' ? 'badge-recibo' : 'badge-transferencia';
+                const badgeText = op.tipo === 'recibo' ? 'Recibo' : 'Transferencia';
+                let detalle = '';
+                if (op.tipo === 'recibo') detalle = `Monto: ${formatearMoneda(op.monto)} · Comisión: ${formatearMoneda(op.comision)} · Neto: ${formatearMoneda(op.neto)}`;
+                else detalle = `Monto: ${formatearMoneda(op.monto)} · Saldo restante: ${formatearMoneda(op.saldoAntes - op.monto)}`;
+                html += `
+                    <div class="operacion-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="tipo"><span class="badge ${badgeClass}">${badgeText}</span> ${nombre}</span>
+                            <span class="numero-op">#${op.numeroOp}</span>
+                        </div>
+                        <div class="detalle">${detalle}</div>
+                        <div class="fecha">${formatearFecha(op.fecha)}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderFinanzas() {
+            const comisiones = finanzas.filter(m => m.tipo === 'comision');
+            const ingresos = finanzas.filter(m => m.tipo === 'ingreso');
+            const gastos = finanzas.filter(m => m.tipo === 'gasto');
+            const totalComisiones = comisiones.reduce((acc, m) => acc + m.monto, 0);
+            const totalIngresos = ingresos.reduce((acc, m) => acc + m.monto, 0);
+            const totalGastos = gastos.reduce((acc, m) => acc + m.monto, 0);
+            const saldo = totalComisiones + totalIngresos - totalGastos;
+            document.getElementById('totalComisiones').textContent = formatearMoneda(totalComisiones);
+            document.getElementById('totalIngresos').textContent = formatearMoneda(totalIngresos);
+            document.getElementById('totalGastos').textContent = formatearMoneda(totalGastos);
+            document.getElementById('saldoFinanzas').textContent = formatearMoneda(saldo);
+            const tipoFiltro = document.getElementById('filtroFinanzasTipo').value;
+            const fechaFiltro = document.getElementById('filtroFinanzasFecha').value;
+            let movs = [...finanzas];
+            if (tipoFiltro !== 'todos') movs = movs.filter(m => m.tipo === tipoFiltro);
+            if (fechaFiltro) {
+                const fi = new Date(fechaFiltro); fi.setHours(0,0,0,0);
+                const ff = new Date(fechaFiltro); ff.setHours(23,59,59,999);
+                movs = movs.filter(m => { const d = new Date(m.fecha); return d >= fi && d <= ff; });
+            }
+            movs.sort((a, b) => ordenFinanzasAsc ? a.fecha - b.fecha : b.fecha - a.fecha);
+            const container = document.getElementById('listaFinanzas');
+            document.getElementById('contadorFinanzas').textContent = finanzas.length;
+            if (!container) return;
+            if (movs.length === 0) {
+                container.innerHTML = '<div class="empty-msg"><p>No hay movimientos</p></div>';
+                return;
+            }
+            let html = '';
+            movs.forEach(m => {
+                let badgeClass = '', badgeText = '', desc = m.descripcion || '';
+                if (m.tipo === 'comision') { badgeClass = 'badge-comision'; badgeText = 'Comisión'; const c = getCliente(m.clienteId); desc = c ? `Comisión de ${c.nombre}` : 'Comisión'; }
+                else if (m.tipo === 'ingreso') { badgeClass = 'badge-ingreso'; badgeText = 'Ingreso'; }
+                else if (m.tipo === 'gasto') { badgeClass = 'badge-gasto'; badgeText = 'Gasto'; }
+                html += `
+                    <div class="operacion-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="tipo"><span class="badge ${badgeClass}">${badgeText}</span> ${desc}</span>
+                            <button class="btn-eliminar-finanza" data-id="${m.id}" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.8rem;">✕</button>
+                        </div>
+                        <div class="monto">${formatearMoneda(m.monto)}</div>
+                        <div class="fecha">${formatearFecha(m.fecha)}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            container.querySelectorAll('.btn-eliminar-finanza').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!confirm('¿Eliminar este movimiento?')) return;
+                    eliminarMovimientoFinanciero(this.dataset.id);
+                    renderFinanzas();
+                });
+            });
+        }
+
+        function actualizarEstadisticasBD() {
+            document.getElementById('statClientes').textContent = clientes.length;
+            document.getElementById('statRecibos').textContent = recibos.length;
+            document.getElementById('statTransferencias').textContent = transferencias.length;
+            document.getElementById('statFinanzas').textContent = finanzas.length;
+        }
+
+        function recargarTodo() {
+            renderComisiones();
+            renderResumenClientes();
+            renderUltimosRecibos();
+            renderUltimasTransferencias();
+            renderSaldo();
+            actualizarSelectores();
+            actualizarFiltroHistorialClientes();
+            renderHistorial();
+            renderFinanzas();
+            actualizarEstadisticasBD();
+            actualizarSaldoOperacionRecibir();
+            actualizarSaldoOperacionTransferir();
+            actualizarSaldoRestanteTransferir();
+            actualizarClientesHeader();
+            renderRecibosOperaciones();
+            renderTransferenciasOperaciones();
+        }
+
+        // ============================================================
+        // RECIBOS Y TRANSFERENCIAS EN OPERACIONES
+        // ============================================================
+
+        function renderRecibosOperaciones() {
+            const container = document.getElementById('listaRecibosOperaciones');
+            if (!container) return;
+            
+            let lista = [...recibos];
+            lista.sort((a, b) => ordenRecibosAsc ? a.numeroOp - b.numeroOp : b.numeroOp - a.numeroOp);
+            
+            document.getElementById('contadorRecibosOperaciones').textContent = recibos.length;
+            
+            if (lista.length === 0) {
+                container.innerHTML = '<div class="empty-msg"><p>No hay recibos registrados</p></div>';
+                return;
+            }
+            
+            let html = '';
+            lista.forEach(r => {
+                const cliente = getCliente(r.clienteId);
+                const fechaStr = formatearFecha(r.fecha);
+                
+                html += `
+                    <div class="operacion-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="tipo">
+                                <span class="badge badge-recibo">Recibo</span> 
+                                ${cliente ? cliente.nombre : 'Cliente eliminado'}
+                            </span>
+                            <div style="display:flex; gap:4px; align-items:center;">
+                                <span class="numero-op">#${r.numeroOp}</span>
+                                <button class="btn-editar-op" data-id="${r.id}" data-tipo="recibo" style="background:none; border:none; color:var(--primary); cursor:pointer; font-size:0.8rem;" title="Editar">✏️</button>
+                                <button class="btn-eliminar-recibo-op" data-id="${r.id}" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.8rem;" title="Eliminar">✕</button>
+                            </div>
+                        </div>
+                        <div class="monto">${formatearMoneda(r.monto)}</div>
+                        <div class="detalle">
+                            Comisión: ${formatearMoneda(r.comision)} · Neto: ${formatearMoneda(r.neto)}
+                        </div>
+                        <div class="fecha">📅 ${fechaStr}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            
+            container.querySelectorAll('.btn-eliminar-recibo-op').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!confirm('¿Eliminar este recibo?')) return;
+                    const id = this.dataset.id;
+                    const index = recibos.findIndex(r => r.id === id);
+                    if (index === -1) return;
+                    const recibo = recibos[index];
+                    actualizarSaldoCliente(recibo.clienteId, -recibo.neto);
+                    eliminarMovimientoPorRecibo(recibo.id);
+                    recibos.splice(index, 1);
+                    reordenarNumerosOperaciones();
+                    persistAll();
+                    recargarTodo();
+                    mostrarToast('Recibo eliminado.', 'success');
+                });
+            });
+            
+            container.querySelectorAll('.btn-editar-op').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const tipo = this.dataset.tipo;
+                    abrirModalEdicion(id, tipo);
+                });
+            });
+        }
+
+        function renderTransferenciasOperaciones() {
+            const container = document.getElementById('listaTransferenciasOperaciones');
+            if (!container) return;
+            
+            let lista = [...transferencias];
+            lista.sort((a, b) => ordenTransferenciasAsc ? a.numeroOp - b.numeroOp : b.numeroOp - a.numeroOp);
+            
+            document.getElementById('contadorTransferenciasOperaciones').textContent = transferencias.length;
+            
+            if (lista.length === 0) {
+                container.innerHTML = '<div class="empty-msg"><p>No hay transferencias registradas</p></div>';
+                return;
+            }
+            
+            let html = '';
+            lista.forEach(t => {
+                const cliente = getCliente(t.clienteId);
+                const saldoRestante = t.saldoAntes - t.monto;
+                const fechaStr = formatearFecha(t.fecha);
+                const esNegativo = saldoRestante < 0;
+                
+                html += `
+                    <div class="operacion-card" style="border-left-color:${esNegativo ? 'var(--danger)' : 'var(--primary)'};">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="tipo">
+                                <span class="badge badge-transferencia">Transferencia</span> 
+                                ${cliente ? cliente.nombre : 'Cliente eliminado'}
+                            </span>
+                            <div style="display:flex; gap:4px; align-items:center;">
+                                <span class="numero-op">#${t.numeroOp}</span>
+                                <button class="btn-editar-op" data-id="${t.id}" data-tipo="transferencia" style="background:none; border:none; color:var(--primary); cursor:pointer; font-size:0.8rem;" title="Editar">✏️</button>
+                                <button class="btn-eliminar-transferencia-op" data-id="${t.id}" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.8rem;" title="Eliminar">✕</button>
+                            </div>
+                        </div>
+                        <div class="monto">${formatearMoneda(t.monto)}</div>
+                        <div class="detalle">
+                            Saldo restante: <span style="${esNegativo ? 'color:var(--saldo-negativo);' : ''}font-weight:600;">${formatearMoneda(saldoRestante)}</span>
+                            ${esNegativo ? ' ⚠️ (Préstamo)' : ''}
+                        </div>
+                        <div class="fecha">📅 ${fechaStr}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            
+            container.querySelectorAll('.btn-eliminar-transferencia-op').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!confirm('¿Eliminar esta transferencia?')) return;
+                    const id = this.dataset.id;
+                    const index = transferencias.findIndex(t => t.id === id);
+                    if (index === -1) return;
+                    const transferencia = transferencias[index];
+                    actualizarSaldoCliente(transferencia.clienteId, transferencia.monto);
+                    transferencias.splice(index, 1);
+                    reordenarNumerosOperaciones();
+                    persistAll();
+                    recargarTodo();
+                    mostrarToast('Transferencia eliminada.', 'success');
+                });
+            });
+            
+            container.querySelectorAll('.btn-editar-op').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const tipo = this.dataset.tipo;
+                    abrirModalEdicion(id, tipo);
+                });
+            });
+        }
+
+        // ============================================================
+        // MODAL DE EDICIÓN
+        // ============================================================
+
+        function abrirModalEdicion(id, tipo) {
+            const modal = document.getElementById('modalEditar');
+            const titulo = document.getElementById('modalTitulo');
+            const selectCliente = document.getElementById('modalCliente');
+            const inputMonto = document.getElementById('modalMonto');
+            const inputFecha = document.getElementById('modalFecha');
+            const camposExtra = document.getElementById('modalCamposExtra');
+            
+            let operacion = null;
+            if (tipo === 'recibo') {
+                operacion = recibos.find(r => r.id === id);
+            } else {
+                operacion = transferencias.find(t => t.id === id);
+            }
+            
+            if (!operacion) {
+                mostrarToast('Operación no encontrada.', 'error');
+                return;
+            }
+            
+            operacionEditando = { ...operacion, tipo };
+            
+            titulo.textContent = tipo === 'recibo' ? '✏️ Editar Recibo' : '✏️ Editar Transferencia';
+            
+            selectCliente.innerHTML = '';
+            clientes.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.nombre;
+                if (c.id === operacion.clienteId) opt.selected = true;
+                selectCliente.appendChild(opt);
+            });
+            
+            inputMonto.value = operacion.monto;
+            inputFecha.value = new Date(operacion.fecha).toISOString().split('T')[0];
+            
+            camposExtra.innerHTML = '';
+            if (tipo === 'recibo') {
+                camposExtra.innerHTML = `
+                    <div class="form-group">
+                        <label>Comisión (%)</label>
+                        <input type="number" id="modalComisionPorcentaje" step="0.1" min="0" value="${getCliente(operacion.clienteId)?.comision || 0}">
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                        <div class="form-group">
+                            <label>Comisión ($)</label>
+                            <input type="text" id="modalComision" class="readonly-field" readonly value="${formatearMoneda(operacion.comision)}">
+                        </div>
+                        <div class="form-group">
+                            <label>Neto</label>
+                            <input type="text" id="modalNeto" class="readonly-field" readonly value="${formatearMoneda(operacion.neto)}">
+                        </div>
+                    </div>
+                `;
+                
+                const inputMontoModal = inputMonto;
+                const inputPorcentaje = document.getElementById('modalComisionPorcentaje');
+                
+                function actualizarCamposReciboModal() {
+                    const monto = parseFloat(inputMontoModal.value) || 0;
+                    const porcentaje = parseFloat(inputPorcentaje.value) || 0;
+                    const comision = monto * (porcentaje / 100);
+                    const neto = monto - comision;
+                    document.getElementById('modalComision').value = formatearMoneda(comision);
+                    document.getElementById('modalNeto').value = formatearMoneda(neto);
+                }
+                
+                inputMontoModal.addEventListener('input', actualizarCamposReciboModal);
+                inputPorcentaje.addEventListener('input', actualizarCamposReciboModal);
+                actualizarCamposReciboModal();
+            } else {
+                const cliente = getCliente(operacion.clienteId);
+                camposExtra.innerHTML = `
+                    <div class="form-group">
+                        <label>Saldo disponible</label>
+                        <input type="text" id="modalSaldoDisponible" class="readonly-field" readonly value="${cliente ? formatearMoneda(cliente.saldo || 0) : '$0.00'}">
+                    </div>
+                    <div class="form-group" style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); text-align:center; font-weight:500;">
+                        <span id="modalSaldoRestante">Saldo restante: ${formatearMoneda((cliente?.saldo || 0) - operacion.monto)}</span>
+                    </div>
+                `;
+                
+                inputMonto.addEventListener('input', function() {
+                    const clienteActual = getCliente(selectCliente.value);
+                    const saldoActual = clienteActual?.saldo || 0;
+                    const montoNuevo = parseFloat(this.value) || 0;
+                    const saldoRestante = saldoActual - montoNuevo;
+                    const span = document.getElementById('modalSaldoRestante');
+                    if (span) {
+                        span.textContent = `Saldo restante: ${formatearMoneda(saldoRestante)}`;
+                        span.style.color = saldoRestante < 0 ? 'var(--saldo-negativo)' : 'var(--text-primary)';
+                    }
+                });
+                
+                selectCliente.addEventListener('change', function() {
+                    const clienteActual = getCliente(this.value);
+                    const saldoActual = clienteActual?.saldo || 0;
+                    const montoActual = parseFloat(inputMonto.value) || 0;
+                    const saldoRestante = saldoActual - montoActual;
+                    document.getElementById('modalSaldoDisponible').value = formatearMoneda(saldoActual);
+                    const span = document.getElementById('modalSaldoRestante');
+                    if (span) {
+                        span.textContent = `Saldo restante: ${formatearMoneda(saldoRestante)}`;
+                        span.style.color = saldoRestante < 0 ? 'var(--saldo-negativo)' : 'var(--text-primary)';
+                    }
+                });
+            }
+            
+            modal.classList.add('open');
+        }
+
+        function guardarEdicion() {
+            if (!operacionEditando) return;
+            
+            const selectCliente = document.getElementById('modalCliente');
+            const inputMonto = document.getElementById('modalMonto');
+            const inputFecha = document.getElementById('modalFecha');
+            
+            const nuevoClienteId = selectCliente.value;
+            const nuevoMonto = parseFloat(inputMonto.value);
+            const nuevaFecha = new Date(inputFecha.value + 'T00:00:00').getTime();
+            
+            if (!nuevoClienteId) {
+                mostrarToast('Selecciona un cliente.', 'error');
+                return;
+            }
+            if (isNaN(nuevoMonto) || nuevoMonto <= 0) {
+                mostrarToast('Ingresa un monto válido.', 'error');
+                return;
+            }
+            
+            const cliente = getCliente(nuevoClienteId);
+            if (!cliente) {
+                mostrarToast('Cliente no encontrado.', 'error');
+                return;
+            }
+            
+            if (operacionEditando.tipo === 'recibo') {
+                const reciboOriginal = recibos.find(r => r.id === operacionEditando.id);
+                if (reciboOriginal) {
+                    actualizarSaldoCliente(reciboOriginal.clienteId, -reciboOriginal.neto);
+                    
+                    const porcentaje = parseFloat(document.getElementById('modalComisionPorcentaje')?.value) || cliente.comision;
+                    const nuevaComision = nuevoMonto * (porcentaje / 100);
+                    const nuevoNeto = nuevoMonto - nuevaComision;
+                    
+                    if (nuevoNeto < 0) {
+                        mostrarToast('La comisión no puede ser mayor al monto.', 'error');
+                        actualizarSaldoCliente(reciboOriginal.clienteId, reciboOriginal.neto);
+                        return;
+                    }
+                    
+                    reciboOriginal.clienteId = nuevoClienteId;
+                    reciboOriginal.monto = nuevoMonto;
+                    reciboOriginal.comision = nuevaComision;
+                    reciboOriginal.neto = nuevoNeto;
+                    reciboOriginal.fecha = nuevaFecha;
+                    
+                    actualizarSaldoCliente(nuevoClienteId, nuevoNeto);
+                    
+                    const finanzaAsociada = finanzas.find(f => f.reciboId === reciboOriginal.id);
+                    if (finanzaAsociada) {
+                        finanzaAsociada.monto = nuevaComision;
+                        finanzaAsociada.descripcion = `Comisión de ${cliente.nombre}`;
+                        finanzaAsociada.clienteId = nuevoClienteId;
+                    }
+                    
+                    mostrarToast(`Recibo #${reciboOriginal.numeroOp} actualizado.`, 'success');
+                }
+            } else {
+                const transferenciaOriginal = transferencias.find(t => t.id === operacionEditando.id);
+                if (transferenciaOriginal) {
+                    actualizarSaldoCliente(transferenciaOriginal.clienteId, transferenciaOriginal.monto);
+                    
+                    const saldoActual = cliente.saldo || 0;
+                    const nuevoSaldoRestante = saldoActual - nuevoMonto;
+                    
+                    transferenciaOriginal.clienteId = nuevoClienteId;
+                    transferenciaOriginal.monto = nuevoMonto;
+                    transferenciaOriginal.saldoAntes = saldoActual;
+                    transferenciaOriginal.fecha = nuevaFecha;
+                    
+                    actualizarSaldoCliente(nuevoClienteId, -nuevoMonto);
+                    
+                    if (nuevoSaldoRestante < 0) {
+                        const prestamo = Math.abs(nuevoSaldoRestante);
+                        let prestamoExistente = finanzas.find(f => f.clienteId === nuevoClienteId && f.descripcion && f.descripcion.includes('Préstamo a'));
+                        if (prestamoExistente) {
+                            prestamoExistente.monto = prestamo;
+                        } else {
+                            agregarMovimientoFinanciero('gasto', prestamo, `Préstamo a ${cliente.nombre}`, nuevoClienteId, null, nuevaFecha);
+                        }
+                    }
+                    
+                    mostrarToast(`Transferencia #${transferenciaOriginal.numeroOp} actualizada.`, 'success');
+                }
+            }
+            
+            reordenarNumerosOperaciones();
+            persistAll();
+            recargarTodo();
+            cerrarModal();
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalEditar').classList.remove('open');
+            operacionEditando = null;
+        }
+
+        document.getElementById('modalCancelar').addEventListener('click', cerrarModal);
+        document.getElementById('modalGuardar').addEventListener('click', guardarEdicion);
+        
+        document.getElementById('modalEditar').addEventListener('click', function(e) {
+            if (e.target === this) cerrarModal();
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') cerrarModal();
+        });
+
+        // ============================================================
+        // NAVEGACIÓN Y EVENTOS
+        // ============================================================
+
+        function cambiarPestanaOperaciones(pestana) {
+            const btnRecibir = document.getElementById('btnMostrarRecibir');
+            const btnTransferir = document.getElementById('btnMostrarTransferir');
+            
+            if (pestana === 'recibir') {
+                btnRecibir.classList.add('active');
+                btnTransferir.classList.remove('active');
+                document.getElementById('sub-recibir').style.display = 'block';
+                document.getElementById('sub-transferir').style.display = 'none';
+                document.getElementById('sub-lista-recibos').style.display = 'block';
+                document.getElementById('sub-lista-transferencias').style.display = 'none';
+                actualizarSelectores();
+                renderRecibosOperaciones();
+                setTimeout(() => document.getElementById('recibirMonto').focus(), 100);
+            } else {
+                btnRecibir.classList.remove('active');
+                btnTransferir.classList.add('active');
+                document.getElementById('sub-recibir').style.display = 'none';
+                document.getElementById('sub-transferir').style.display = 'block';
+                document.getElementById('sub-lista-recibos').style.display = 'none';
+                document.getElementById('sub-lista-transferencias').style.display = 'block';
+                actualizarSelectores();
+                renderTransferenciasOperaciones();
+                setTimeout(() => document.getElementById('transferirMonto').focus(), 100);
+            }
+        }
+
+        function mostrarSeccion(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+            const target = document.getElementById('section-' + section);
+            if (target) target.classList.add('visible');
+            
+            document.querySelectorAll('#bottomMenu button').forEach(b => b.classList.remove('active'));
+            const bottomBtn = document.querySelector(`#bottomMenu button[data-section="${section}"]`);
+            if (bottomBtn) bottomBtn.classList.add('active');
+            
+            document.querySelectorAll('#dropdownMenu button').forEach(b => b.classList.remove('active-drop'));
+            const dropBtn = document.querySelector(`#dropdownMenu button[data-section="${section}"]`);
+            if (dropBtn) dropBtn.classList.add('active-drop');
+            
+            if (section === 'clientes') { renderComisiones(); renderResumenClientes(); }
+            if (section === 'operaciones') { 
+                actualizarSelectores(); 
+                renderRecibosOperaciones();
+                renderTransferenciasOperaciones();
+                const btnRecibir = document.getElementById('btnMostrarRecibir');
+                if (btnRecibir.classList.contains('active')) {
+                    document.getElementById('sub-lista-recibos').style.display = 'block';
+                    document.getElementById('sub-lista-transferencias').style.display = 'none';
+                } else {
+                    document.getElementById('sub-lista-recibos').style.display = 'none';
+                    document.getElementById('sub-lista-transferencias').style.display = 'block';
+                }
+            }
+            if (section === 'saldo') renderSaldo();
+            if (section === 'historial') { actualizarFiltroHistorialClientes(); renderHistorial(); }
+            if (section === 'finanzas') { renderFinanzas(); }
+            if (section === 'bd') actualizarEstadisticasBD();
+        }
+
+        // ============================================================
+        // EVENTOS PRINCIPALES
+        // ============================================================
+
+        document.querySelectorAll('#bottomMenu button[data-section]').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = this.dataset.section;
+                mostrarSeccion(section);
+            });
+        });
+
+        document.querySelectorAll('#dropdownMenu button[data-section]').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = this.dataset.section;
+                mostrarSeccion(section);
+                document.getElementById('dropdownMenu').classList.remove('open');
+            });
+        });
+
+        document.getElementById('menuHamburguesa').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('dropdownMenu').classList.toggle('open');
+        });
+
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('dropdownMenu');
+            const hamburger = document.getElementById('menuHamburguesa');
+            if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
+                dropdown.classList.remove('open');
+            }
+        });
+
+        document.getElementById('btnDarkMode').addEventListener('click', toggleDarkMode);
+        document.getElementById('btnLogout').addEventListener('click', cerrarSesion);
+
+        // ============================================================
+        // LOGIN
+        // ============================================================
+
+        document.getElementById('btnLogin').addEventListener('click', iniciarSesion);
+        document.getElementById('pinInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                iniciarSesion();
+            }
+        });
+
+        // ============================================================
+        // CLIENTES
+        // ============================================================
+
+        document.getElementById('btnMostrarAgregarCliente').addEventListener('click', function() {
+            document.getElementById('sub-agregar-cliente').style.display = 'block';
+            document.getElementById('sub-ver-clientes').style.display = 'none';
+            document.getElementById('sub-comisiones').style.display = 'none';
+            setTimeout(() => document.getElementById('clienteNombre').focus(), 100);
+        });
+        document.getElementById('btnMostrarListaClientes').addEventListener('click', function() {
+            document.getElementById('sub-agregar-cliente').style.display = 'none';
+            document.getElementById('sub-ver-clientes').style.display = 'block';
+            document.getElementById('sub-comisiones').style.display = 'none';
+            renderResumenClientes();
+        });
+
+        document.getElementById('btnAgregarCliente').addEventListener('click', function() {
+            const nombre = document.getElementById('clienteNombre').value.trim();
+            const comision = parseFloat(document.getElementById('clienteComision').value);
+            if (!nombre) { mostrarToast('Ingresa un nombre.', 'error'); return; }
+            if (isNaN(comision) || comision < 0) { mostrarToast('Ingresa una comisión válida.', 'error'); return; }
+            if (clientes.some(c => c.nombre.toLowerCase() === nombre.toLowerCase())) { mostrarToast('Ya existe ese cliente.', 'error'); return; }
+            clientes.push({ id: generarId(), nombre, comision, saldo: 0 });
+            persistAll();
+            document.getElementById('clienteNombre').value = '';
+            recargarTodo();
+            mostrarToast('Cliente agregado.', 'success');
+            setTimeout(() => document.getElementById('clienteNombre').focus(), 100);
+        });
+
+        // ============================================================
+        // OPERACIONES
+        // ============================================================
+
+        document.getElementById('btnMostrarRecibir').addEventListener('click', function() {
+            cambiarPestanaOperaciones('recibir');
+        });
+
+        document.getElementById('btnMostrarTransferir').addEventListener('click', function() {
+            cambiarPestanaOperaciones('transferir');
+        });
+
+        document.getElementById('recibirMonto').addEventListener('input', function() {
+            actualizarCamposRecibo();
+            actualizarSaldoOperacionRecibir();
+        });
+        document.getElementById('recibirCliente').addEventListener('change', function() {
+            actualizarCamposRecibo();
+            actualizarSaldoOperacionRecibir();
+        });
+
+        document.getElementById('btnRegistrarRecibo').addEventListener('click', function() {
+            const clienteId = document.getElementById('recibirCliente').value;
+            const monto = parseFloat(document.getElementById('recibirMonto').value);
+            const fechaStr = document.getElementById('recibirFecha').value;
+            if (!clienteId) { mostrarToast('Selecciona un cliente.', 'error'); return; }
+            if (isNaN(monto) || monto <= 0) { mostrarToast('Ingresa un monto válido.', 'error'); return; }
+            const cliente = getCliente(clienteId);
+            if (!cliente) { mostrarToast('Cliente no encontrado.', 'error'); return; }
+            const comision = monto * (cliente.comision / 100);
+            const neto = monto - comision;
+            if (neto < 0) { mostrarToast('La comisión no puede ser mayor al monto.', 'error'); return; }
+            const fecha = new Date(fechaStr + 'T00:00:00').getTime();
+            const numeroOp = obtenerSiguienteNumeroOperacion();
+            recibos.push({ id: generarId(), clienteId, monto, comision, neto, fecha, numeroOp });
+            actualizarSaldoCliente(clienteId, neto);
+            if (comision > 0) agregarMovimientoFinanciero('comision', comision, `Comisión de ${cliente.nombre}`, clienteId, null, fecha);
+            persistAll();
+            document.getElementById('recibirMonto').value = '';
+            recargarTodo();
+            mostrarToast(`Recibo #${numeroOp} registrado - Neto: ${formatearMoneda(neto)}`, 'success');
+            setTimeout(() => document.getElementById('recibirMonto').focus(), 100);
+        });
+
+        document.getElementById('transferirCliente').addEventListener('change', function() {
+            actualizarSaldoDisponible();
+            actualizarSaldoOperacionTransferir();
+            actualizarSaldoRestanteTransferir();
+        });
+        document.getElementById('transferirMonto').addEventListener('input', function() {
+            actualizarSaldoRestanteTransferir();
+        });
+
+        document.getElementById('btnRegistrarTransferencia').addEventListener('click', function() {
+            const clienteId = document.getElementById('transferirCliente').value;
+            const monto = parseFloat(document.getElementById('transferirMonto').value);
+            const fechaStr = document.getElementById('transferirFecha').value;
+            if (!clienteId) { mostrarToast('Selecciona un cliente.', 'error'); return; }
+            if (isNaN(monto) || monto <= 0) { mostrarToast('Ingresa un monto válido.', 'error'); return; }
+            const cliente = getCliente(clienteId);
+            if (!cliente) { mostrarToast('Cliente no encontrado.', 'error'); return; }
+            const saldoActual = cliente.saldo || 0;
+            const saldoRestante = saldoActual - monto;
+            const fecha = new Date(fechaStr + 'T00:00:00').getTime();
+            const numeroOp = obtenerSiguienteNumeroOperacion();
+            transferencias.push({ id: generarId(), clienteId, monto, saldoAntes: saldoActual, fecha, numeroOp });
+            actualizarSaldoCliente(clienteId, -monto);
+            if (saldoRestante < 0) {
+                const prestamo = Math.abs(saldoRestante);
+                agregarMovimientoFinanciero('gasto', prestamo, `Préstamo a ${cliente.nombre}`, clienteId, null, fecha);
+            }
+            persistAll();
+            document.getElementById('transferirMonto').value = '';
+            recargarTodo();
+            mostrarToast(`Transferencia #${numeroOp} registrada - Nuevo saldo: ${formatearMoneda(saldoRestante)}`, 'success');
+            setTimeout(() => document.getElementById('transferirMonto').focus(), 100);
+        });
+
+        // ============================================================
+        // BOTONES DE INVERTIR
+        // ============================================================
+
+        document.getElementById('btnInvertirRecibos').addEventListener('click', function() {
+            ordenRecibosAsc = !ordenRecibosAsc;
+            this.textContent = ordenRecibosAsc ? '⬇️ Más antiguos' : '⬆️ Más recientes';
+            renderRecibosOperaciones();
+        });
+
+        document.getElementById('btnInvertirTransferencias').addEventListener('click', function() {
+            ordenTransferenciasAsc = !ordenTransferenciasAsc;
+            this.textContent = ordenTransferenciasAsc ? '⬇️ Más antiguos' : '⬆️ Más recientes';
+            renderTransferenciasOperaciones();
+        });
+
+        // ============================================================
+        // FINANZAS
+        // ============================================================
+
+        document.getElementById('btnMostrarResumenFinanzas').addEventListener('click', function() {
+            document.getElementById('sub-resumen-finanzas').style.display = 'block';
+            document.getElementById('sub-registrar-finanza').style.display = 'none';
+            renderFinanzas();
+        });
+        document.getElementById('btnMostrarRegistrarFinanza').addEventListener('click', function() {
+            document.getElementById('sub-resumen-finanzas').style.display = 'none';
+            document.getElementById('sub-registrar-finanza').style.display = 'block';
+            setTimeout(() => document.getElementById('finanzaMonto').focus(), 100);
+        });
+
+        document.getElementById('btnRegistrarFinanza').addEventListener('click', function() {
+            const tipo = document.getElementById('finanzaTipo').value;
+            const monto = parseFloat(document.getElementById('finanzaMonto').value);
+            const descripcion = document.getElementById('finanzaDescripcion').value.trim();
+            const fechaStr = document.getElementById('finanzaFecha').value;
+            if (isNaN(monto) || monto <= 0) { mostrarToast('Ingresa un monto válido.', 'error'); return; }
+            if (!descripcion) { mostrarToast('Ingresa una descripción.', 'error'); return; }
+            const fecha = new Date(fechaStr + 'T00:00:00').getTime();
+            finanzas.push({ id: generarId(), tipo, monto, descripcion, clienteId: null, reciboId: null, fecha });
+            persistAll();
+            document.getElementById('finanzaMonto').value = '';
+            document.getElementById('finanzaDescripcion').value = '';
+            renderFinanzas();
+            mostrarToast('Movimiento registrado.', 'success');
+            setTimeout(() => document.getElementById('finanzaMonto').focus(), 100);
+        });
+
+        // ============================================================
+        // BASE DE DATOS
+        // ============================================================
+
+        document.getElementById('btnExportarJSON').addEventListener('click', function() {
+            const data = { clientes, recibos, transferencias, finanzas, exportado: new Date().toISOString(), usuario: usuarioActual };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gestor_${usuarioActual}_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            mostrarToast('JSON exportado correctamente.', 'success');
+        });
+
+        document.getElementById('btnImportarJSON').addEventListener('click', function() {
+            document.getElementById('inputImportarJSON').click();
+        });
+
+        document.getElementById('inputImportarJSON').addEventListener('change', function(e) {
+            if (!this.files || !this.files[0]) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    if (!data.clientes || !data.recibos || !data.transferencias || !data.finanzas) throw new Error('Archivo inválido.');
+                    if (!confirm('Esto reemplazará TODOS los datos. ¿Continuar?')) return;
+                    clientes = data.clientes; recibos = data.recibos; transferencias = data.transferencias; finanzas = data.finanzas;
+                    reordenarNumerosOperaciones();
+                    persistAll();
+                    recargarTodo();
+                    mostrarToast('Datos importados correctamente.', 'success');
+                } catch (err) {
+                    mostrarToast('Error al importar: ' + err.message, 'error');
+                }
+            };
+            reader.readAsText(this.files[0]);
+            this.value = '';
+        });
+
+        document.getElementById('btnImportarExcel').addEventListener('click', function() {
+            const input = document.getElementById('inputImportarExcel');
+            if (!input.files || !input.files[0]) { mostrarToast('Selecciona un archivo.', 'error'); return; }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const rows = XLSX.utils.sheet_to_json(firstSheet);
+                    if (!rows || rows.length === 0) { mostrarToast('Archivo vacío o sin encabezados.', 'error'); return; }
+                    const required = ['tipo', 'cliente', 'monto', 'fecha'];
+                    const firstRow = rows[0];
+                    const missing = required.filter(col => !(col in firstRow));
+                    if (missing.length > 0) { mostrarToast(`Faltan columnas: ${missing.join(', ')}`, 'error'); return; }
+                    let importados = 0, errores = [];
+                    rows.forEach((row, idx) => {
+                        try {
+                            const tipo = row.tipo.toString().toLowerCase().trim();
+                            const nombreCliente = row.cliente.toString().trim();
+                            const monto = parseFloat(row.monto);
+                            let fecha = null;
+                            const fechaRaw = row.fecha;
+                            if (typeof fechaRaw === 'number') fecha = new Date((fechaRaw - 25569) * 86400 * 1000).getTime();
+                            else if (typeof fechaRaw === 'string') {
+                                const parsed = new Date(fechaRaw);
+                                if (!isNaN(parsed.getTime())) fecha = parsed.getTime();
+                                else {
+                                    const parts = fechaRaw.split('-');
+                                    if (parts.length === 3) { const d = new Date(parts[0], parts[1]-1, parts[2]); if (!isNaN(d.getTime())) fecha = d.getTime(); }
+                                }
+                            }
+                            if (!fecha) throw new Error('Fecha inválida.');
+                            if (isNaN(monto) || monto <= 0) throw new Error('Monto inválido.');
+                            if (!['recibo', 'transferencia'].includes(tipo)) throw new Error('Tipo debe ser recibo o transferencia.');
+                            let cliente = getClientePorNombre(nombreCliente);
+                            if (!cliente) { cliente = { id: generarId(), nombre: nombreCliente, comision: 0, saldo: 0 }; clientes.push(cliente); }
+                            const numeroOp = obtenerSiguienteNumeroOperacion();
+                            if (tipo === 'recibo') {
+                                let comision = row.comision !== undefined ? parseFloat(row.comision) : null;
+                                let neto = row.neto !== undefined ? parseFloat(row.neto) : null;
+                                if (comision === null || isNaN(comision)) comision = monto * (cliente.comision / 100);
+                                if (neto === null || isNaN(neto)) neto = monto - comision;
+                                if (neto < 0) throw new Error('Neto negativo.');
+                                recibos.push({ id: generarId(), clienteId: cliente.id, monto, comision, neto, fecha, numeroOp });
+                                actualizarSaldoCliente(cliente.id, neto);
+                                if (comision > 0) agregarMovimientoFinanciero('comision', comision, `Comisión de ${cliente.nombre}`, cliente.id, null, fecha);
+                            } else {
+                                const saldoActual = cliente.saldo || 0;
+                                transferencias.push({ id: generarId(), clienteId: cliente.id, monto, saldoAntes: saldoActual, fecha, numeroOp });
+                                actualizarSaldoCliente(cliente.id, -monto);
+                            }
+                            importados++;
+                        } catch (err) { errores.push(`Fila ${idx+2}: ${err.message}`); }
+                    });
+                    reordenarNumerosOperaciones();
+                    persistAll();
+                    recargarTodo();
+                    let msg = `Importados ${importados} registros.`;
+                    if (errores.length > 0) msg += ` Errores: ${errores.join('; ')}`;
+                    mostrarToast(msg, errores.length > 0 ? 'error' : 'success');
+                } catch (err) { mostrarToast('Error al leer el archivo: ' + err.message, 'error'); }
+            };
+            reader.readAsArrayBuffer(input.files[0]);
+            input.value = '';
+        });
+
+        document.getElementById('btnBorrarTodo').addEventListener('click', function() {
+            if (!confirm('⚠️ ¿Borrar TODOS los datos?')) return;
+            if (!confirm('Confirmación final:')) return;
+            clientes = []; recibos = []; transferencias = []; finanzas = [];
+            persistAll();
+            recargarTodo();
+            mostrarToast('Todos los datos eliminados.', 'success');
+        });
+
+        // ============================================================
+        // FILTROS
+        // ============================================================
+
+        document.getElementById('historialCliente').addEventListener('change', renderHistorial);
+        document.getElementById('historialFecha').addEventListener('change', renderHistorial);
+        document.getElementById('historialTipo').addEventListener('change', renderHistorial);
+        document.getElementById('btnInvertirOrden').addEventListener('click', function() {
+            ordenHistorialAsc = !ordenHistorialAsc;
+            this.textContent = ordenHistorialAsc ? '⬇️ Más antiguos' : '⬆️ Más recientes';
+            renderHistorial();
+        });
+
+        document.getElementById('filtroFinanzasTipo').addEventListener('change', renderFinanzas);
+        document.getElementById('filtroFinanzasFecha').addEventListener('change', renderFinanzas);
+        document.getElementById('btnInvertirFinanzas').addEventListener('click', function() {
+            ordenFinanzasAsc = !ordenFinanzasAsc;
+            this.textContent = ordenFinanzasAsc ? '⬇️' : '⬆️';
+            renderFinanzas();
+        });
+
+        document.getElementById('btnExportarExcelHistorial').addEventListener('click', function() {
+            const ops = obtenerDatosHistorialFiltrados();
+            if (ops.length === 0) { mostrarToast('No hay datos para exportar.', 'error'); return; }
+            const data = ops.map((op) => {
+                const cliente = getCliente(op.clienteId);
+                return {
+                    'N° Op': op.numeroOp,
+                    'Cliente': cliente ? cliente.nombre : 'Eliminado',
+                    'Tipo': op.tipo === 'recibo' ? 'Recibo' : 'Transferencia',
+                    'Monto': op.monto, 
+                    'Comisión': op.tipo === 'recibo' ? op.comision : null,
+                    'Saldo Restante': op.tipo === 'transferencia' ? (op.saldoAntes - op.monto) : null,
+                    'Fecha': new Date(op.fecha).toLocaleDateString('es-ES')
+                };
+            });
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(data);
+            ws['!cols'] = [{wch:8},{wch:25},{wch:14},{wch:14},{wch:14},{wch:16},{wch:16}];
+            XLSX.utils.book_append_sheet(wb, ws, 'Historial');
+            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+            const blob = new Blob([wbout], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `historial_${usuarioActual}_${new Date().toISOString().split('T')[0]}.xlsx`;
+            a.click();
+            URL.revokeObjectURL(url);
+            mostrarToast('Excel exportado correctamente.', 'success');
+        });
+
+        document.getElementById('btnExportarPDFHistorial').addEventListener('click', function() {
+            const ops = obtenerDatosHistorialFiltrados();
+            if (ops.length === 0) { mostrarToast('No hay datos para exportar.', 'error'); return; }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape', 'mm', 'a4');
+            const pageWidth = doc.internal.pageSize.getWidth();
+            doc.setFontSize(16); doc.setTextColor('#1a1a2e');
+            doc.text('Historial de Operaciones', pageWidth/2, 15, { align: 'center' });
+            doc.setFontSize(8); doc.setTextColor('#8888a8');
+            doc.text(`Usuario: ${usuarioActual} - Generado: ${new Date().toLocaleString()}`, pageWidth/2, 22, { align: 'center' });
+            const rows = ops.map((op) => {
+                const cliente = getCliente(op.clienteId);
+                return [
+                    op.numeroOp.toString(),
+                    cliente ? cliente.nombre : 'Eliminado',
+                    op.tipo === 'recibo' ? 'Recibo' : 'Transferencia',
+                    formatearMoneda(op.monto),
+                    op.tipo === 'recibo' ? formatearMoneda(op.comision) : '—',
+                    op.tipo === 'transferencia' ? formatearMoneda(op.saldoAntes - op.monto) : '—',
+                    new Date(op.fecha).toLocaleDateString('es-ES')
+                ];
+            });
+            doc.autoTable({
+                head: [['N° Op','Cliente','Tipo','Monto','Comisión','Saldo Restante','Fecha']],
+                body: rows, startY: 28,
+                styles: { fontSize: 7, cellPadding: 2, textColor: '#1a1a2e' },
+                headStyles: { fillColor: '#6c5ce7', textColor: '#ffffff', fontSize: 8, halign: 'center' },
+                alternateRowStyles: { fillColor: '#f8f9fc' },
+                columnStyles: {
+                    0: { halign: 'center', cellWidth: 12 },
+                    1: { cellWidth: 42 },
+                    2: { halign: 'center', cellWidth: 22 },
+                    3: { halign: 'right', cellWidth: 25 },
+                    4: { halign: 'right', cellWidth: 25 },
+                    5: { halign: 'right', cellWidth: 28 },
+                    6: { halign: 'center', cellWidth: 28 }
+                },
+                margin: { left: 8, right: 8 }, tableWidth: pageWidth - 16
+            });
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(7); doc.setTextColor('#8888a8');
+                doc.text('Gestor de Pagos - Pág. ' + i + '/' + pageCount, pageWidth/2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+            }
+            doc.save(`historial_${usuarioActual}_${new Date().toISOString().split('T')[0]}.pdf`);
+            mostrarToast('PDF exportado correctamente.', 'success');
+        });
+
+        // ============================================================
+        // LISTENERS PARA TECLA ENTER
+        // ============================================================
+
+        setupEnterListener('clienteNombre', 'btnAgregarCliente');
+        setupEnterListener('clienteComision', 'btnAgregarCliente');
+        setupEnterListener('recibirMonto', 'btnRegistrarRecibo');
+        setupEnterListener('transferirMonto', 'btnRegistrarTransferencia');
+        setupEnterListener('finanzaMonto', 'btnRegistrarFinanza');
+        setupEnterListener('finanzaDescripcion', 'btnRegistrarFinanza');
+
+        // ============================================================
+        // INICIALIZACIÓN DE LA APP
+        // ============================================================
+
+        function initApp() {
+            const hoy = new Date().toISOString().split('T')[0];
+            document.getElementById('finanzaFecha').value = hoy;
+            document.getElementById('recibirFecha').value = hoy;
+            document.getElementById('transferirFecha').value = hoy;
+            
+            // Reordenar números por si hay huecos
+            reordenarNumerosOperaciones();
+            
+            // Cargar modo oscuro guardado
+            if (localStorage.getItem('gestor_dark_mode') === 'true') {
+                aplicarModoOscuro(true);
+            }
+            
+            mostrarSeccion('clientes');
+            recargarTodo();
+            renderRecibosOperaciones();
+            renderTransferenciasOperaciones();
+            cambiarPestanaOperaciones('recibir');
+        }
+
+        // ============================================================
+        // VERIFICAR SESIÓN AL CARGAR
+        // ============================================================
+
+        // Al cargar la página, verificar si hay un PIN guardado
+        window.addEventListener('load', function() {
+            // Mostrar siempre la pantalla de login primero
+            mostrarLogin();
+        });
+
+        // ============================================================
+        // SERVICE WORKER (opcional)
+        // ============================================================
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        }
+    </script>
+</body>
+</html>
