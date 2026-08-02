@@ -61,6 +61,7 @@
             --transition: all 0.25s ease;
             --online-color: #00b894;
             --offline-color: #fd79a8;
+            --font-size-base: 1rem;
         }
         body.dark-mode {
             --bg-body: #0d0d1a;
@@ -109,6 +110,7 @@
             min-height: 100vh;
             position: relative;
             padding-bottom: 80px;
+            font-size: var(--font-size-base);
         }
 
         /* ===== LOGIN/REGISTER SCREEN ===== */
@@ -130,7 +132,7 @@
         #authScreen .auth-card {
             background: var(--bg-card);
             border-radius: var(--radius-lg);
-            padding: 32px 24px;
+            padding: 24px 20px;
             width: 100%;
             max-width: 400px;
             box-shadow: var(--shadow-dropdown);
@@ -138,32 +140,32 @@
             text-align: center;
         }
         #authScreen .auth-card h2 {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: var(--text-primary);
             margin-bottom: 4px;
         }
         #authScreen .auth-card .subtitle {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         #authScreen .auth-card .form-group {
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             text-align: left;
         }
         #authScreen .auth-card .form-group label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
             color: var(--text-secondary);
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
         #authScreen .auth-card .form-group input {
             width: 100%;
-            padding: 12px 14px;
+            padding: 10px 12px;
             border: 2px solid var(--border-color);
             border-radius: var(--radius-sm);
-            font-size: 1rem;
+            font-size: 0.95rem;
             background: var(--bg-input);
             color: var(--text-primary);
             transition: var(--transition);
@@ -178,16 +180,16 @@
         }
         #authScreen .auth-card .auth-error {
             color: var(--danger);
-            font-size: 0.8rem;
-            margin-top: 8px;
+            font-size: 0.75rem;
+            margin-top: 6px;
             display: none;
         }
         #authScreen .auth-card .auth-error.show {
             display: block;
         }
         #authScreen .auth-card .auth-switch {
-            margin-top: 16px;
-            font-size: 0.85rem;
+            margin-top: 14px;
+            font-size: 0.8rem;
             color: var(--text-muted);
         }
         #authScreen .auth-card .auth-switch a {
@@ -211,7 +213,7 @@
         /* ===== HEADER ===== */
         header {
             background: var(--bg-header);
-            padding: 12px 16px 10px;
+            padding: 10px 12px 8px;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -222,30 +224,30 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .header-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--text-primary);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             flex-wrap: wrap;
         }
         .header-title span {
             font-weight: 300;
             color: var(--text-muted);
-            font-size: 0.65rem;
+            font-size: 0.55rem;
         }
         .header-title .usuario-badge {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             background: var(--primary);
             color: white;
-            padding: 2px 10px;
+            padding: 2px 8px;
             border-radius: 20px;
             font-weight: 600;
-            max-width: 120px;
+            max-width: 100px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -253,14 +255,14 @@
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
         }
         .btn-dark-mode {
             background: var(--bg-input);
             border: none;
             border-radius: 30px;
-            padding: 4px 8px;
-            font-size: 0.8rem;
+            padding: 3px 7px;
+            font-size: 0.75rem;
             cursor: pointer;
             color: var(--text-primary);
             transition: var(--transition);
@@ -270,8 +272,8 @@
             background: var(--bg-input);
             border: none;
             border-radius: 30px;
-            padding: 4px 8px;
-            font-size: 0.65rem;
+            padding: 3px 7px;
+            font-size: 0.6rem;
             cursor: pointer;
             color: var(--text-muted);
             transition: var(--transition);
@@ -283,13 +285,13 @@
         .menu-hamburguesa {
             background: var(--bg-input);
             border: none;
-            border-radius: 10px;
-            padding: 4px 8px;
-            font-size: 1.1rem;
+            border-radius: 8px;
+            padding: 3px 7px;
+            font-size: 1rem;
             cursor: pointer;
             color: var(--text-primary);
             transition: var(--transition);
-            line-height: 1.4;
+            line-height: 1.3;
         }
         .menu-hamburguesa:active { transform: scale(0.92); background: var(--btn-hover); }
 
@@ -301,8 +303,8 @@
             background: var(--bg-card);
             border-radius: var(--radius);
             box-shadow: var(--shadow-dropdown);
-            padding: 8px 0;
-            min-width: 180px;
+            padding: 6px 0;
+            min-width: 160px;
             z-index: 1000;
             border: 1px solid var(--border-color);
             margin-top: 4px;
@@ -312,11 +314,11 @@
         .dropdown-menu button {
             display: block;
             width: 100%;
-            padding: 10px 16px;
+            padding: 8px 14px;
             background: none;
             border: none;
             text-align: left;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
             color: var(--text-primary);
             cursor: pointer;
@@ -334,42 +336,43 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 4px 10px;
-            font-size: 0.7rem;
+            gap: 2px 8px;
+            font-size: 0.6rem;
             color: var(--text-secondary);
         }
         .header-info .datetime {
             font-weight: 500;
             color: var(--text-muted);
-            font-size: 0.65rem;
+            font-size: 0.6rem;
         }
         .header-info .clientes-count {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             font-weight: 600;
             color: var(--text-primary);
+            font-size: 0.6rem;
         }
         .header-info .clientes-count .num {
             background: var(--primary);
             color: white;
             border-radius: 30px;
-            padding: 0 8px;
-            font-size: 0.6rem;
+            padding: 0 6px;
+            font-size: 0.55rem;
             font-weight: 700;
-            min-width: 18px;
+            min-width: 16px;
             text-align: center;
         }
         .header-info .status {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             font-weight: 500;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
         }
         .header-info .status .dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             display: inline-block;
             animation: pulse-dot 2s infinite;
@@ -406,9 +409,9 @@
             box-shadow: var(--menu-shadow);
             display: flex;
             justify-content: space-around;
-            padding: 6px 4px 10px;
+            padding: 4px 2px 8px;
             z-index: 200;
-            border-radius: 20px 20px 0 0;
+            border-radius: 16px 16px 0 0;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             background: var(--bg-card);
@@ -419,19 +422,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 4px 6px;
-            font-size: 0.55rem;
+            padding: 2px 4px;
+            font-size: 0.5rem;
             font-weight: 500;
             color: var(--text-muted);
             cursor: pointer;
             transition: var(--transition);
             gap: 1px;
-            min-width: 40px;
+            min-width: 32px;
             border-radius: var(--radius-sm);
             position: relative;
         }
         .bottom-menu button .icon {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             line-height: 1.2;
         }
         .bottom-menu button.active {
@@ -445,10 +448,10 @@
             right: -2px;
             background: var(--danger);
             color: white;
-            font-size: 0.5rem;
+            font-size: 0.45rem;
             border-radius: 30px;
-            padding: 0 5px;
-            min-width: 14px;
+            padding: 0 4px;
+            min-width: 12px;
             text-align: center;
             font-weight: 700;
         }
@@ -456,7 +459,7 @@
         /* ===== SECCIONES ===== */
         .section {
             display: none;
-            padding: 12px 16px 20px;
+            padding: 10px 12px 16px;
         }
         .section.visible { display: block; }
 
@@ -464,8 +467,8 @@
         .card {
             background: var(--bg-card);
             border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border-color);
             transition: var(--transition);
@@ -474,10 +477,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .card-header h3 {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 600;
             color: var(--text-secondary);
             text-transform: uppercase;
@@ -487,9 +490,24 @@
             background: var(--btn-primary-bg);
             color: var(--btn-primary-text);
             border-radius: 20px;
-            padding: 2px 12px;
-            font-size: 0.65rem;
+            padding: 1px 10px;
+            font-size: 0.6rem;
             font-weight: 600;
+        }
+
+        /* ===== BOTONES DE ACCIÓN ===== */
+        .action-row {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .action-row .btn-small {
+            flex: 1;
+            min-width: 60px;
+            text-align: center;
+            padding: 6px 8px;
+            font-size: 0.65rem;
         }
 
         /* ===== CLIENTES ===== */
@@ -499,38 +517,46 @@
             align-items: center;
             background: var(--bg-card-alt);
             border-radius: var(--radius-sm);
-            padding: 12px 14px;
-            margin-bottom: 8px;
-            border-left: 4px solid var(--primary);
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            border-left: 3px solid var(--primary);
             transition: var(--transition);
+            gap: 6px;
+        }
+        .cliente-card .info {
+            flex: 1;
+            min-width: 0;
         }
         .cliente-card .info .nombre {
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             color: var(--text-primary);
+            word-break: break-word;
         }
         .cliente-card .info .comision {
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             color: var(--text-muted);
         }
         .cliente-card .saldo {
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.85rem;
             color: var(--text-primary);
+            white-space: nowrap;
         }
         .cliente-card .saldo.negativo { color: var(--saldo-negativo); }
         .cliente-card .acciones {
             display: flex;
-            gap: 4px;
+            gap: 3px;
+            flex-shrink: 0;
         }
         .cliente-card .acciones button {
             background: none;
             border: none;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
             cursor: pointer;
-            padding: 4px 6px;
-            border-radius: 6px;
+            padding: 3px 5px;
+            border-radius: 4px;
             transition: var(--transition);
         }
         .cliente-card .acciones button:active { background: var(--btn-hover); }
@@ -540,46 +566,63 @@
         .operacion-card {
             background: var(--bg-card-alt);
             border-radius: var(--radius-sm);
-            padding: 12px 14px;
-            margin-bottom: 8px;
-            border-left: 4px solid var(--primary);
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            border-left: 3px solid var(--primary);
             transition: var(--transition);
         }
         .operacion-card .tipo {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 600;
             text-transform: uppercase;
             color: var(--text-muted);
         }
         .operacion-card .monto {
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
         .operacion-card .detalle {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-secondary);
             margin-top: 2px;
         }
         .operacion-card .fecha {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: var(--text-muted);
         }
         .operacion-card .numero-op {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             color: var(--text-muted);
             background: var(--badge-bg);
-            padding: 1px 8px;
+            padding: 1px 6px;
             border-radius: 12px;
             font-weight: 600;
         }
+        .operacion-card .op-actions {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+        }
+        .operacion-card .op-actions button {
+            background: none;
+            border: none;
+            font-size: 0.7rem;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        .operacion-card .op-actions button:active { background: var(--btn-hover); }
+        .operacion-card .op-actions .btn-edit { color: var(--primary); }
+        .operacion-card .op-actions .btn-delete { color: var(--danger); }
 
         /* ===== ESTILOS PARA BOTONES DE PESTAÑAS ===== */
         .tab-btn {
             flex: 1;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border: 2px solid var(--border-color);
             border-radius: var(--radius-sm);
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
@@ -595,22 +638,22 @@
 
         /* ===== FORMULARIOS ===== */
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         .form-group label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 500;
             color: var(--text-secondary);
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 10px 12px;
+            padding: 8px 10px;
             border: 1px solid var(--border-color);
             border-radius: var(--radius-sm);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             background: var(--bg-input);
             color: var(--text-primary);
             transition: var(--transition);
@@ -633,12 +676,12 @@
         /* ===== BOTONES ===== */
         .btn-primary {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: var(--btn-primary-bg);
             color: var(--btn-primary-text);
             border: none;
             border-radius: var(--radius-sm);
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
@@ -652,8 +695,8 @@
         .btn-success { background: var(--btn-success-bg); color: white; }
         .btn-small {
             width: auto;
-            padding: 5px 12px;
-            font-size: 0.7rem;
+            padding: 4px 10px;
+            font-size: 0.65rem;
             border: none;
             border-radius: 30px;
             font-weight: 500;
@@ -664,7 +707,7 @@
 
         /* ===== SALDO ===== */
         .saldo-total {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             text-align: center;
             padding: 4px 0 2px;
@@ -676,7 +719,7 @@
         }
         .saldo-label {
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
         }
 
@@ -685,8 +728,8 @@
             background: var(--badge-bg);
             color: var(--badge-text);
             border-radius: 20px;
-            padding: 2px 10px;
-            font-size: 0.65rem;
+            padding: 1px 8px;
+            font-size: 0.6rem;
             font-weight: 500;
         }
         .badge-recibo { background: var(--recibo-bg); color: var(--recibo-text); }
@@ -699,46 +742,46 @@
         .filtros-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 10px;
+            gap: 4px;
+            margin-bottom: 8px;
             align-items: flex-end;
         }
         .filtros-row .form-group {
             flex: 1;
-            min-width: 80px;
+            min-width: 70px;
             margin-bottom: 0;
         }
         .filtros-row .form-group label {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .filtros-row .form-group input,
         .filtros-row .form-group select {
-            padding: 6px 8px;
-            font-size: 0.8rem;
+            padding: 4px 6px;
+            font-size: 0.75rem;
         }
 
         /* ===== TARJETAS DE RESUMEN ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 6px;
+            margin-bottom: 10px;
         }
         .stat-card {
             background: var(--bg-card-alt);
             border-radius: var(--radius-sm);
-            padding: 12px 10px;
+            padding: 10px 8px;
             text-align: center;
-            border-left: 4px solid var(--primary);
+            border-left: 3px solid var(--primary);
         }
         .stat-card .monto {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 700;
         }
         .stat-card .label {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -753,16 +796,16 @@
         /* ===== EMPTY STATE ===== */
         .empty-msg {
             text-align: center;
-            padding: 24px 12px;
+            padding: 20px 10px;
             color: var(--text-muted);
         }
         .empty-msg .icono {
-            font-size: 2rem;
+            font-size: 1.8rem;
             margin-bottom: 4px;
             opacity: 0.5;
         }
         .empty-msg p {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         /* ===== AVISO ===== */
@@ -770,38 +813,26 @@
             display: none;
             background: var(--gasto-bg);
             color: var(--gasto-text);
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            margin-bottom: 8px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            margin-bottom: 6px;
         }
         .aviso-negativo.visible { display: block; }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 400px) {
-            .bottom-menu button {
-                font-size: 0.45rem;
-                padding: 2px 4px;
-                min-width: 32px;
-            }
-            .bottom-menu button .icon { font-size: 1rem; }
-            .header-title { font-size: 0.9rem; }
-            .header-info { font-size: 0.6rem; }
-        }
 
         /* ===== TOAST NOTIFICATION ===== */
         .toast {
             position: fixed;
-            bottom: 80px;
+            bottom: 70px;
             left: 50%;
             transform: translateX(-50%);
             background: var(--bg-card);
             color: var(--text-primary);
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: var(--radius-sm);
             box-shadow: var(--shadow-dropdown);
             border: 1px solid var(--border-color);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
             z-index: 300;
             opacity: 0;
@@ -835,7 +866,7 @@
             z-index: 500;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 16px;
         }
         .modal-overlay.open {
             display: flex;
@@ -843,8 +874,8 @@
         .modal {
             background: var(--bg-card);
             border-radius: var(--radius);
-            padding: 24px;
-            max-width: 420px;
+            padding: 20px;
+            max-width: 400px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -852,29 +883,30 @@
             border: 1px solid var(--border-color);
         }
         .modal h3 {
-            margin-bottom: 16px;
-            font-size: 1.1rem;
+            margin-bottom: 14px;
+            font-size: 1rem;
             color: var(--text-primary);
         }
         .modal .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         .modal .form-group label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
             color: var(--text-secondary);
         }
         .modal .modal-actions {
             display: flex;
-            gap: 8px;
-            margin-top: 12px;
+            gap: 6px;
+            margin-top: 10px;
         }
         .modal .modal-actions button {
             flex: 1;
-            padding: 10px;
+            padding: 8px;
             border: none;
             border-radius: var(--radius-sm);
             font-weight: 600;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: var(--transition);
         }
@@ -888,7 +920,99 @@
             color: var(--btn-primary-text);
         }
 
-        /* Estilo para el botón Comisiones */
+        /* ===== SWITCH TOGGLE ===== */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--border-color);
+            transition: .3s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider {
+            background: var(--primary);
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        .switch input:active + .slider:before {
+            width: 20px;
+        }
+
+        /* ===== CONFIGURACIÓN ===== */
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            gap: 8px;
+        }
+        .config-item:last-child {
+            border-bottom: none;
+        }
+        .config-item .config-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .config-item .config-info strong {
+            font-size: 0.8rem;
+            display: block;
+            color: var(--text-primary);
+        }
+        .config-item .config-info p {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+        .config-item select,
+        .config-item input[type="number"],
+        .config-item input[type="password"] {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            max-width: 100px;
+            flex-shrink: 0;
+        }
+        .config-item input[type="number"] {
+            max-width: 70px;
+            text-align: center;
+        }
+        .config-item input[type="password"] {
+            max-width: 120px;
+        }
+
+        /* ===== BOTÓN COMISIONES ===== */
         .btn-comisiones {
             background: var(--bg-card);
             border: 2px solid var(--primary);
@@ -902,6 +1026,35 @@
         .btn-comisiones.active-comisiones {
             background: var(--primary);
             color: white;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 400px) {
+            .bottom-menu button {
+                font-size: 0.4rem;
+                padding: 1px 3px;
+                min-width: 28px;
+            }
+            .bottom-menu button .icon { font-size: 0.9rem; }
+            .header-title { font-size: 0.85rem; }
+            .header-info { font-size: 0.55rem; }
+            .action-row .btn-small { font-size: 0.55rem; padding: 4px 6px; }
+            .cliente-card .info .nombre { font-size: 0.75rem; }
+            .cliente-card .saldo { font-size: 0.75rem; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
+            .stat-card .monto { font-size: 0.85rem; }
+            .saldo-total { font-size: 1.5rem; }
+            .config-item select { max-width: 80px; font-size: 0.65rem; }
+            .config-item input[type="number"] { max-width: 60px; }
+        }
+
+        @media (min-width: 481px) {
+            body {
+                padding: 0 20px 80px;
+            }
+            .bottom-menu {
+                border-radius: 20px 20px 0 0;
+            }
         }
     </style>
 </head>
@@ -917,7 +1070,7 @@
             <div id="loginForm">
                 <div class="form-group">
                     <label>👤 Usuario o Email</label>
-                    <input type="text" id="loginUsuario" placeholder="Ej: juanperez o juan@email.com" autofocus>
+                    <input type="text" id="loginUsuario" placeholder="Ej: juanperez" autofocus>
                 </div>
                 <div class="form-group">
                     <label>🔑 Contraseña</label>
@@ -1006,6 +1159,7 @@
                 <button data-section="saldo">💰 Saldo</button>
                 <button data-section="historial">📜 Historial</button>
                 <button data-section="finanzas">💹 Finanzas</button>
+                <button data-section="configuracion">⚙️ Configuración</button>
                 <button data-section="bd">🗄️ Base de Datos</button>
             </div>
             <div class="header-info">
@@ -1037,6 +1191,9 @@
             <button data-section="finanzas">
                 <span class="icon">💹</span> Finanzas
             </button>
+            <button data-section="configuracion">
+                <span class="icon">⚙️</span> Config
+            </button>
             <button data-section="bd">
                 <span class="icon">🗄️</span> BD
             </button>
@@ -1046,14 +1203,14 @@
 
         <!-- SECCIÓN CLIENTES -->
         <div id="section-clientes" class="section visible">
-            <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
-                <button class="btn-small btn-primary" id="btnMostrarAgregarCliente" style="flex:1;">➕ Agregar</button>
-                <button class="btn-small btn-secondary" id="btnMostrarListaClientes" style="flex:1;">📋 Ver Clientes</button>
-                <button class="btn-small btn-comisiones" id="btnMostrarComisiones" style="flex:1;">📊 Comisiones</button>
+            <div class="action-row">
+                <button class="btn-small btn-primary" id="btnMostrarAgregarCliente">➕ Agregar</button>
+                <button class="btn-small btn-secondary" id="btnMostrarListaClientes">📋 Ver</button>
+                <button class="btn-small btn-comisiones" id="btnMostrarComisiones">📊 Comisiones</button>
             </div>
 
             <div id="sub-agregar-cliente" class="card">
-                <h3 style="margin-bottom:10px;">Agregar Cliente</h3>
+                <h3 style="margin-bottom:8px; font-size:0.85rem;">Agregar Cliente</h3>
                 <div class="form-group">
                     <label>Nombre del cliente</label>
                     <input type="text" id="clienteNombre" placeholder="Ej: Juan Pérez">
@@ -1078,20 +1235,20 @@
                     <h3>📊 Editar Comisiones</h3>
                     <span class="badge-count" id="totalComisionesClientes">0</span>
                 </div>
-                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">Edita la comisión de cada cliente de forma individual</p>
+                <p style="font-size:0.65rem; color:var(--text-muted); margin-bottom:8px;">Edita la comisión de cada cliente de forma individual</p>
                 <div id="listaComisiones"></div>
             </div>
         </div>
 
         <!-- SECCIÓN OPERACIONES -->
         <div id="section-operaciones" class="section">
-            <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
+            <div style="display:flex; gap:4px; margin-bottom:8px; flex-wrap:wrap;">
                 <button class="tab-btn active" id="btnMostrarRecibir">📥 Recibir</button>
                 <button class="tab-btn" id="btnMostrarTransferir">📤 Transferir</button>
             </div>
 
             <div id="sub-recibir" class="card">
-                <h3 style="margin-bottom:10px;">📥 Registrar Recibo</h3>
+                <h3 style="margin-bottom:8px; font-size:0.85rem;">📥 Registrar Recibo</h3>
                 <div class="form-group">
                     <label>Cliente</label>
                     <select id="recibirCliente"></select>
@@ -1104,7 +1261,7 @@
                     <label>Fecha</label>
                     <input type="date" id="recibirFecha">
                 </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
                     <div class="form-group">
                         <label>Comisión</label>
                         <input type="text" id="recibirComision" class="readonly-field" readonly>
@@ -1114,14 +1271,14 @@
                         <input type="text" id="recibirNeto" class="readonly-field" readonly>
                     </div>
                 </div>
-                <div style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); margin:6px 0; text-align:center; font-weight:500; font-size:0.9rem;">
+                <div style="background:var(--bg-card-alt); padding:6px; border-radius:var(--radius-sm); margin:4px 0; text-align:center; font-weight:500; font-size:0.8rem;">
                     <span id="recibirSaldoActualizado">Saldo actual: $0.00</span>
                 </div>
                 <button class="btn-primary" id="btnRegistrarRecibo">Registrar Recibo</button>
             </div>
 
             <div id="sub-transferir" class="card" style="display:none;">
-                <h3 style="margin-bottom:10px;">📤 Registrar Transferencia</h3>
+                <h3 style="margin-bottom:8px; font-size:0.85rem;">📤 Registrar Transferencia</h3>
                 <div class="form-group">
                     <label>Cliente</label>
                     <select id="transferirCliente"></select>
@@ -1138,7 +1295,7 @@
                     <label>Saldo disponible</label>
                     <input type="text" id="transferirSaldoDisponible" class="readonly-field" readonly>
                 </div>
-                <div style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); margin:6px 0; text-align:center; font-weight:500; font-size:0.9rem;">
+                <div style="background:var(--bg-card-alt); padding:6px; border-radius:var(--radius-sm); margin:4px 0; text-align:center; font-weight:500; font-size:0.8rem;">
                     <span id="transferirSaldoRestante">Saldo restante: $0.00</span>
                 </div>
                 <div class="aviso-negativo" id="avisoSaldoNegativo">⚠️ Saldo negativo. Se usará dinero propio.</div>
@@ -1148,8 +1305,8 @@
             <div id="sub-lista-recibos" class="card">
                 <div class="card-header">
                     <h3>📋 Recibos Registrados</h3>
-                    <div style="display:flex; gap:6px; align-items:center;">
-                        <button class="btn-small btn-secondary" id="btnInvertirRecibos" style="font-size:0.6rem;">⬆️ Más recientes</button>
+                    <div style="display:flex; gap:4px; align-items:center;">
+                        <button class="btn-small btn-secondary" id="btnInvertirRecibos" style="font-size:0.55rem;">⬆️ Recientes</button>
                         <span class="badge-count" id="contadorRecibosOperaciones">0</span>
                     </div>
                 </div>
@@ -1159,8 +1316,8 @@
             <div id="sub-lista-transferencias" class="card" style="display:none;">
                 <div class="card-header">
                     <h3>📋 Transferencias Registradas</h3>
-                    <div style="display:flex; gap:6px; align-items:center;">
-                        <button class="btn-small btn-secondary" id="btnInvertirTransferencias" style="font-size:0.6rem;">⬆️ Más recientes</button>
+                    <div style="display:flex; gap:4px; align-items:center;">
+                        <button class="btn-small btn-secondary" id="btnInvertirTransferencias" style="font-size:0.55rem;">⬆️ Recientes</button>
                         <span class="badge-count" id="contadorTransferenciasOperaciones">0</span>
                     </div>
                 </div>
@@ -1175,7 +1332,7 @@
                 <div class="saldo-label" style="color:rgba(255,255,255,0.7);">Saldo total de todos los clientes</div>
             </div>
             <div class="card">
-                <h3 style="margin-bottom:10px;">Saldo por Cliente</h3>
+                <h3 style="margin-bottom:8px; font-size:0.85rem;">Saldo por Cliente</h3>
                 <div id="saldosPorCliente"></div>
             </div>
         </div>
@@ -1183,7 +1340,7 @@
         <!-- SECCIÓN HISTORIAL -->
         <div id="section-historial" class="section">
             <div class="card">
-                <h3 style="margin-bottom:10px;">Historial Completo</h3>
+                <h3 style="margin-bottom:8px; font-size:0.85rem;">Historial Completo</h3>
                 <div class="filtros-row">
                     <div class="form-group">
                         <label>Cliente</label>
@@ -1202,7 +1359,7 @@
                         </select>
                     </div>
                 </div>
-                <div style="display:flex; gap:4px; flex-wrap:wrap; margin-bottom:10px;">
+                <div style="display:flex; gap:3px; flex-wrap:wrap; margin-bottom:8px;">
                     <button class="btn-small btn-secondary" id="btnInvertirOrden">⬆️ Invertir</button>
                     <button class="btn-small btn-success" id="btnExportarExcelHistorial" style="background:#1d6f42; color:white;">📊 Excel</button>
                     <button class="btn-small btn-danger" id="btnExportarPDFHistorial" style="background:#b22234; color:white;">📄 PDF</button>
@@ -1213,9 +1370,9 @@
 
         <!-- SECCIÓN FINANZAS -->
         <div id="section-finanzas" class="section">
-            <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
-                <button class="btn-small btn-primary" id="btnMostrarResumenFinanzas" style="flex:1;">📊 Resumen</button>
-                <button class="btn-small btn-secondary" id="btnMostrarRegistrarFinanza" style="flex:1;">➕ Registrar</button>
+            <div class="action-row">
+                <button class="btn-small btn-primary" id="btnMostrarResumenFinanzas">📊 Resumen</button>
+                <button class="btn-small btn-secondary" id="btnMostrarRegistrarFinanza">➕ Registrar</button>
             </div>
 
             <div id="sub-resumen-finanzas" class="card">
@@ -1237,7 +1394,7 @@
                         <div class="monto" id="saldoFinanzas">$0.00</div>
                     </div>
                 </div>
-                <div style="margin-top:10px;">
+                <div style="margin-top:8px;">
                     <div class="card-header">
                         <h3>Movimientos Financieros</h3>
                         <span class="badge-count" id="contadorFinanzas">0</span>
@@ -1256,7 +1413,7 @@
                             <label>Fecha</label>
                             <input type="date" id="filtroFinanzasFecha">
                         </div>
-                        <div style="display:flex; align-items:flex-end; padding-bottom:4px;">
+                        <div style="display:flex; align-items:flex-end; padding-bottom:2px;">
                             <button class="btn-small btn-secondary" id="btnInvertirFinanzas">⬆️</button>
                         </div>
                     </div>
@@ -1265,7 +1422,7 @@
             </div>
 
             <div id="sub-registrar-finanza" class="card" style="display:none;">
-                <h3 style="margin-bottom:10px;">Registrar Movimiento</h3>
+                <h3 style="margin-bottom:8px; font-size:0.85rem;">Registrar Movimiento</h3>
                 <div class="form-group">
                     <label>Tipo</label>
                     <select id="finanzaTipo">
@@ -1289,28 +1446,170 @@
             </div>
         </div>
 
+        <!-- SECCIÓN CONFIGURACIÓN -->
+        <div id="section-configuracion" class="section">
+            <div class="card">
+                <h3 style="margin-bottom:8px; font-size:0.85rem;">⚙️ Configuración</h3>
+                
+                <!-- TEMA -->
+                <div class="config-item">
+                    <div class="config-info">
+                        <strong>🌙 Modo Oscuro</strong>
+                        <p>Cambiar entre tema claro y oscuro</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="configDarkMode">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <!-- MONEDA -->
+                <div class="config-item">
+                    <div class="config-info">
+                        <strong>💰 Símbolo de Moneda</strong>
+                        <p>Selecciona el símbolo de moneda</p>
+                    </div>
+                    <select id="configMoneda">
+                        <option value="$">$</option>
+                        <option value="€">€</option>
+                        <option value="S/.">S/.</option>
+                        <option value="£">£</option>
+                        <option value="¥">¥</option>
+                    </select>
+                </div>
+
+                <!-- FORMATO DE FECHA -->
+                <div class="config-item">
+                    <div class="config-info">
+                        <strong>📅 Formato de Fecha</strong>
+                        <p>Elige el formato de fecha</p>
+                    </div>
+                    <select id="configFormatoFecha">
+                        <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                    </select>
+                </div>
+
+                <!-- COMISIÓN PREDETERMINADA -->
+                <div class="config-item">
+                    <div class="config-info">
+                        <strong>📊 Comisión Predeterminada</strong>
+                        <p>Valor por defecto al crear clientes</p>
+                    </div>
+                    <input type="number" id="configComisionDefecto" step="0.1" min="0" value="1.5" inputmode="decimal">
+                </div>
+
+                <!-- TAMAÑO DE FUENTE -->
+                <div class="config-item">
+                    <div class="config-info">
+                        <strong>🔤 Tamaño de Fuente</strong>
+                        <p>Ajusta el tamaño del texto</p>
+                    </div>
+                    <select id="configTamanioFuente">
+                        <option value="pequeno">Pequeño</option>
+                        <option value="medio" selected>Medio</option>
+                        <option value="grande">Grande</option>
+                        <option value="muy-grande">Muy Grande</option>
+                    </select>
+                </div>
+
+                <!-- RESPALDO AUTOMÁTICO -->
+                <div class="config-item">
+                    <div class="config-info">
+                        <strong>💾 Respaldo Automático</strong>
+                        <p>Guardar datos automáticamente</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="configRespaldoAuto" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <!-- EXPORTAR CONFIG -->
+                <div class="config-item" style="flex-wrap:wrap; gap:4px;">
+                    <div class="config-info">
+                        <strong>📤 Exportar Configuración</strong>
+                        <p>Exporta todas tus preferencias</p>
+                    </div>
+                    <div style="display:flex; gap:4px;">
+                        <button class="btn-small btn-secondary" id="btnExportarConfig">Exportar</button>
+                        <button class="btn-small btn-secondary" id="btnImportarConfig">Importar</button>
+                    </div>
+                </div>
+
+                <!-- RESTAURAR POR DEFECTO -->
+                <div class="config-item">
+                    <div class="config-info">
+                        <strong>🔄 Restaurar por Defecto</strong>
+                        <p>Volver a la configuración original</p>
+                    </div>
+                    <button class="btn-small btn-danger" id="btnRestaurarConfig">Restaurar</button>
+                </div>
+            </div>
+
+            <!-- SEGURIDAD -->
+            <div class="card">
+                <h3 style="margin-bottom:8px; font-size:0.85rem;">🔐 Seguridad</h3>
+                
+                <div class="config-item">
+                    <div class="config-info">
+                        <strong>🔒 Bloqueo con PIN</strong>
+                        <p>Proteger la app con un código de 4 dígitos</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="configBloqueoPIN">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div id="configPINContainer" style="display:none; padding:6px 0 0;">
+                    <input type="password" id="configPIN" placeholder="Código de 4 dígitos" maxlength="4" style="padding:6px 10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-input); color:var(--text-primary); width:100%; font-size:0.85rem; text-align:center; letter-spacing:4px;" inputmode="numeric">
+                </div>
+
+                <div style="margin-top:8px;">
+                    <button class="btn-small btn-secondary" id="btnCambiarPassword" style="width:100%;">🔑 Cambiar Contraseña</button>
+                </div>
+            </div>
+
+            <!-- AYUDA -->
+            <div class="card">
+                <h3 style="margin-bottom:8px; font-size:0.85rem;">❓ Ayuda y Soporte</h3>
+                
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <button class="btn-small btn-secondary" id="btnAyuda" style="width:100%; text-align:center; padding:8px;">📖 Guía Rápida</button>
+                    <button class="btn-small btn-secondary" id="btnTutorial" style="width:100%; text-align:center; padding:8px;">🎓 Tour Interactivo</button>
+                    <button class="btn-small btn-secondary" id="btnContacto" style="width:100%; text-align:center; padding:8px;">📧 Contactar Soporte</button>
+                </div>
+                
+                <div style="margin-top:10px; text-align:center; font-size:0.6rem; color:var(--text-muted);">
+                    <p>Versión 2.0.0</p>
+                    <p>Desarrollado con ❤️</p>
+                </div>
+            </div>
+        </div>
+
         <!-- SECCIÓN BASE DE DATOS -->
         <div id="section-bd" class="section">
             <div class="card">
-                <h3 style="margin-bottom:10px;">🗄️ Base de Datos</h3>
+                <h3 style="margin-bottom:8px; font-size:0.85rem;">🗄️ Base de Datos</h3>
                 <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
                     <div class="stat-card"><div class="monto" id="statClientes">0</div><div class="label">Clientes</div></div>
                     <div class="stat-card"><div class="monto" id="statRecibos">0</div><div class="label">Recibos</div></div>
                     <div class="stat-card"><div class="monto" id="statTransferencias">0</div><div class="label">Transferencias</div></div>
                     <div class="stat-card"><div class="monto" id="statFinanzas">0</div><div class="label">Finanzas</div></div>
                 </div>
-                <button class="btn-small btn-success" id="btnExportarJSON" style="width:100%; margin-bottom:6px;">📤 Exportar JSON</button>
-                <button class="btn-small btn-secondary" id="btnImportarJSON" style="width:100%; margin-bottom:6px;">📥 Importar JSON</button>
+                <button class="btn-small btn-success" id="btnExportarJSON" style="width:100%; margin-bottom:4px;">📤 Exportar JSON</button>
+                <button class="btn-small btn-secondary" id="btnImportarJSON" style="width:100%; margin-bottom:4px;">📥 Importar JSON</button>
                 <input type="file" id="inputImportarJSON" accept=".json" style="display:none;">
-                <div style="margin-top:6px;">
-                    <label style="font-size:0.75rem; font-weight:500;">Importar Excel/CSV</label>
+                <div style="margin-top:4px;">
+                    <label style="font-size:0.7rem; font-weight:500;">Importar Excel/CSV</label>
                     <div style="display:flex; gap:4px;">
-                        <input type="file" id="inputImportarExcel" accept=".xlsx,.xls,.csv" style="flex:1; padding:4px; font-size:0.8rem;">
+                        <input type="file" id="inputImportarExcel" accept=".xlsx,.xls,.csv" style="flex:1; padding:3px; font-size:0.7rem;">
                         <button class="btn-small btn-success" id="btnImportarExcel">Importar</button>
                     </div>
                 </div>
-                <button class="btn-small btn-danger" id="btnBorrarTodo" style="width:100%; margin-top:10px;">🗑️ Borrar todos los datos</button>
-                <div id="bdMensaje" style="margin-top:6px; padding:6px; border-radius:8px; display:none; font-size:0.8rem;"></div>
+                <button class="btn-small btn-danger" id="btnBorrarTodo" style="width:100%; margin-top:8px;">🗑️ Borrar todos los datos</button>
+                <div id="bdMensaje" style="margin-top:4px; padding:4px; border-radius:6px; display:none; font-size:0.75rem;"></div>
             </div>
         </div>
     </div>
@@ -1320,19 +1619,16 @@
         // 🔐 SISTEMA DE AUTENTICACIÓN SEGURO
         // ============================================================
 
-        // Función simple de hash para contraseñas (no es criptográficamente perfecta,
-        // pero es suficiente para localStorage. En producción usar bcrypt en servidor)
         function hashPassword(password) {
             let hash = 0;
             for (let i = 0; i < password.length; i++) {
                 const char = password.charCodeAt(i);
                 hash = ((hash << 5) - hash) + char;
-                hash = hash & hash; // Convertir a 32bit
+                hash = hash & hash;
             }
             return 'hash_' + Math.abs(hash).toString(36) + '_' + password.length;
         }
 
-        // Obtener usuarios registrados
         function getUsuarios() {
             try {
                 return JSON.parse(localStorage.getItem('gestor_usuarios')) || {};
@@ -1345,39 +1641,29 @@
             localStorage.setItem('gestor_usuarios', JSON.stringify(usuarios));
         }
 
-        // Registrar nuevo usuario
         function registrarUsuario(usuario, password, email = '') {
             const usuarios = getUsuarios();
-            
-            // Verificar si el usuario ya existe
             if (usuarios[usuario]) {
                 return { success: false, error: 'El usuario ya existe' };
             }
-            
-            // Guardar usuario con contraseña hasheada
             usuarios[usuario] = {
                 password: hashPassword(password),
                 email: email,
                 fechaRegistro: new Date().toISOString()
             };
-            
             guardarUsuarios(usuarios);
             return { success: true };
         }
 
-        // Verificar login
         function verificarLogin(usuario, password) {
             const usuarios = getUsuarios();
-            
             if (!usuarios[usuario]) {
                 return { success: false, error: 'Usuario no encontrado' };
             }
-            
             const hashIngresado = hashPassword(password);
             if (usuarios[usuario].password !== hashIngresado) {
                 return { success: false, error: 'Contraseña incorrecta' };
             }
-            
             return { success: true, usuario: usuario };
         }
 
@@ -1432,25 +1718,20 @@
                 mostrarErrorRegistro('El usuario debe tener al menos 3 caracteres.');
                 return;
             }
-            
             if (password.length < 6) {
                 mostrarErrorRegistro('La contraseña debe tener al menos 6 caracteres.');
                 return;
             }
-            
             if (password !== confirm) {
                 mostrarErrorRegistro('Las contraseñas no coinciden.');
                 return;
             }
-            
-            // Validar que el usuario solo tenga letras, números y guión bajo
             if (!/^[a-zA-Z0-9_]+$/.test(usuario)) {
                 mostrarErrorRegistro('El usuario solo puede contener letras, números y guión bajo.');
                 return;
             }
             
             const result = registrarUsuario(usuario, password, email);
-            
             if (!result.success) {
                 mostrarErrorRegistro(result.error);
                 return;
@@ -1526,15 +1807,12 @@
         document.getElementById('switchToRegister').addEventListener('click', mostrarRegisterForm);
         document.getElementById('switchToLogin').addEventListener('click', mostrarLoginForm);
 
-        // Enter en campos de login
         document.getElementById('loginUsuario').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') document.getElementById('loginPassword').focus();
         });
         document.getElementById('loginPassword').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') iniciarSesion();
         });
-
-        // Enter en campos de registro
         document.getElementById('registerUsuario').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') document.getElementById('registerEmail').focus();
         });
@@ -1600,8 +1878,10 @@
         }
 
         // ============================================================
-        // MODO OSCURO
+        // MODO OSCURO Y CONFIGURACIÓN
         // ============================================================
+
+        let simboloMoneda = '$';
 
         function aplicarModoOscuro(activar) {
             if (activar) {
@@ -1617,6 +1897,91 @@
         function toggleDarkMode() {
             const activar = !document.body.classList.contains('dark-mode');
             aplicarModoOscuro(activar);
+            if (document.getElementById('configDarkMode')) {
+                document.getElementById('configDarkMode').checked = activar;
+            }
+            guardarConfiguracion();
+        }
+
+        function aplicarTamanioFuente(tamanio) {
+            const sizes = {
+                'pequeno': '0.85rem',
+                'medio': '1rem',
+                'grande': '1.15rem',
+                'muy-grande': '1.35rem'
+            };
+            document.documentElement.style.setProperty('--font-size-base', sizes[tamanio] || '1rem');
+        }
+
+        // ============================================================
+        // CONFIGURACIÓN
+        // ============================================================
+
+        function cargarConfiguracion() {
+            try {
+                const config = JSON.parse(localStorage.getItem('gestor_config')) || {};
+                
+                if (config.darkMode !== undefined) {
+                    document.getElementById('configDarkMode').checked = config.darkMode;
+                    aplicarModoOscuro(config.darkMode);
+                }
+                
+                if (config.moneda) {
+                    document.getElementById('configMoneda').value = config.moneda;
+                    simboloMoneda = config.moneda;
+                }
+                
+                if (config.formatoFecha) {
+                    document.getElementById('configFormatoFecha').value = config.formatoFecha;
+                }
+                
+                if (config.comisionDefecto) {
+                    document.getElementById('configComisionDefecto').value = config.comisionDefecto;
+                    document.getElementById('clienteComision').value = config.comisionDefecto;
+                }
+                
+                if (config.tamanioFuente) {
+                    document.getElementById('configTamanioFuente').value = config.tamanioFuente;
+                    aplicarTamanioFuente(config.tamanioFuente);
+                }
+                
+                if (config.respaldoAuto !== undefined) {
+                    document.getElementById('configRespaldoAuto').checked = config.respaldoAuto;
+                }
+                
+                if (config.bloqueoPIN) {
+                    document.getElementById('configBloqueoPIN').checked = true;
+                    document.getElementById('configPINContainer').style.display = 'block';
+                    document.getElementById('configPIN').value = config.pin || '';
+                }
+                
+            } catch (e) {
+                console.warn('Error al cargar configuración:', e);
+            }
+        }
+
+        function guardarConfiguracion() {
+            const config = {
+                darkMode: document.getElementById('configDarkMode').checked,
+                moneda: document.getElementById('configMoneda').value,
+                formatoFecha: document.getElementById('configFormatoFecha').value,
+                comisionDefecto: parseFloat(document.getElementById('configComisionDefecto').value) || 1.5,
+                tamanioFuente: document.getElementById('configTamanioFuente').value,
+                respaldoAuto: document.getElementById('configRespaldoAuto').checked,
+                bloqueoPIN: document.getElementById('configBloqueoPIN').checked,
+                pin: document.getElementById('configPIN').value || ''
+            };
+            
+            localStorage.setItem('gestor_config', JSON.stringify(config));
+            simboloMoneda = config.moneda;
+            
+            // Actualizar función formatearMoneda
+            window.formatearMoneda = function(valor) {
+                return simboloMoneda + Number(valor).toFixed(2);
+            };
+            
+            recargarTodo();
+            mostrarToast('✅ Configuración guardada', 'success');
         }
 
         // ============================================================
@@ -1675,7 +2040,7 @@
             const c = getCliente(id);
             if (c) { c.saldo = (c.saldo || 0) + delta; persistAll(); }
         }
-        function formatearMoneda(valor) { return '$' + Number(valor).toFixed(2); }
+        function formatearMoneda(valor) { return simboloMoneda + Number(valor).toFixed(2); }
         function formatearFecha(ts) { return new Date(ts).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
 
         function agregarMovimientoFinanciero(tipo, monto, descripcion, clienteId = null, reciboId = null, fecha = null) {
@@ -1761,21 +2126,19 @@
                             <div class="nombre">${c.nombre}</div>
                             <div class="comision">Comisión actual: ${c.comision}%</div>
                         </div>
-                        <div style="display:flex; gap:4px; align-items:center;">
-                            <input type="number" step="0.1" min="0" value="${c.comision}" data-id="${c.id}" class="input-comision" style="width:55px; padding:4px 6px; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-input); color:var(--text-primary); font-size:0.85rem;" inputmode="decimal">
-                            <button class="btn-small btn-primary btn-actualizar-comision" data-id="${c.id}" style="width:auto; padding:3px 8px; font-size:0.65rem;">✓</button>
+                        <div style="display:flex; gap:3px; align-items:center; flex-shrink:0;">
+                            <input type="number" step="0.1" min="0" value="${c.comision}" data-id="${c.id}" class="input-comision" style="width:50px; padding:3px 5px; border:1px solid var(--border-color); border-radius:4px; background:var(--bg-input); color:var(--text-primary); font-size:0.8rem;" inputmode="decimal">
+                            <button class="btn-small btn-primary btn-actualizar-comision" data-id="${c.id}" style="padding:2px 6px; font-size:0.6rem;">✓</button>
                         </div>
                     </div>
                 `;
             });
             container.innerHTML = html;
 
-            // Asignar eventos a cada botón de actualización individualmente
             container.querySelectorAll('.btn-actualizar-comision').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     const id = this.dataset.id;
-                    // Buscar el input dentro del mismo contenedor del botón
                     const parentDiv = this.closest('.cliente-card');
                     const input = parentDiv ? parentDiv.querySelector('.input-comision') : null;
                     
@@ -1795,9 +2158,7 @@
                         cliente.comision = nuevoValor; 
                         persistAll(); 
                         renderComisiones(); 
-                        // Actualizar selectores y otros componentes que dependen de comisiones
                         actualizarSelectores();
-                        // Actualizar campos de recibo si están visibles
                         const subRecibir = document.getElementById('sub-recibir');
                         if (subRecibir && subRecibir.style.display !== 'none') {
                             actualizarCamposRecibo();
@@ -1809,7 +2170,6 @@
                 });
             });
 
-            // También permitir actualizar presionando Enter en el input
             container.querySelectorAll('.input-comision').forEach(input => {
                 input.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter') {
@@ -1842,9 +2202,9 @@
                             <div class="nombre">${c.nombre}</div>
                             <div class="comision">Comisión: ${c.comision}% · Recibos: ${recibosCliente.length} · Transf: ${transferenciasCliente.length}</div>
                         </div>
-                        <div style="display:flex; gap:4px; align-items:center;">
+                        <div style="display:flex; gap:3px; align-items:center; flex-shrink:0;">
                             <span class="saldo ${esNegativo ? 'negativo' : ''}">${formatearMoneda(saldo)}</span>
-                            <button class="btn-eliminar" data-id="${c.id}" style="background:none; border:none; color:var(--danger); font-size:0.9rem; cursor:pointer;">✕</button>
+                            <button class="btn-eliminar" data-id="${c.id}" style="background:none; border:none; color:var(--danger); font-size:0.8rem; cursor:pointer; padding:2px 4px;">✕</button>
                         </div>
                     </div>
                 `;
@@ -2001,7 +2361,7 @@
             clientes.forEach(c => {
                 const saldo = c.saldo || 0;
                 html += `
-                    <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border-color); font-size:0.9rem;">
+                    <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border-color); font-size:0.8rem;">
                         <span>${c.nombre}</span>
                         <span style="${saldo < 0 ? 'color:var(--saldo-negativo);' : ''} font-weight:600;">${formatearMoneda(saldo)}</span>
                     </div>
@@ -2132,7 +2492,7 @@
                     <div class="operacion-card">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <span class="tipo"><span class="badge ${badgeClass}">${badgeText}</span> ${desc}</span>
-                            <button class="btn-eliminar-finanza" data-id="${m.id}" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.8rem;">✕</button>
+                            <button class="btn-eliminar-finanza" data-id="${m.id}" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.7rem; padding:2px 4px;">✕</button>
                         </div>
                         <div class="monto">${formatearMoneda(m.monto)}</div>
                         <div class="fecha">${formatearFecha(m.fecha)}</div>
@@ -2205,10 +2565,10 @@
                                 <span class="badge badge-recibo">Recibo</span> 
                                 ${cliente ? cliente.nombre : 'Cliente eliminado'}
                             </span>
-                            <div style="display:flex; gap:4px; align-items:center;">
+                            <div class="op-actions">
                                 <span class="numero-op">#${r.numeroOp}</span>
-                                <button class="btn-editar-op" data-id="${r.id}" data-tipo="recibo" style="background:none; border:none; color:var(--primary); cursor:pointer; font-size:0.8rem;" title="Editar">✏️</button>
-                                <button class="btn-eliminar-recibo-op" data-id="${r.id}" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.8rem;" title="Eliminar">✕</button>
+                                <button class="btn-edit btn-editar-op" data-id="${r.id}" data-tipo="recibo" title="Editar">✏️</button>
+                                <button class="btn-delete btn-eliminar-recibo-op" data-id="${r.id}" title="Eliminar">✕</button>
                             </div>
                         </div>
                         <div class="monto">${formatearMoneda(r.monto)}</div>
@@ -2275,10 +2635,10 @@
                                 <span class="badge badge-transferencia">Transferencia</span> 
                                 ${cliente ? cliente.nombre : 'Cliente eliminado'}
                             </span>
-                            <div style="display:flex; gap:4px; align-items:center;">
+                            <div class="op-actions">
                                 <span class="numero-op">#${t.numeroOp}</span>
-                                <button class="btn-editar-op" data-id="${t.id}" data-tipo="transferencia" style="background:none; border:none; color:var(--primary); cursor:pointer; font-size:0.8rem;" title="Editar">✏️</button>
-                                <button class="btn-eliminar-transferencia-op" data-id="${t.id}" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.8rem;" title="Eliminar">✕</button>
+                                <button class="btn-edit btn-editar-op" data-id="${t.id}" data-tipo="transferencia" title="Editar">✏️</button>
+                                <button class="btn-delete btn-eliminar-transferencia-op" data-id="${t.id}" title="Eliminar">✕</button>
                             </div>
                         </div>
                         <div class="monto">${formatearMoneda(t.monto)}</div>
@@ -2364,7 +2724,7 @@
                         <label>Comisión (%)</label>
                         <input type="number" id="modalComisionPorcentaje" step="0.1" min="0" value="${getCliente(operacion.clienteId)?.comision || 0}" inputmode="decimal">
                     </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
                         <div class="form-group">
                             <label>Comisión ($)</label>
                             <input type="text" id="modalComision" class="readonly-field" readonly value="${formatearMoneda(operacion.comision)}">
@@ -2398,7 +2758,7 @@
                         <label>Saldo disponible</label>
                         <input type="text" id="modalSaldoDisponible" class="readonly-field" readonly value="${cliente ? formatearMoneda(cliente.saldo || 0) : '$0.00'}">
                     </div>
-                    <div class="form-group" style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); text-align:center; font-weight:500;">
+                    <div class="form-group" style="background:var(--bg-card-alt); padding:6px; border-radius:var(--radius-sm); text-align:center; font-weight:500; font-size:0.8rem;">
                         <span id="modalSaldoRestante">Saldo restante: ${formatearMoneda((cliente?.saldo || 0) - operacion.monto)}</span>
                     </div>
                 `;
@@ -2587,9 +2947,11 @@
             
             if (section === 'clientes') { 
                 // Mostrar la vista de comisiones por defecto si hay clientes
-                document.getElementById('sub-agregar-cliente').style.display = 'none';
-                document.getElementById('sub-ver-clientes').style.display = 'none';
-                document.getElementById('sub-comisiones').style.display = 'block';
+                if (document.getElementById('sub-comisiones').style.display === 'none' &&
+                    document.getElementById('sub-agregar-cliente').style.display === 'none' &&
+                    document.getElementById('sub-ver-clientes').style.display === 'none') {
+                    document.getElementById('sub-comisiones').style.display = 'block';
+                }
                 renderComisiones();
                 renderResumenClientes();
             }
@@ -2609,6 +2971,7 @@
             if (section === 'saldo') renderSaldo();
             if (section === 'historial') { actualizarFiltroHistorialClientes(); renderHistorial(); }
             if (section === 'finanzas') { renderFinanzas(); }
+            if (section === 'configuracion') { cargarConfiguracion(); }
             if (section === 'bd') actualizarEstadisticasBD();
         }
 
@@ -2657,7 +3020,6 @@
             document.getElementById('sub-agregar-cliente').style.display = 'block';
             document.getElementById('sub-ver-clientes').style.display = 'none';
             document.getElementById('sub-comisiones').style.display = 'none';
-            // Quitar clase activa del botón comisiones
             document.getElementById('btnMostrarComisiones').classList.remove('active-comisiones');
             setTimeout(() => document.getElementById('clienteNombre').focus(), 100);
         });
@@ -2776,13 +3138,13 @@
 
         document.getElementById('btnInvertirRecibos').addEventListener('click', function() {
             ordenRecibosAsc = !ordenRecibosAsc;
-            this.textContent = ordenRecibosAsc ? '⬇️ Más antiguos' : '⬆️ Más recientes';
+            this.textContent = ordenRecibosAsc ? '⬇️ Antiguos' : '⬆️ Recientes';
             renderRecibosOperaciones();
         });
 
         document.getElementById('btnInvertirTransferencias').addEventListener('click', function() {
             ordenTransferenciasAsc = !ordenTransferenciasAsc;
-            this.textContent = ordenTransferenciasAsc ? '⬇️ Más antiguos' : '⬆️ Más recientes';
+            this.textContent = ordenTransferenciasAsc ? '⬇️ Antiguos' : '⬆️ Recientes';
             renderTransferenciasOperaciones();
         });
 
@@ -2816,6 +3178,187 @@
             renderFinanzas();
             mostrarToast('Movimiento registrado.', 'success');
             setTimeout(() => document.getElementById('finanzaMonto').focus(), 100);
+        });
+
+        // ============================================================
+        // CONFIGURACIÓN - EVENTOS
+        // ============================================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarConfiguracion();
+            
+            document.querySelectorAll('#configDarkMode, #configMoneda, #configFormatoFecha, #configTamanioFuente, #configRespaldoAuto, #configBloqueoPIN, #configComisionDefecto, #configPIN').forEach(el => {
+                el.addEventListener('change', guardarConfiguracion);
+                el.addEventListener('input', function() {
+                    if (this.id !== 'configPIN') guardarConfiguracion();
+                });
+            });
+            
+            document.getElementById('configPIN').addEventListener('input', function() {
+                if (this.value.length === 4) guardarConfiguracion();
+            });
+            
+            document.getElementById('configBloqueoPIN').addEventListener('change', function() {
+                document.getElementById('configPINContainer').style.display = this.checked ? 'block' : 'none';
+                if (this.checked) {
+                    document.getElementById('configPIN').focus();
+                }
+            });
+            
+            document.getElementById('configDarkMode').addEventListener('change', function() {
+                aplicarModoOscuro(this.checked);
+            });
+            
+            document.getElementById('configMoneda').addEventListener('change', function() {
+                simboloMoneda = this.value;
+                recargarTodo();
+            });
+            
+            document.getElementById('configTamanioFuente').addEventListener('change', function() {
+                aplicarTamanioFuente(this.value);
+            });
+            
+            document.getElementById('btnExportarConfig').addEventListener('click', function() {
+                const config = localStorage.getItem('gestor_config');
+                if (!config) { mostrarToast('No hay configuración para exportar', 'error'); return; }
+                const blob = new Blob([config], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `configuracion_${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                mostrarToast('✅ Configuración exportada', 'success');
+            });
+            
+            document.getElementById('btnImportarConfig').addEventListener('click', function() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        try {
+                            const config = JSON.parse(ev.target.result);
+                            localStorage.setItem('gestor_config', JSON.stringify(config));
+                            cargarConfiguracion();
+                            recargarTodo();
+                            mostrarToast('✅ Configuración importada', 'success');
+                        } catch (err) {
+                            mostrarToast('❌ Error al importar: ' + err.message, 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                };
+                input.click();
+            });
+            
+            document.getElementById('btnRestaurarConfig').addEventListener('click', function() {
+                if (!confirm('¿Restaurar configuración por defecto?')) return;
+                localStorage.removeItem('gestor_config');
+                document.getElementById('configDarkMode').checked = false;
+                document.getElementById('configMoneda').value = '$';
+                document.getElementById('configFormatoFecha').value = 'DD/MM/YYYY';
+                document.getElementById('configComisionDefecto').value = '1.5';
+                document.getElementById('configTamanioFuente').value = 'medio';
+                document.getElementById('configRespaldoAuto').checked = true;
+                document.getElementById('configBloqueoPIN').checked = false;
+                document.getElementById('configPINContainer').style.display = 'none';
+                document.getElementById('configPIN').value = '';
+                simboloMoneda = '$';
+                aplicarTamanioFuente('medio');
+                if (document.body.classList.contains('dark-mode')) {
+                    document.body.classList.remove('dark-mode');
+                    document.getElementById('btnDarkMode').textContent = '🌙';
+                }
+                recargarTodo();
+                mostrarToast('✅ Configuración restaurada', 'success');
+            });
+            
+            document.getElementById('btnCambiarPassword').addEventListener('click', function() {
+                const usuario = usuarioActual;
+                if (!usuario) { mostrarToast('No hay usuario activo', 'error'); return; }
+                const nuevaPassword = prompt('Nueva contraseña (mínimo 6 caracteres):');
+                if (!nuevaPassword) return;
+                if (nuevaPassword.length < 6) { mostrarToast('La contraseña debe tener al menos 6 caracteres', 'error'); return; }
+                const usuarios = getUsuarios();
+                if (usuarios[usuario]) {
+                    usuarios[usuario].password = hashPassword(nuevaPassword);
+                    guardarUsuarios(usuarios);
+                    mostrarToast('✅ Contraseña actualizada', 'success');
+                }
+            });
+            
+            document.getElementById('btnAyuda').addEventListener('click', function() {
+                const mensaje = 
+    `📖 GUÍA RÁPIDA
+
+    👥 CLIENTES:
+    • Agrega clientes con su comisión
+    • Edita comisiones individualmente
+    • Elimina clientes (borra todas sus operaciones)
+
+    🔄 OPERACIONES:
+    • Recibo: Añade dinero al cliente
+    • Transferencia: Retira dinero del cliente
+    • Las comisiones se calculan automáticamente    💰 SALDO:
+    • Muestra el saldo total y por cliente
+    • Los saldos negativos indican préstamos
+
+    📜 HISTORIAL:
+    • Filtra por cliente, fecha y tipo
+    • Exporta a Excel o PDF
+
+    💹 FINANZAS:
+    • Registra ingresos y gastos personales
+    • Lleva un control de tus finanzas
+
+    ⚙️ CONFIGURACIÓN:
+    • Personaliza la app a tu gusto
+    • Cambia moneda, tamaño de fuente y más
+
+    🗄️ BASE DE DATOS:
+    • Exporta/importa todos los datos
+    • Importa desde Excel`;
+                alert(mensaje);
+            });
+            
+            document.getElementById('btnTutorial').addEventListener('click', function() {
+                const pasos = [
+                    { seccion: 'clientes', mensaje: '👥 Aquí gestionas tus clientes y sus comisiones' },
+                    { seccion: 'operaciones', mensaje: '🔄 Registra recibos y transferencias' },
+                    { seccion: 'saldo', mensaje: '💰 Revisa el saldo de todos tus clientes' },
+                    { seccion: 'historial', mensaje: '📜 Consulta y filtra el historial completo' },
+                    { seccion: 'finanzas', mensaje: '💹 Lleva el control de tus finanzas personales' },
+                    { seccion: 'configuracion', mensaje: '⚙️ Personaliza la app a tu gusto' },
+                    { seccion: 'bd', mensaje: '🗄️ Gestiona tus datos y haz respaldos' }
+                ];
+                let i = 0;
+                function mostrarPaso() {
+                    if (i >= pasos.length) {
+                        mostrarToast('🎉 ¡Tour completado!', 'success');
+                        return;
+                    }
+                    const paso = pasos[i];
+                    mostrarSeccion(paso.seccion);
+                    setTimeout(() => {
+                        mostrarToast(`📍 ${paso.mensaje}`, 'info');
+                    }, 300);
+                    i++;
+                    setTimeout(mostrarPaso, 2500);
+                }
+                mostrarPaso();
+            });
+            
+            document.getElementById('btnContacto').addEventListener('click', function() {
+                const email = 'soporte@tuaplicacion.com';
+                const subject = encodeURIComponent('Soporte - Gestor de Pagos');
+                const body = encodeURIComponent('Hola, necesito ayuda con...');
+                window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+                mostrarToast('📧 Abriendo correo...', 'info');
+            });
         });
 
         // ============================================================
@@ -3062,24 +3605,34 @@
                 aplicarModoOscuro(true);
             }
             
+            // Cargar configuración
+            cargarConfiguracion();
+            
+            // Mostrar la sección de clientes con comisiones por defecto
             mostrarSeccion('clientes');
             recargarTodo();
             renderRecibosOperaciones();
             renderTransferenciasOperaciones();
             cambiarPestanaOperaciones('recibir');
+            
+            // Mostrar comisiones por defecto si hay clientes
+            if (clientes.length > 0) {
+                document.getElementById('sub-comisiones').style.display = 'block';
+                document.getElementById('sub-agregar-cliente').style.display = 'none';
+                document.getElementById('sub-ver-clientes').style.display = 'none';
+            } else {
+                document.getElementById('sub-agregar-cliente').style.display = 'block';
+                document.getElementById('sub-ver-clientes').style.display = 'none';
+                document.getElementById('sub-comisiones').style.display = 'none';
+            }
         }
 
         // ============================================================
         // INICIAR APLICACIÓN
         // ============================================================
 
-        // Mostrar pantalla de autenticación al cargar
         mostrarAuth();
         mostrarLoginForm();
-
-        // ============================================================
-        // SERVICE WORKER (opcional)
-        // ============================================================
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js').catch(() => {});
