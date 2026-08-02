@@ -669,6 +669,35 @@
             color: var(--text-primary);
             transition: var(--transition);
         }
+        
+        /* ===== ESTILOS PARA INPUTS NUMÉRICOS EN iOS ===== */
+        input[inputmode="decimal"],
+        input[inputmode="numeric"] {
+            font-size: var(--font-size-md);
+            letter-spacing: 0.5px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        /* Eliminar botones de incremento en desktop */
+        input[inputmode="decimal"]::-webkit-outer-spin-button,
+        input[inputmode="decimal"]::-webkit-inner-spin-button,
+        input[inputmode="numeric"]::-webkit-outer-spin-button,
+        input[inputmode="numeric"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        /* Firefox */
+        input[inputmode="decimal"],
+        input[inputmode="numeric"] {
+            -moz-appearance: textfield;
+        }
+        /* Estilo al enfocar */
+        input[inputmode="decimal"]:focus,
+        input[inputmode="numeric"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+        }
+
         /* ===== SELECTORES DE FECHA MÁS COMPACTOS ===== */
         .form-group input[type="date"],
         .form-group input[type="time"],
@@ -1114,6 +1143,11 @@
             .config-item input[type="number"] { max-width: 50px; }
             .filtros-row .form-group { min-width: 50px; }
             .filtros-row .form-group input[type="date"] { min-height: 22px; height: 22px; font-size: var(--font-size-xs); }
+            /* Evitar zoom en iOS */
+            input[inputmode="decimal"],
+            input[inputmode="numeric"] {
+                font-size: var(--font-size-md) !important;
+            }
         }
 
         @media (min-width: 481px) {
@@ -1123,6 +1157,17 @@
             .bottom-menu {
                 border-radius: 20px 20px 0 0;
             }
+        }
+
+        /* ===== EVITAR ZOOM EN iOS ===== */
+        input[inputmode="decimal"],
+        input[inputmode="numeric"],
+        input[type="text"],
+        input[type="number"],
+        input[type="password"],
+        input[type="email"],
+        select {
+            font-size: 16px !important;
         }
     </style>
 </head>
@@ -1138,11 +1183,13 @@
             <div id="loginForm">
                 <div class="form-group">
                     <label>👤 Usuario o Email</label>
-                    <input type="text" id="loginUsuario" placeholder="Ej: juanperez" autofocus>
+                    <input type="text" id="loginUsuario" placeholder="Ej: juanperez" 
+                           autocomplete="username" enterkeyhint="next">
                 </div>
                 <div class="form-group">
                     <label>🔑 Contraseña</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••">
+                    <input type="password" id="loginPassword" placeholder="••••••••" 
+                           autocomplete="current-password" enterkeyhint="go">
                 </div>
                 <button class="btn-primary" id="btnLogin">🚪 Iniciar Sesión</button>
                 <div class="auth-error" id="loginError">❌ Usuario o contraseña incorrectos.</div>
@@ -1155,19 +1202,23 @@
             <div id="registerForm" style="display:none;">
                 <div class="form-group">
                     <label>👤 Nombre de usuario</label>
-                    <input type="text" id="registerUsuario" placeholder="Ej: juanperez">
+                    <input type="text" id="registerUsuario" placeholder="Ej: juanperez" 
+                           autocomplete="username" enterkeyhint="next">
                 </div>
                 <div class="form-group">
                     <label>📧 Email (opcional)</label>
-                    <input type="email" id="registerEmail" placeholder="Ej: juan@email.com">
+                    <input type="email" id="registerEmail" placeholder="Ej: juan@email.com" 
+                           autocomplete="email" enterkeyhint="next">
                 </div>
                 <div class="form-group">
                     <label>🔑 Contraseña</label>
-                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
+                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" 
+                           autocomplete="new-password" enterkeyhint="next">
                 </div>
                 <div class="form-group">
                     <label>🔐 Confirmar Contraseña</label>
-                    <input type="password" id="registerConfirm" placeholder="Repite la contraseña">
+                    <input type="password" id="registerConfirm" placeholder="Repite la contraseña" 
+                           autocomplete="new-password" enterkeyhint="go">
                 </div>
                 <button class="btn-primary" id="btnRegister">📝 Registrarse</button>
                 <div class="auth-error" id="registerError">❌ Error en el registro.</div>
@@ -1191,7 +1242,9 @@
             </div>
             <div class="form-group">
                 <label>Monto</label>
-                <input type="number" id="modalMonto" step="0.01" min="0" inputmode="decimal">
+                <input type="text" id="modalMonto" placeholder="0.00" 
+                       inputmode="decimal" enterkeyhint="done"
+                       autocomplete="off" autocorrect="off" spellcheck="false">
             </div>
             <div class="form-group">
                 <label>Fecha</label>
@@ -1281,11 +1334,14 @@
                 <h3 style="margin-bottom:6px; font-size:var(--font-size-sm);">Agregar Cliente</h3>
                 <div class="form-group">
                     <label>Nombre del cliente</label>
-                    <input type="text" id="clienteNombre" placeholder="Ej: Juan Pérez">
+                    <input type="text" id="clienteNombre" placeholder="Ej: Juan Pérez" 
+                           autocomplete="off" enterkeyhint="next">
                 </div>
                 <div class="form-group">
                     <label>Comisión (%)</label>
-                    <input type="number" id="clienteComision" step="0.1" min="0" value="1.5" inputmode="decimal">
+                    <input type="text" id="clienteComision" placeholder="1.5" 
+                           inputmode="decimal" enterkeyhint="done"
+                           autocomplete="off" autocorrect="off" spellcheck="false">
                 </div>
                 <button class="btn-primary" id="btnAgregarCliente">Agregar</button>
             </div>
@@ -1323,7 +1379,9 @@
                 </div>
                 <div class="form-group">
                     <label>Monto a recibir</label>
-                    <input type="number" id="recibirMonto" placeholder="0.00" step="0.01" min="0" inputmode="decimal" autofocus>
+                    <input type="text" id="recibirMonto" placeholder="0.00" 
+                           inputmode="decimal" enterkeyhint="done"
+                           autocomplete="off" autocorrect="off" spellcheck="false">
                 </div>
                 <div class="form-group">
                     <label>Fecha</label>
@@ -1342,7 +1400,7 @@
                 <div style="background:var(--bg-card-alt); padding:4px 6px; border-radius:var(--radius-sm); margin:4px 0; text-align:center; font-weight:500; font-size:var(--font-size-sm);">
                     <span id="recibirSaldoActualizado">Saldo actual: $0.00</span>
                 </div>
-                <button class="btn-primary" id="btnRegistrarRecibo">Registrar Recibo</button>
+                <button class="btn-primary btn-registrar" id="btnRegistrarRecibo">Registrar Recibo</button>
             </div>
 
             <div id="sub-transferir" class="card" style="display:none;">
@@ -1353,7 +1411,9 @@
                 </div>
                 <div class="form-group">
                     <label>Monto a transferir</label>
-                    <input type="number" id="transferirMonto" placeholder="0.00" step="0.01" min="0" inputmode="decimal" autofocus>
+                    <input type="text" id="transferirMonto" placeholder="0.00" 
+                           inputmode="decimal" enterkeyhint="done"
+                           autocomplete="off" autocorrect="off" spellcheck="false">
                 </div>
                 <div class="form-group">
                     <label>Fecha</label>
@@ -1367,7 +1427,7 @@
                     <span id="transferirSaldoRestante">Saldo restante: $0.00</span>
                 </div>
                 <div class="aviso-negativo" id="avisoSaldoNegativo">⚠️ Saldo negativo. Se usará dinero propio.</div>
-                <button class="btn-primary" id="btnRegistrarTransferencia">Registrar Transferencia</button>
+                <button class="btn-primary btn-registrar" id="btnRegistrarTransferencia">Registrar Transferencia</button>
             </div>
 
             <div id="sub-lista-recibos" class="card">
@@ -1500,17 +1560,20 @@
                 </div>
                 <div class="form-group">
                     <label>Monto</label>
-                    <input type="number" id="finanzaMonto" placeholder="0.00" step="0.01" min="0" inputmode="decimal">
+                    <input type="text" id="finanzaMonto" placeholder="0.00" 
+                           inputmode="decimal" enterkeyhint="done"
+                           autocomplete="off" autocorrect="off" spellcheck="false">
                 </div>
                 <div class="form-group">
                     <label>Descripción</label>
-                    <input type="text" id="finanzaDescripcion" placeholder="Ej: Pago de luz">
+                    <input type="text" id="finanzaDescripcion" placeholder="Ej: Pago de luz" 
+                           autocomplete="off" enterkeyhint="done">
                 </div>
                 <div class="form-group">
                     <label>Fecha</label>
                     <input type="date" id="finanzaFecha">
                 </div>
-                <button class="btn-primary" id="btnRegistrarFinanza">Registrar</button>
+                <button class="btn-primary btn-registrar" id="btnRegistrarFinanza">Registrar</button>
             </div>
         </div>
 
@@ -1561,7 +1624,10 @@
                         <strong>📊 Comisión Predeterminada</strong>
                         <p>Valor por defecto al crear clientes</p>
                     </div>
-                    <input type="number" id="configComisionDefecto" step="0.1" min="0" value="1.5" inputmode="decimal">
+                    <input type="text" id="configComisionDefecto" placeholder="1.5" 
+                           inputmode="decimal" enterkeyhint="done"
+                           autocomplete="off" autocorrect="off" spellcheck="false"
+                           style="max-width:60px; text-align:center;">
                 </div>
 
                 <div class="config-item">
@@ -1622,7 +1688,9 @@
                     </label>
                 </div>
                 <div id="configPINContainer" style="display:none; padding:4px 0 0;">
-                    <input type="password" id="configPIN" placeholder="Código de 4 dígitos" maxlength="4" style="padding:4px 8px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-input); color:var(--text-primary); width:100%; font-size:var(--font-size-sm); text-align:center; letter-spacing:4px;" inputmode="numeric">
+                    <input type="password" id="configPIN" placeholder="Código de 4 dígitos" maxlength="4" 
+                           inputmode="numeric" enterkeyhint="done"
+                           style="padding:4px 8px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-input); color:var(--text-primary); width:100%; font-size:var(--font-size-sm); text-align:center; letter-spacing:4px;">
                 </div>
 
                 <div style="margin-top:6px;">
@@ -1865,24 +1933,82 @@
         document.getElementById('switchToRegister').addEventListener('click', mostrarRegisterForm);
         document.getElementById('switchToLogin').addEventListener('click', mostrarLoginForm);
 
-        document.getElementById('loginUsuario').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') document.getElementById('loginPassword').focus();
-        });
-        document.getElementById('loginPassword').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') iniciarSesion();
-        });
-        document.getElementById('registerUsuario').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') document.getElementById('registerEmail').focus();
-        });
-        document.getElementById('registerEmail').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') document.getElementById('registerPassword').focus();
-        });
-        document.getElementById('registerPassword').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') document.getElementById('registerConfirm').focus();
-        });
-        document.getElementById('registerConfirm').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') registrarNuevoUsuario();
-        });
+        // ============================================================
+        // MANEJO DE TECLADO EN iOS - Botón "Hecho" (Enter)
+        // ============================================================
+
+        function setupIOSKeyboard() {
+            // Identificar todos los inputs numéricos
+            const numericInputs = document.querySelectorAll('input[inputmode="decimal"], input[inputmode="numeric"]');
+            
+            numericInputs.forEach(input => {
+                // Filtrar caracteres
+                input.addEventListener('input', function() {
+                    let val = this.value.replace(/[^0-9.]/g, '');
+                    const parts = val.split('.');
+                    if (parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
+                    if (val.includes('.') && val.split('.')[1].length > 2) {
+                        val = val.slice(0, val.indexOf('.') + 3);
+                    }
+                    this.value = val;
+                });
+                
+                // Formatear al perder foco
+                input.addEventListener('blur', function() {
+                    if (this.value && !isNaN(parseFloat(this.value))) {
+                        this.value = parseFloat(this.value).toFixed(2);
+                    }
+                });
+                
+                // Seleccionar al enfocar
+                input.addEventListener('focus', function() {
+                    this.select();
+                });
+                
+                // Manejar el botón "Hecho" (Enter en iOS)
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.blur(); // Cerrar teclado
+                        
+                        // Buscar el botón de acción
+                        const card = this.closest('.card');
+                        if (card) {
+                            const btn = card.querySelector('.btn-primary, .btn-registrar');
+                            if (btn) {
+                                btn.click();
+                                // Feedback visual
+                                btn.style.transform = 'scale(0.95)';
+                                setTimeout(() => {
+                                    btn.style.transform = '';
+                                }, 200);
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // Configurar campos de login/registro
+            const loginInputs = document.querySelectorAll('#loginUsuario, #loginPassword, #registerUsuario, #registerEmail, #registerPassword, #registerConfirm');
+            loginInputs.forEach((input, index, arr) => {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const nextIndex = index + 1;
+                        if (nextIndex < arr.length) {
+                            arr[nextIndex].focus();
+                        } else {
+                            // Si es el último, buscar el botón de submit
+                            const form = this.closest('.auth-card');
+                            if (form) {
+                                const btn = form.querySelector('.btn-primary');
+                                if (btn) btn.click();
+                            }
+                        }
+                    }
+                });
+            });
+        }
 
         // ============================================================
         // FUNCIONES PARA GUARDAR/CARGAR DATOS POR USUARIO
@@ -1973,7 +2099,6 @@
             document.documentElement.style.setProperty('--font-size-base', newSize);
             localStorage.setItem('gestor_font_size', tamanio);
             document.body.style.fontSize = newSize;
-            console.log('✅ Tamaño de fuente cambiado a:', tamanio, newSize);
         }
 
         // ============================================================
@@ -2190,7 +2315,11 @@
                             <div class="comision">Comisión actual: ${c.comision}%</div>
                         </div>
                         <div style="display:flex; gap:3px; align-items:center; flex-shrink:0;">
-                            <input type="number" step="0.1" min="0" value="${c.comision}" data-id="${c.id}" class="input-comision" style="width:45px; padding:2px 4px; border:1px solid var(--border-color); border-radius:4px; background:var(--bg-input); color:var(--text-primary); font-size:var(--font-size-sm);" inputmode="decimal">
+                            <input type="text" step="0.1" min="0" value="${c.comision}" data-id="${c.id}" 
+                                   class="input-comision" 
+                                   inputmode="decimal" enterkeyhint="done"
+                                   autocomplete="off" autocorrect="off" spellcheck="false"
+                                   style="width:45px; padding:2px 4px; border:1px solid var(--border-color); border-radius:4px; background:var(--bg-input); color:var(--text-primary); font-size:var(--font-size-sm); text-align:center;">
                             <button class="btn-small btn-primary btn-actualizar-comision" data-id="${c.id}" style="padding:2px 5px; font-size:var(--font-size-xs);">✓</button>
                         </div>
                     </div>
@@ -2785,7 +2914,9 @@
                 camposExtra.innerHTML = `
                     <div class="form-group">
                         <label>Comisión (%)</label>
-                        <input type="number" id="modalComisionPorcentaje" step="0.1" min="0" value="${getCliente(operacion.clienteId)?.comision || 0}" inputmode="decimal">
+                        <input type="text" id="modalComisionPorcentaje" step="0.1" min="0" value="${getCliente(operacion.clienteId)?.comision || 0}" 
+                               inputmode="decimal" enterkeyhint="done"
+                               autocomplete="off" autocorrect="off" spellcheck="false">
                     </div>
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
                         <div class="form-group">
@@ -3247,6 +3378,9 @@
         // ============================================================
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Configurar teclado iOS
+            setupIOSKeyboard();
+            
             cargarConfiguracion();
             
             document.querySelectorAll('#configDarkMode, #configMoneda, #configFormatoFecha, #configTamanioFuente, #configRespaldoAuto, #configBloqueoPIN, #configComisionDefecto, #configPIN').forEach(el => {
