@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sin conexión</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: -apple-system, 'Inter', sans-serif;
+        }
+        .offline-container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 30px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        .offline-icon { font-size: 4rem; margin-bottom: 16px; }
+        h1 { color: #1a1a2e; margin-bottom: 8px; }
+        p { color: #4a4a6a; margin-bottom: 20px; line-height: 1.5; }
+        .btn-retry {
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-retry:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">📡</div>
+        <h1>Sin conexión</h1>
+        <p>No tienes acceso a internet. Algunas funciones pueden no estar disponibles.</p>
+        <button class="btn-retry" onclick="window.location.reload()">🔄 Reintentar</button>
+    </div>
+</body>
+</html>
