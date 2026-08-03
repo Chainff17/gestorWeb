@@ -61,13 +61,6 @@
             --transition: all 0.25s ease;
             --online-color: #00b894;
             --offline-color: #fd79a8;
-            --font-size-base: 1rem;
-            --font-size-xs: calc(var(--font-size-base) * 0.55);
-            --font-size-sm: calc(var(--font-size-base) * 0.65);
-            --font-size-md: calc(var(--font-size-base) * 0.8);
-            --font-size-lg: calc(var(--font-size-base) * 0.95);
-            --font-size-xl: calc(var(--font-size-base) * 1.1);
-            --font-size-2xl: calc(var(--font-size-base) * 1.3);
         }
         body.dark-mode {
             --bg-body: #0d0d1a;
@@ -106,11 +99,6 @@
             --online-color: #55efc4;
             --offline-color: #fd79a8;
         }
-
-        html {
-            font-size: var(--font-size-base);
-        }
-
         body {
             background: var(--bg-body);
             padding: 0;
@@ -121,7 +109,6 @@
             min-height: 100vh;
             position: relative;
             padding-bottom: 80px;
-            font-size: var(--font-size-base);
         }
 
         /* ===== LOGIN/REGISTER SCREEN ===== */
@@ -143,7 +130,7 @@
         #authScreen .auth-card {
             background: var(--bg-card);
             border-radius: var(--radius-lg);
-            padding: 24px 20px;
+            padding: 32px 24px;
             width: 100%;
             max-width: 400px;
             box-shadow: var(--shadow-dropdown);
@@ -151,32 +138,32 @@
             text-align: center;
         }
         #authScreen .auth-card h2 {
-            font-size: var(--font-size-lg);
+            font-size: 1.5rem;
             color: var(--text-primary);
             margin-bottom: 4px;
         }
         #authScreen .auth-card .subtitle {
-            font-size: var(--font-size-sm);
+            font-size: 0.85rem;
             color: var(--text-muted);
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
         #authScreen .auth-card .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             text-align: left;
         }
         #authScreen .auth-card .form-group label {
             display: block;
-            font-size: var(--font-size-xs);
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--text-secondary);
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
         #authScreen .auth-card .form-group input {
             width: 100%;
-            padding: 10px 12px;
+            padding: 12px 14px;
             border: 2px solid var(--border-color);
             border-radius: var(--radius-sm);
-            font-size: var(--font-size-md);
+            font-size: 1rem;
             background: var(--bg-input);
             color: var(--text-primary);
             transition: var(--transition);
@@ -191,16 +178,16 @@
         }
         #authScreen .auth-card .auth-error {
             color: var(--danger);
-            font-size: var(--font-size-xs);
-            margin-top: 6px;
+            font-size: 0.8rem;
+            margin-top: 8px;
             display: none;
         }
         #authScreen .auth-card .auth-error.show {
             display: block;
         }
         #authScreen .auth-card .auth-switch {
-            margin-top: 14px;
-            font-size: var(--font-size-sm);
+            margin-top: 16px;
+            font-size: 0.85rem;
             color: var(--text-muted);
         }
         #authScreen .auth-card .auth-switch a {
@@ -224,7 +211,7 @@
         /* ===== HEADER ===== */
         header {
             background: var(--bg-header);
-            padding: 8px 10px 6px;
+            padding: 12px 16px 10px;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -235,30 +222,30 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2px;
+            margin-bottom: 6px;
         }
         .header-title {
-            font-size: var(--font-size-md);
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--text-primary);
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             flex-wrap: wrap;
         }
         .header-title span {
             font-weight: 300;
             color: var(--text-muted);
-            font-size: var(--font-size-xs);
+            font-size: 0.65rem;
         }
         .header-title .usuario-badge {
-            font-size: var(--font-size-xs);
+            font-size: 0.55rem;
             background: var(--primary);
             color: white;
-            padding: 1px 6px;
+            padding: 2px 10px;
             border-radius: 20px;
             font-weight: 600;
-            max-width: 100px;
+            max-width: 120px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -266,14 +253,14 @@
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
         }
         .btn-dark-mode {
             background: var(--bg-input);
             border: none;
             border-radius: 30px;
-            padding: 2px 6px;
-            font-size: var(--font-size-sm);
+            padding: 4px 8px;
+            font-size: 0.8rem;
             cursor: pointer;
             color: var(--text-primary);
             transition: var(--transition);
@@ -283,8 +270,8 @@
             background: var(--bg-input);
             border: none;
             border-radius: 30px;
-            padding: 2px 6px;
-            font-size: var(--font-size-xs);
+            padding: 4px 8px;
+            font-size: 0.65rem;
             cursor: pointer;
             color: var(--text-muted);
             transition: var(--transition);
@@ -296,13 +283,13 @@
         .menu-hamburguesa {
             background: var(--bg-input);
             border: none;
-            border-radius: 6px;
-            padding: 2px 6px;
-            font-size: var(--font-size-md);
+            border-radius: 10px;
+            padding: 4px 8px;
+            font-size: 1.1rem;
             cursor: pointer;
             color: var(--text-primary);
             transition: var(--transition);
-            line-height: 1.3;
+            line-height: 1.4;
         }
         .menu-hamburguesa:active { transform: scale(0.92); background: var(--btn-hover); }
 
@@ -314,8 +301,8 @@
             background: var(--bg-card);
             border-radius: var(--radius);
             box-shadow: var(--shadow-dropdown);
-            padding: 6px 0;
-            min-width: 150px;
+            padding: 8px 0;
+            min-width: 180px;
             z-index: 1000;
             border: 1px solid var(--border-color);
             margin-top: 4px;
@@ -325,11 +312,11 @@
         .dropdown-menu button {
             display: block;
             width: 100%;
-            padding: 6px 12px;
+            padding: 10px 16px;
             background: none;
             border: none;
             text-align: left;
-            font-size: var(--font-size-sm);
+            font-size: 0.85rem;
             font-weight: 500;
             color: var(--text-primary);
             cursor: pointer;
@@ -347,43 +334,42 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 2px 6px;
-            font-size: var(--font-size-xs);
+            gap: 4px 10px;
+            font-size: 0.7rem;
             color: var(--text-secondary);
         }
         .header-info .datetime {
             font-weight: 500;
             color: var(--text-muted);
-            font-size: var(--font-size-xs);
+            font-size: 0.65rem;
         }
         .header-info .clientes-count {
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
             font-weight: 600;
             color: var(--text-primary);
-            font-size: var(--font-size-xs);
         }
         .header-info .clientes-count .num {
             background: var(--primary);
             color: white;
             border-radius: 30px;
-            padding: 0 5px;
-            font-size: var(--font-size-xs);
+            padding: 0 8px;
+            font-size: 0.6rem;
             font-weight: 700;
-            min-width: 14px;
+            min-width: 18px;
             text-align: center;
         }
         .header-info .status {
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
             font-weight: 500;
-            font-size: var(--font-size-xs);
+            font-size: 0.65rem;
         }
         .header-info .status .dot {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             display: inline-block;
             animation: pulse-dot 2s infinite;
@@ -420,9 +406,9 @@
             box-shadow: var(--menu-shadow);
             display: flex;
             justify-content: space-around;
-            padding: 3px 2px 6px;
+            padding: 6px 4px 10px;
             z-index: 200;
-            border-radius: 16px 16px 0 0;
+            border-radius: 20px 20px 0 0;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             background: var(--bg-card);
@@ -433,19 +419,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 2px 3px;
-            font-size: var(--font-size-xs);
+            padding: 4px 6px;
+            font-size: 0.55rem;
             font-weight: 500;
             color: var(--text-muted);
             cursor: pointer;
             transition: var(--transition);
             gap: 1px;
-            min-width: 28px;
+            min-width: 40px;
             border-radius: var(--radius-sm);
             position: relative;
         }
         .bottom-menu button .icon {
-            font-size: var(--font-size-xl);
+            font-size: 1.3rem;
             line-height: 1.2;
         }
         .bottom-menu button.active {
@@ -459,10 +445,10 @@
             right: -2px;
             background: var(--danger);
             color: white;
-            font-size: var(--font-size-xs);
+            font-size: 0.5rem;
             border-radius: 30px;
-            padding: 0 4px;
-            min-width: 12px;
+            padding: 0 5px;
+            min-width: 14px;
             text-align: center;
             font-weight: 700;
         }
@@ -470,7 +456,7 @@
         /* ===== SECCIONES ===== */
         .section {
             display: none;
-            padding: 8px 10px 14px;
+            padding: 12px 16px 20px;
         }
         .section.visible { display: block; }
 
@@ -478,8 +464,8 @@
         .card {
             background: var(--bg-card);
             border-radius: var(--radius);
-            padding: 12px;
-            margin-bottom: 10px;
+            padding: 16px;
+            margin-bottom: 14px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border-color);
             transition: var(--transition);
@@ -488,10 +474,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
+            margin-bottom: 10px;
         }
         .card-header h3 {
-            font-size: var(--font-size-sm);
+            font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-secondary);
             text-transform: uppercase;
@@ -501,24 +487,9 @@
             background: var(--btn-primary-bg);
             color: var(--btn-primary-text);
             border-radius: 20px;
-            padding: 1px 8px;
-            font-size: var(--font-size-xs);
+            padding: 2px 12px;
+            font-size: 0.65rem;
             font-weight: 600;
-        }
-
-        /* ===== BOTONES DE ACCIÓN ===== */
-        .action-row {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 6px;
-            flex-wrap: wrap;
-        }
-        .action-row .btn-small {
-            flex: 1;
-            min-width: 50px;
-            text-align: center;
-            padding: 4px 6px;
-            font-size: var(--font-size-xs);
         }
 
         /* ===== CLIENTES ===== */
@@ -528,46 +499,38 @@
             align-items: center;
             background: var(--bg-card-alt);
             border-radius: var(--radius-sm);
-            padding: 8px 10px;
-            margin-bottom: 4px;
-            border-left: 3px solid var(--primary);
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-left: 4px solid var(--primary);
             transition: var(--transition);
-            gap: 4px;
-        }
-        .cliente-card .info {
-            flex: 1;
-            min-width: 0;
         }
         .cliente-card .info .nombre {
             font-weight: 600;
-            font-size: var(--font-size-md);
+            font-size: 0.95rem;
             color: var(--text-primary);
-            word-break: break-word;
         }
         .cliente-card .info .comision {
-            font-size: var(--font-size-xs);
+            font-size: 0.7rem;
             color: var(--text-muted);
         }
         .cliente-card .saldo {
             font-weight: 700;
-            font-size: var(--font-size-md);
+            font-size: 1rem;
             color: var(--text-primary);
-            white-space: nowrap;
         }
         .cliente-card .saldo.negativo { color: var(--saldo-negativo); }
         .cliente-card .acciones {
             display: flex;
-            gap: 2px;
-            flex-shrink: 0;
+            gap: 4px;
         }
         .cliente-card .acciones button {
             background: none;
             border: none;
-            font-size: var(--font-size-sm);
+            font-size: 0.75rem;
             color: var(--text-muted);
             cursor: pointer;
-            padding: 2px 4px;
-            border-radius: 4px;
+            padding: 4px 6px;
+            border-radius: 6px;
             transition: var(--transition);
         }
         .cliente-card .acciones button:active { background: var(--btn-hover); }
@@ -577,63 +540,81 @@
         .operacion-card {
             background: var(--bg-card-alt);
             border-radius: var(--radius-sm);
-            padding: 8px 10px;
-            margin-bottom: 4px;
-            border-left: 3px solid var(--primary);
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-left: 4px solid var(--primary);
             transition: var(--transition);
         }
         .operacion-card .tipo {
-            font-size: var(--font-size-xs);
+            font-size: 0.65rem;
             font-weight: 600;
             text-transform: uppercase;
             color: var(--text-muted);
         }
         .operacion-card .monto {
             font-weight: 700;
-            font-size: var(--font-size-md);
+            font-size: 1rem;
         }
         .operacion-card .detalle {
-            font-size: var(--font-size-xs);
+            font-size: 0.75rem;
             color: var(--text-secondary);
             margin-top: 2px;
         }
         .operacion-card .fecha {
-            font-size: var(--font-size-xs);
+            font-size: 0.65rem;
             color: var(--text-muted);
         }
         .operacion-card .numero-op {
-            font-size: var(--font-size-xs);
+            font-size: 0.6rem;
             color: var(--text-muted);
             background: var(--badge-bg);
-            padding: 1px 5px;
+            padding: 1px 8px;
             border-radius: 12px;
             font-weight: 600;
         }
-        .operacion-card .op-actions {
+        .operacion-card .acciones-botones {
             display: flex;
-            gap: 2px;
-            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
         }
-        .operacion-card .op-actions button {
-            background: none;
+        .operacion-card .acciones-botones .btn-small {
+            padding: 4px 12px;
+            font-size: 0.65rem;
+            border-radius: 6px;
             border: none;
-            font-size: var(--font-size-sm);
+            font-weight: 600;
             cursor: pointer;
-            padding: 2px 3px;
-            border-radius: 4px;
             transition: var(--transition);
         }
-        .operacion-card .op-actions button:active { background: var(--btn-hover); }
-        .operacion-card .op-actions .btn-edit { color: var(--primary); }
-        .operacion-card .op-actions .btn-delete { color: var(--danger); }
+        .operacion-card .acciones-botones .btn-small:active {
+            transform: scale(0.95);
+        }
+        .btn-editar-op {
+            background: var(--primary) !important;
+            color: white !important;
+        }
+        .btn-copiar-msg {
+            background: var(--success) !important;
+            color: white !important;
+        }
+        .btn-eliminar-op {
+            background: var(--danger) !important;
+            color: white !important;
+        }
+        .btn-editar-op:hover,
+        .btn-copiar-msg:hover,
+        .btn-eliminar-op:hover {
+            opacity: 0.85;
+        }
 
         /* ===== ESTILOS PARA BOTONES DE PESTAÑAS ===== */
         .tab-btn {
             flex: 1;
-            padding: 5px 8px;
+            padding: 8px 12px;
             border: 2px solid var(--border-color);
             border-radius: var(--radius-sm);
-            font-size: var(--font-size-sm);
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
@@ -649,72 +630,25 @@
 
         /* ===== FORMULARIOS ===== */
         .form-group {
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
         .form-group label {
             display: block;
-            font-size: var(--font-size-xs);
+            font-size: 0.75rem;
             font-weight: 500;
             color: var(--text-secondary);
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 6px 8px;
+            padding: 10px 12px;
             border: 1px solid var(--border-color);
             border-radius: var(--radius-sm);
-            font-size: var(--font-size-sm);
+            font-size: 0.9rem;
             background: var(--bg-input);
             color: var(--text-primary);
             transition: var(--transition);
-        }
-        
-        /* ===== ESTILOS PARA INPUTS NUMÉRICOS EN iOS ===== */
-        input[inputmode="decimal"],
-        input[inputmode="numeric"] {
-            font-size: var(--font-size-md);
-            letter-spacing: 0.5px;
-            -webkit-appearance: none;
-            appearance: none;
-        }
-        /* Eliminar botones de incremento en desktop */
-        input[inputmode="decimal"]::-webkit-outer-spin-button,
-        input[inputmode="decimal"]::-webkit-inner-spin-button,
-        input[inputmode="numeric"]::-webkit-outer-spin-button,
-        input[inputmode="numeric"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        /* Firefox */
-        input[inputmode="decimal"],
-        input[inputmode="numeric"] {
-            -moz-appearance: textfield;
-        }
-        /* Estilo al enfocar */
-        input[inputmode="decimal"]:focus,
-        input[inputmode="numeric"]:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
-        }
-
-        /* ===== SELECTORES DE FECHA MÁS COMPACTOS ===== */
-        .form-group input[type="date"],
-        .form-group input[type="time"],
-        .form-group input[type="datetime-local"] {
-            padding: 5px 6px;
-            font-size: var(--font-size-xs);
-            min-height: 32px;
-            height: 32px;
-            appearance: auto;
-            -webkit-appearance: auto;
-        }
-        /* ===== SELECTORES EN FILTROS ===== */
-        .filtros-row .form-group input[type="date"] {
-            padding: 3px 4px;
-            font-size: var(--font-size-xs);
-            min-height: 26px;
-            height: 26px;
         }
         .form-group input:focus,
         .form-group select:focus {
@@ -734,12 +668,12 @@
         /* ===== BOTONES ===== */
         .btn-primary {
             width: 100%;
-            padding: 8px;
+            padding: 12px;
             background: var(--btn-primary-bg);
             color: var(--btn-primary-text);
             border: none;
             border-radius: var(--radius-sm);
-            font-size: var(--font-size-sm);
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
@@ -753,8 +687,8 @@
         .btn-success { background: var(--btn-success-bg); color: white; }
         .btn-small {
             width: auto;
-            padding: 3px 8px;
-            font-size: var(--font-size-xs);
+            padding: 5px 12px;
+            font-size: 0.7rem;
             border: none;
             border-radius: 30px;
             font-weight: 500;
@@ -765,7 +699,7 @@
 
         /* ===== SALDO ===== */
         .saldo-total {
-            font-size: var(--font-size-2xl);
+            font-size: 2rem;
             font-weight: 700;
             text-align: center;
             padding: 4px 0 2px;
@@ -777,7 +711,7 @@
         }
         .saldo-label {
             text-align: center;
-            font-size: var(--font-size-xs);
+            font-size: 0.75rem;
             color: var(--text-muted);
         }
 
@@ -786,8 +720,8 @@
             background: var(--badge-bg);
             color: var(--badge-text);
             border-radius: 20px;
-            padding: 1px 6px;
-            font-size: var(--font-size-xs);
+            padding: 2px 10px;
+            font-size: 0.65rem;
             font-weight: 500;
         }
         .badge-recibo { background: var(--recibo-bg); color: var(--recibo-text); }
@@ -800,48 +734,46 @@
         .filtros-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px;
-            margin-bottom: 6px;
+            gap: 6px;
+            margin-bottom: 10px;
             align-items: flex-end;
         }
         .filtros-row .form-group {
             flex: 1;
-            min-width: 60px;
+            min-width: 80px;
             margin-bottom: 0;
         }
         .filtros-row .form-group label {
-            font-size: var(--font-size-xs);
+            font-size: 0.6rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .filtros-row .form-group input,
         .filtros-row .form-group select {
-            padding: 3px 4px;
-            font-size: var(--font-size-xs);
-            min-height: 26px;
-            height: 26px;
+            padding: 6px 8px;
+            font-size: 0.8rem;
         }
 
         /* ===== TARJETAS DE RESUMEN ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 4px;
-            margin-bottom: 8px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
         .stat-card {
             background: var(--bg-card-alt);
             border-radius: var(--radius-sm);
-            padding: 8px 6px;
+            padding: 12px 10px;
             text-align: center;
-            border-left: 3px solid var(--primary);
+            border-left: 4px solid var(--primary);
         }
         .stat-card .monto {
-            font-size: var(--font-size-md);
+            font-size: 1.2rem;
             font-weight: 700;
         }
         .stat-card .label {
-            font-size: var(--font-size-xs);
+            font-size: 0.6rem;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -856,16 +788,16 @@
         /* ===== EMPTY STATE ===== */
         .empty-msg {
             text-align: center;
-            padding: 16px 8px;
+            padding: 24px 12px;
             color: var(--text-muted);
         }
         .empty-msg .icono {
-            font-size: var(--font-size-xl);
+            font-size: 2rem;
             margin-bottom: 4px;
             opacity: 0.5;
         }
         .empty-msg p {
-            font-size: var(--font-size-sm);
+            font-size: 0.85rem;
         }
 
         /* ===== AVISO ===== */
@@ -873,26 +805,38 @@
             display: none;
             background: var(--gasto-bg);
             color: var(--gasto-text);
-            padding: 4px 6px;
-            border-radius: 6px;
-            font-size: var(--font-size-xs);
-            margin-bottom: 4px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            margin-bottom: 8px;
         }
         .aviso-negativo.visible { display: block; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 400px) {
+            .bottom-menu button {
+                font-size: 0.45rem;
+                padding: 2px 4px;
+                min-width: 32px;
+            }
+            .bottom-menu button .icon { font-size: 1rem; }
+            .header-title { font-size: 0.9rem; }
+            .header-info { font-size: 0.6rem; }
+        }
 
         /* ===== TOAST NOTIFICATION ===== */
         .toast {
             position: fixed;
-            bottom: 70px;
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
             background: var(--bg-card);
             color: var(--text-primary);
-            padding: 6px 14px;
+            padding: 10px 20px;
             border-radius: var(--radius-sm);
             box-shadow: var(--shadow-dropdown);
             border: 1px solid var(--border-color);
-            font-size: var(--font-size-sm);
+            font-size: 0.85rem;
             font-weight: 500;
             z-index: 300;
             opacity: 0;
@@ -926,7 +870,7 @@
             z-index: 500;
             justify-content: center;
             align-items: center;
-            padding: 14px;
+            padding: 20px;
         }
         .modal-overlay.open {
             display: flex;
@@ -934,8 +878,8 @@
         .modal {
             background: var(--bg-card);
             border-radius: var(--radius);
-            padding: 16px;
-            max-width: 380px;
+            padding: 24px;
+            max-width: 420px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -943,36 +887,29 @@
             border: 1px solid var(--border-color);
         }
         .modal h3 {
-            margin-bottom: 12px;
-            font-size: var(--font-size-md);
+            margin-bottom: 16px;
+            font-size: 1.1rem;
             color: var(--text-primary);
         }
         .modal .form-group {
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
         .modal .form-group label {
-            font-size: var(--font-size-xs);
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--text-secondary);
         }
-        .modal .form-group input[type="date"] {
-            padding: 5px 6px;
-            font-size: var(--font-size-xs);
-            min-height: 30px;
-            height: 30px;
-        }
         .modal .modal-actions {
             display: flex;
-            gap: 6px;
-            margin-top: 8px;
+            gap: 8px;
+            margin-top: 12px;
         }
         .modal .modal-actions button {
             flex: 1;
-            padding: 6px;
+            padding: 10px;
             border: none;
             border-radius: var(--radius-sm);
             font-weight: 600;
-            font-size: var(--font-size-sm);
             cursor: pointer;
             transition: var(--transition);
         }
@@ -986,101 +923,7 @@
             color: var(--btn-primary-text);
         }
 
-        /* ===== SWITCH TOGGLE ===== */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 40px;
-            height: 22px;
-            flex-shrink: 0;
-        }
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--border-color);
-            transition: .3s;
-            border-radius: 22px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 3px;
-            bottom: 3px;
-            background: white;
-            transition: .3s;
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        input:checked + .slider {
-            background: var(--primary);
-        }
-        input:checked + .slider:before {
-            transform: translateX(18px);
-        }
-        .switch input:active + .slider:before {
-            width: 18px;
-        }
-
-        /* ===== CONFIGURACIÓN ===== */
-        .config-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border-color);
-            gap: 6px;
-        }
-        .config-item:last-child {
-            border-bottom: none;
-        }
-        .config-item .config-info {
-            flex: 1;
-            min-width: 0;
-        }
-        .config-item .config-info strong {
-            font-size: var(--font-size-sm);
-            display: block;
-            color: var(--text-primary);
-        }
-        .config-item .config-info p {
-            font-size: var(--font-size-xs);
-            color: var(--text-muted);
-            margin: 0;
-        }
-        .config-item select,
-        .config-item input[type="number"],
-        .config-item input[type="password"] {
-            padding: 3px 6px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-input);
-            color: var(--text-primary);
-            font-size: var(--font-size-xs);
-            max-width: 90px;
-            flex-shrink: 0;
-            min-height: 28px;
-            height: 28px;
-        }
-        .config-item input[type="number"] {
-            max-width: 60px;
-            text-align: center;
-        }
-        .config-item input[type="password"] {
-            max-width: 100px;
-        }
-
-        /* ===== BOTÓN COMISIONES ===== */
+        /* Estilo para el botón Comisiones */
         .btn-comisiones {
             background: var(--bg-card);
             border: 2px solid var(--primary);
@@ -1096,78 +939,54 @@
             color: white;
         }
 
-        /* ===== BASE DE DATOS - IMPORTAR EXCEL ===== */
-        .bd-import-row {
+        /* Estilo para mensaje manual (modal de copiado) */
+        .modal-mensaje-manual {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 999;
             display: flex;
-            gap: 4px;
+            justify-content: center;
             align-items: center;
-            margin-top: 4px;
+            padding: 20px;
         }
-        .bd-import-row input[type="file"] {
-            flex: 1;
-            padding: 2px 4px;
-            font-size: var(--font-size-xs);
-            min-height: 28px;
-            height: 28px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
+        .modal-mensaje-manual .contenido {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-mensaje-manual .contenido pre {
             background: var(--bg-input);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
             color: var(--text-primary);
+            font-family: monospace;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
         }
-        .bd-import-row .btn-small {
-            padding: 3px 10px;
-            font-size: var(--font-size-xs);
-            white-space: nowrap;
-            height: 28px;
-            display: flex;
-            align-items: center;
+        .modal-mensaje-manual .contenido .btn-cerrar-modal {
+            width: 100%;
+            padding: 10px;
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
         }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 400px) {
-            .bottom-menu button {
-                font-size: var(--font-size-xs);
-                padding: 1px 2px;
-                min-width: 24px;
-            }
-            .bottom-menu button .icon { font-size: var(--font-size-md); }
-            .header-title { font-size: var(--font-size-sm); }
-            .header-info { font-size: var(--font-size-xs); }
-            .action-row .btn-small { font-size: var(--font-size-xs); padding: 3px 4px; }
-            .cliente-card .info .nombre { font-size: var(--font-size-sm); }
-            .cliente-card .saldo { font-size: var(--font-size-sm); }
-            .stats-grid { grid-template-columns: 1fr 1fr; gap: 3px; }
-            .stat-card .monto { font-size: var(--font-size-sm); }
-            .saldo-total { font-size: var(--font-size-xl); }
-            .config-item select { max-width: 70px; font-size: var(--font-size-xs); }
-            .config-item input[type="number"] { max-width: 50px; }
-            .filtros-row .form-group { min-width: 50px; }
-            .filtros-row .form-group input[type="date"] { min-height: 22px; height: 22px; font-size: var(--font-size-xs); }
-            /* Evitar zoom en iOS */
-            input[inputmode="decimal"],
-            input[inputmode="numeric"] {
-                font-size: var(--font-size-md) !important;
-            }
-        }
-
-        @media (min-width: 481px) {
-            body {
-                padding: 0 20px 80px;
-            }
-            .bottom-menu {
-                border-radius: 20px 20px 0 0;
-            }
-        }
-
-        /* ===== EVITAR ZOOM EN iOS ===== */
-        input[inputmode="decimal"],
-        input[inputmode="numeric"],
-        input[type="text"],
-        input[type="number"],
-        input[type="password"],
-        input[type="email"],
-        select {
-            font-size: 16px !important;
+        .modal-mensaje-manual .contenido .btn-cerrar-modal:active {
+            transform: scale(0.97);
         }
     </style>
 </head>
@@ -1183,13 +1002,11 @@
             <div id="loginForm">
                 <div class="form-group">
                     <label>👤 Usuario o Email</label>
-                    <input type="text" id="loginUsuario" placeholder="Ej: juanperez" 
-                           autocomplete="username" enterkeyhint="next">
+                    <input type="text" id="loginUsuario" placeholder="Ej: juanperez o juan@email.com" autofocus>
                 </div>
                 <div class="form-group">
                     <label>🔑 Contraseña</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" 
-                           autocomplete="current-password" enterkeyhint="go">
+                    <input type="password" id="loginPassword" placeholder="••••••••">
                 </div>
                 <button class="btn-primary" id="btnLogin">🚪 Iniciar Sesión</button>
                 <div class="auth-error" id="loginError">❌ Usuario o contraseña incorrectos.</div>
@@ -1202,23 +1019,19 @@
             <div id="registerForm" style="display:none;">
                 <div class="form-group">
                     <label>👤 Nombre de usuario</label>
-                    <input type="text" id="registerUsuario" placeholder="Ej: juanperez" 
-                           autocomplete="username" enterkeyhint="next">
+                    <input type="text" id="registerUsuario" placeholder="Ej: juanperez">
                 </div>
                 <div class="form-group">
                     <label>📧 Email (opcional)</label>
-                    <input type="email" id="registerEmail" placeholder="Ej: juan@email.com" 
-                           autocomplete="email" enterkeyhint="next">
+                    <input type="email" id="registerEmail" placeholder="Ej: juan@email.com">
                 </div>
                 <div class="form-group">
                     <label>🔑 Contraseña</label>
-                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" 
-                           autocomplete="new-password" enterkeyhint="next">
+                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres">
                 </div>
                 <div class="form-group">
                     <label>🔐 Confirmar Contraseña</label>
-                    <input type="password" id="registerConfirm" placeholder="Repite la contraseña" 
-                           autocomplete="new-password" enterkeyhint="go">
+                    <input type="password" id="registerConfirm" placeholder="Repite la contraseña">
                 </div>
                 <button class="btn-primary" id="btnRegister">📝 Registrarse</button>
                 <div class="auth-error" id="registerError">❌ Error en el registro.</div>
@@ -1242,9 +1055,7 @@
             </div>
             <div class="form-group">
                 <label>Monto</label>
-                <input type="text" id="modalMonto" placeholder="0.00" 
-                       inputmode="decimal" enterkeyhint="done"
-                       autocomplete="off" autocorrect="off" spellcheck="false">
+                <input type="number" id="modalMonto" step="0.01" min="0" inputmode="decimal">
             </div>
             <div class="form-group">
                 <label>Fecha</label>
@@ -1280,7 +1091,6 @@
                 <button data-section="saldo">💰 Saldo</button>
                 <button data-section="historial">📜 Historial</button>
                 <button data-section="finanzas">💹 Finanzas</button>
-                <button data-section="configuracion">⚙️ Configuración</button>
                 <button data-section="bd">🗄️ Base de Datos</button>
             </div>
             <div class="header-info">
@@ -1312,9 +1122,6 @@
             <button data-section="finanzas">
                 <span class="icon">💹</span> Finanzas
             </button>
-            <button data-section="configuracion">
-                <span class="icon">⚙️</span> Config
-            </button>
             <button data-section="bd">
                 <span class="icon">🗄️</span> BD
             </button>
@@ -1324,24 +1131,21 @@
 
         <!-- SECCIÓN CLIENTES -->
         <div id="section-clientes" class="section visible">
-            <div class="action-row">
-                <button class="btn-small btn-primary" id="btnMostrarAgregarCliente">➕ Agregar</button>
-                <button class="btn-small btn-secondary" id="btnMostrarListaClientes">📋 Ver</button>
-                <button class="btn-small btn-comisiones" id="btnMostrarComisiones">📊 Comisiones</button>
+            <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
+                <button class="btn-small btn-primary" id="btnMostrarAgregarCliente" style="flex:1;">➕ Agregar</button>
+                <button class="btn-small btn-secondary" id="btnMostrarListaClientes" style="flex:1;">📋 Ver Clientes</button>
+                <button class="btn-small btn-comisiones" id="btnMostrarComisiones" style="flex:1;">📊 Comisiones</button>
             </div>
 
             <div id="sub-agregar-cliente" class="card">
-                <h3 style="margin-bottom:6px; font-size:var(--font-size-sm);">Agregar Cliente</h3>
+                <h3 style="margin-bottom:10px;">Agregar Cliente</h3>
                 <div class="form-group">
                     <label>Nombre del cliente</label>
-                    <input type="text" id="clienteNombre" placeholder="Ej: Juan Pérez" 
-                           autocomplete="off" enterkeyhint="next">
+                    <input type="text" id="clienteNombre" placeholder="Ej: Juan Pérez">
                 </div>
                 <div class="form-group">
                     <label>Comisión (%)</label>
-                    <input type="text" id="clienteComision" placeholder="1.5" 
-                           inputmode="decimal" enterkeyhint="done"
-                           autocomplete="off" autocorrect="off" spellcheck="false">
+                    <input type="number" id="clienteComision" step="0.1" min="0" value="1.5" inputmode="decimal">
                 </div>
                 <button class="btn-primary" id="btnAgregarCliente">Agregar</button>
             </div>
@@ -1359,35 +1163,33 @@
                     <h3>📊 Editar Comisiones</h3>
                     <span class="badge-count" id="totalComisionesClientes">0</span>
                 </div>
-                <p style="font-size:var(--font-size-xs); color:var(--text-muted); margin-bottom:6px;">Edita la comisión de cada cliente de forma individual</p>
+                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">Edita la comisión de cada cliente de forma individual</p>
                 <div id="listaComisiones"></div>
             </div>
         </div>
 
         <!-- SECCIÓN OPERACIONES -->
         <div id="section-operaciones" class="section">
-            <div style="display:flex; gap:4px; margin-bottom:6px; flex-wrap:wrap;">
+            <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
                 <button class="tab-btn active" id="btnMostrarRecibir">📥 Recibir</button>
                 <button class="tab-btn" id="btnMostrarTransferir">📤 Transferir</button>
             </div>
 
             <div id="sub-recibir" class="card">
-                <h3 style="margin-bottom:6px; font-size:var(--font-size-sm);">📥 Registrar Recibo</h3>
+                <h3 style="margin-bottom:10px;">📥 Registrar Recibo</h3>
                 <div class="form-group">
                     <label>Cliente</label>
                     <select id="recibirCliente"></select>
                 </div>
                 <div class="form-group">
                     <label>Monto a recibir</label>
-                    <input type="text" id="recibirMonto" placeholder="0.00" 
-                           inputmode="decimal" enterkeyhint="done"
-                           autocomplete="off" autocorrect="off" spellcheck="false">
+                    <input type="number" id="recibirMonto" placeholder="0.00" step="0.01" min="0" inputmode="decimal" autofocus>
                 </div>
                 <div class="form-group">
                     <label>Fecha</label>
                     <input type="date" id="recibirFecha">
                 </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
                     <div class="form-group">
                         <label>Comisión</label>
                         <input type="text" id="recibirComision" class="readonly-field" readonly>
@@ -1397,23 +1199,21 @@
                         <input type="text" id="recibirNeto" class="readonly-field" readonly>
                     </div>
                 </div>
-                <div style="background:var(--bg-card-alt); padding:4px 6px; border-radius:var(--radius-sm); margin:4px 0; text-align:center; font-weight:500; font-size:var(--font-size-sm);">
+                <div style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); margin:6px 0; text-align:center; font-weight:500; font-size:0.9rem;">
                     <span id="recibirSaldoActualizado">Saldo actual: $0.00</span>
                 </div>
-                <button class="btn-primary btn-registrar" id="btnRegistrarRecibo">Registrar Recibo</button>
+                <button class="btn-primary" id="btnRegistrarRecibo">Registrar Recibo</button>
             </div>
 
             <div id="sub-transferir" class="card" style="display:none;">
-                <h3 style="margin-bottom:6px; font-size:var(--font-size-sm);">📤 Registrar Transferencia</h3>
+                <h3 style="margin-bottom:10px;">📤 Registrar Transferencia</h3>
                 <div class="form-group">
                     <label>Cliente</label>
                     <select id="transferirCliente"></select>
                 </div>
                 <div class="form-group">
                     <label>Monto a transferir</label>
-                    <input type="text" id="transferirMonto" placeholder="0.00" 
-                           inputmode="decimal" enterkeyhint="done"
-                           autocomplete="off" autocorrect="off" spellcheck="false">
+                    <input type="number" id="transferirMonto" placeholder="0.00" step="0.01" min="0" inputmode="decimal" autofocus>
                 </div>
                 <div class="form-group">
                     <label>Fecha</label>
@@ -1423,18 +1223,18 @@
                     <label>Saldo disponible</label>
                     <input type="text" id="transferirSaldoDisponible" class="readonly-field" readonly>
                 </div>
-                <div style="background:var(--bg-card-alt); padding:4px 6px; border-radius:var(--radius-sm); margin:4px 0; text-align:center; font-weight:500; font-size:var(--font-size-sm);">
+                <div style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); margin:6px 0; text-align:center; font-weight:500; font-size:0.9rem;">
                     <span id="transferirSaldoRestante">Saldo restante: $0.00</span>
                 </div>
                 <div class="aviso-negativo" id="avisoSaldoNegativo">⚠️ Saldo negativo. Se usará dinero propio.</div>
-                <button class="btn-primary btn-registrar" id="btnRegistrarTransferencia">Registrar Transferencia</button>
+                <button class="btn-primary" id="btnRegistrarTransferencia">Registrar Transferencia</button>
             </div>
 
             <div id="sub-lista-recibos" class="card">
                 <div class="card-header">
                     <h3>📋 Recibos Registrados</h3>
-                    <div style="display:flex; gap:3px; align-items:center;">
-                        <button class="btn-small btn-secondary" id="btnInvertirRecibos" style="font-size:var(--font-size-xs);">⬆️ Recientes</button>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <button class="btn-small btn-secondary" id="btnInvertirRecibos" style="font-size:0.6rem;">⬆️ Más recientes</button>
                         <span class="badge-count" id="contadorRecibosOperaciones">0</span>
                     </div>
                 </div>
@@ -1444,8 +1244,8 @@
             <div id="sub-lista-transferencias" class="card" style="display:none;">
                 <div class="card-header">
                     <h3>📋 Transferencias Registradas</h3>
-                    <div style="display:flex; gap:3px; align-items:center;">
-                        <button class="btn-small btn-secondary" id="btnInvertirTransferencias" style="font-size:var(--font-size-xs);">⬆️ Recientes</button>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <button class="btn-small btn-secondary" id="btnInvertirTransferencias" style="font-size:0.6rem;">⬆️ Más recientes</button>
                         <span class="badge-count" id="contadorTransferenciasOperaciones">0</span>
                     </div>
                 </div>
@@ -1460,7 +1260,7 @@
                 <div class="saldo-label" style="color:rgba(255,255,255,0.7);">Saldo total de todos los clientes</div>
             </div>
             <div class="card">
-                <h3 style="margin-bottom:6px; font-size:var(--font-size-sm);">Saldo por Cliente</h3>
+                <h3 style="margin-bottom:10px;">Saldo por Cliente</h3>
                 <div id="saldosPorCliente"></div>
             </div>
         </div>
@@ -1468,7 +1268,7 @@
         <!-- SECCIÓN HISTORIAL -->
         <div id="section-historial" class="section">
             <div class="card">
-                <h3 style="margin-bottom:6px; font-size:var(--font-size-sm);">Historial Completo</h3>
+                <h3 style="margin-bottom:10px;">Historial Completo</h3>
                 <div class="filtros-row">
                     <div class="form-group">
                         <label>Cliente</label>
@@ -1487,7 +1287,7 @@
                         </select>
                     </div>
                 </div>
-                <div style="display:flex; gap:3px; flex-wrap:wrap; margin-bottom:6px;">
+                <div style="display:flex; gap:4px; flex-wrap:wrap; margin-bottom:10px;">
                     <button class="btn-small btn-secondary" id="btnInvertirOrden">⬆️ Invertir</button>
                     <button class="btn-small btn-success" id="btnExportarExcelHistorial" style="background:#1d6f42; color:white;">📊 Excel</button>
                     <button class="btn-small btn-danger" id="btnExportarPDFHistorial" style="background:#b22234; color:white;">📄 PDF</button>
@@ -1498,9 +1298,9 @@
 
         <!-- SECCIÓN FINANZAS -->
         <div id="section-finanzas" class="section">
-            <div class="action-row">
-                <button class="btn-small btn-primary" id="btnMostrarResumenFinanzas">📊 Resumen</button>
-                <button class="btn-small btn-secondary" id="btnMostrarRegistrarFinanza">➕ Registrar</button>
+            <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
+                <button class="btn-small btn-primary" id="btnMostrarResumenFinanzas" style="flex:1;">📊 Resumen</button>
+                <button class="btn-small btn-secondary" id="btnMostrarRegistrarFinanza" style="flex:1;">➕ Registrar</button>
             </div>
 
             <div id="sub-resumen-finanzas" class="card">
@@ -1522,7 +1322,7 @@
                         <div class="monto" id="saldoFinanzas">$0.00</div>
                     </div>
                 </div>
-                <div style="margin-top:6px;">
+                <div style="margin-top:10px;">
                     <div class="card-header">
                         <h3>Movimientos Financieros</h3>
                         <span class="badge-count" id="contadorFinanzas">0</span>
@@ -1541,7 +1341,7 @@
                             <label>Fecha</label>
                             <input type="date" id="filtroFinanzasFecha">
                         </div>
-                        <div style="display:flex; align-items:flex-end; padding-bottom:2px;">
+                        <div style="display:flex; align-items:flex-end; padding-bottom:4px;">
                             <button class="btn-small btn-secondary" id="btnInvertirFinanzas">⬆️</button>
                         </div>
                     </div>
@@ -1550,7 +1350,7 @@
             </div>
 
             <div id="sub-registrar-finanza" class="card" style="display:none;">
-                <h3 style="margin-bottom:6px; font-size:var(--font-size-sm);">Registrar Movimiento</h3>
+                <h3 style="margin-bottom:10px;">Registrar Movimiento</h3>
                 <div class="form-group">
                     <label>Tipo</label>
                     <select id="finanzaTipo">
@@ -1560,182 +1360,42 @@
                 </div>
                 <div class="form-group">
                     <label>Monto</label>
-                    <input type="text" id="finanzaMonto" placeholder="0.00" 
-                           inputmode="decimal" enterkeyhint="done"
-                           autocomplete="off" autocorrect="off" spellcheck="false">
+                    <input type="number" id="finanzaMonto" placeholder="0.00" step="0.01" min="0" inputmode="decimal">
                 </div>
                 <div class="form-group">
                     <label>Descripción</label>
-                    <input type="text" id="finanzaDescripcion" placeholder="Ej: Pago de luz" 
-                           autocomplete="off" enterkeyhint="done">
+                    <input type="text" id="finanzaDescripcion" placeholder="Ej: Pago de luz">
                 </div>
                 <div class="form-group">
                     <label>Fecha</label>
                     <input type="date" id="finanzaFecha">
                 </div>
-                <button class="btn-primary btn-registrar" id="btnRegistrarFinanza">Registrar</button>
-            </div>
-        </div>
-
-        <!-- SECCIÓN CONFIGURACIÓN -->
-        <div id="section-configuracion" class="section">
-            <div class="card">
-                <h3 style="margin-bottom:6px; font-size:var(--font-size-sm);">⚙️ Configuración</h3>
-                
-                <div class="config-item">
-                    <div class="config-info">
-                        <strong>🌙 Modo Oscuro</strong>
-                        <p>Cambiar entre tema claro y oscuro</p>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="configDarkMode">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-
-                <div class="config-item">
-                    <div class="config-info">
-                        <strong>💰 Símbolo de Moneda</strong>
-                        <p>Selecciona el símbolo de moneda</p>
-                    </div>
-                    <select id="configMoneda">
-                        <option value="$">$</option>
-                        <option value="€">€</option>
-                        <option value="S/.">S/.</option>
-                        <option value="£">£</option>
-                        <option value="¥">¥</option>
-                    </select>
-                </div>
-
-                <div class="config-item">
-                    <div class="config-info">
-                        <strong>📅 Formato de Fecha</strong>
-                        <p>Elige el formato de fecha</p>
-                    </div>
-                    <select id="configFormatoFecha">
-                        <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-                    </select>
-                </div>
-
-                <div class="config-item">
-                    <div class="config-info">
-                        <strong>📊 Comisión Predeterminada</strong>
-                        <p>Valor por defecto al crear clientes</p>
-                    </div>
-                    <input type="text" id="configComisionDefecto" placeholder="1.5" 
-                           inputmode="decimal" enterkeyhint="done"
-                           autocomplete="off" autocorrect="off" spellcheck="false"
-                           style="max-width:60px; text-align:center;">
-                </div>
-
-                <div class="config-item">
-                    <div class="config-info">
-                        <strong>🔤 Tamaño de Fuente</strong>
-                        <p>Ajusta el tamaño del texto</p>
-                    </div>
-                    <select id="configTamanioFuente">
-                        <option value="pequeno">Pequeño</option>
-                        <option value="medio" selected>Medio</option>
-                        <option value="grande">Grande</option>
-                        <option value="muy-grande">Muy Grande</option>
-                    </select>
-                </div>
-
-                <div class="config-item">
-                    <div class="config-info">
-                        <strong>💾 Respaldo Automático</strong>
-                        <p>Guardar datos automáticamente</p>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="configRespaldoAuto" checked>
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-
-                <div class="config-item" style="flex-wrap:wrap; gap:4px;">
-                    <div class="config-info">
-                        <strong>📤 Exportar Configuración</strong>
-                        <p>Exporta todas tus preferencias</p>
-                    </div>
-                    <div style="display:flex; gap:3px;">
-                        <button class="btn-small btn-secondary" id="btnExportarConfig">Exportar</button>
-                        <button class="btn-small btn-secondary" id="btnImportarConfig">Importar</button>
-                    </div>
-                </div>
-
-                <div class="config-item">
-                    <div class="config-info">
-                        <strong>🔄 Restaurar por Defecto</strong>
-                        <p>Volver a la configuración original</p>
-                    </div>
-                    <button class="btn-small btn-danger" id="btnRestaurarConfig">Restaurar</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3 style="margin-bottom:6px; font-size:var(--font-size-sm);">🔐 Seguridad</h3>
-                
-                <div class="config-item">
-                    <div class="config-info">
-                        <strong>🔒 Bloqueo con PIN</strong>
-                        <p>Proteger la app con un código de 4 dígitos</p>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="configBloqueoPIN">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <div id="configPINContainer" style="display:none; padding:4px 0 0;">
-                    <input type="password" id="configPIN" placeholder="Código de 4 dígitos" maxlength="4" 
-                           inputmode="numeric" enterkeyhint="done"
-                           style="padding:4px 8px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-input); color:var(--text-primary); width:100%; font-size:var(--font-size-sm); text-align:center; letter-spacing:4px;">
-                </div>
-
-                <div style="margin-top:6px;">
-                    <button class="btn-small btn-secondary" id="btnCambiarPassword" style="width:100%;">🔑 Cambiar Contraseña</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3 style="margin-bottom:6px; font-size:var(--font-size-sm);">❓ Ayuda y Soporte</h3>
-                
-                <div style="display:flex; flex-direction:column; gap:3px;">
-                    <button class="btn-small btn-secondary" id="btnAyuda" style="width:100%; text-align:center; padding:6px;">📖 Guía Rápida</button>
-                    <button class="btn-small btn-secondary" id="btnTutorial" style="width:100%; text-align:center; padding:6px;">🎓 Tour Interactivo</button>
-                    <button class="btn-small btn-secondary" id="btnContacto" style="width:100%; text-align:center; padding:6px;">📧 Contactar Soporte</button>
-                </div>
-                
-                <div style="margin-top:8px; text-align:center; font-size:var(--font-size-xs); color:var(--text-muted);">
-                    <p>Versión 2.0.0</p>
-                    <p>Desarrollado con ❤️</p>
-                </div>
+                <button class="btn-primary" id="btnRegistrarFinanza">Registrar</button>
             </div>
         </div>
 
         <!-- SECCIÓN BASE DE DATOS -->
         <div id="section-bd" class="section">
             <div class="card">
-                <h3 style="margin-bottom:6px; font-size:var(--font-size-sm);">🗄️ Base de Datos</h3>
+                <h3 style="margin-bottom:10px;">🗄️ Base de Datos</h3>
                 <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
                     <div class="stat-card"><div class="monto" id="statClientes">0</div><div class="label">Clientes</div></div>
                     <div class="stat-card"><div class="monto" id="statRecibos">0</div><div class="label">Recibos</div></div>
                     <div class="stat-card"><div class="monto" id="statTransferencias">0</div><div class="label">Transferencias</div></div>
                     <div class="stat-card"><div class="monto" id="statFinanzas">0</div><div class="label">Finanzas</div></div>
                 </div>
-                <button class="btn-small btn-success" id="btnExportarJSON" style="width:100%; margin-bottom:4px;">📤 Exportar JSON</button>
-                <button class="btn-small btn-secondary" id="btnImportarJSON" style="width:100%; margin-bottom:4px;">📥 Importar JSON</button>
+                <button class="btn-small btn-success" id="btnExportarJSON" style="width:100%; margin-bottom:6px;">📤 Exportar JSON</button>
+                <button class="btn-small btn-secondary" id="btnImportarJSON" style="width:100%; margin-bottom:6px;">📥 Importar JSON</button>
                 <input type="file" id="inputImportarJSON" accept=".json" style="display:none;">
-                <div style="margin-top:4px;">
-                    <label style="font-size:var(--font-size-xs); font-weight:500;">Importar Excel/CSV</label>
-                    <div class="bd-import-row">
-                        <input type="file" id="inputImportarExcel" accept=".xlsx,.xls,.csv">
+                <div style="margin-top:6px;">
+                    <label style="font-size:0.75rem; font-weight:500;">Importar Excel/CSV</label>
+                    <div style="display:flex; gap:4px;">
+                        <input type="file" id="inputImportarExcel" accept=".xlsx,.xls,.csv" style="flex:1; padding:4px; font-size:0.8rem;">
                         <button class="btn-small btn-success" id="btnImportarExcel">Importar</button>
                     </div>
                 </div>
-                <button class="btn-small btn-danger" id="btnBorrarTodo" style="width:100%; margin-top:6px;">🗑️ Borrar todos los datos</button>
-                <div id="bdMensaje" style="margin-top:4px; padding:4px; border-radius:6px; display:none; font-size:var(--font-size-xs);"></div>
+                <button class="btn-small btn-danger" id="btnBorrarTodo" style="width:100%; margin-top:10px;">🗑️ Borrar todos los datos</button>
+                <div id="bdMensaje" style="margin-top:6px; padding:6px; border-radius:8px; display:none; font-size:0.8rem;"></div>
             </div>
         </div>
     </div>
@@ -1812,19 +1472,15 @@
         function iniciarSesion() {
             const usuario = document.getElementById('loginUsuario').value.trim();
             const password = document.getElementById('loginPassword').value;
-            
             if (!usuario || !password) {
                 mostrarErrorLogin('Completa todos los campos.');
                 return;
             }
-            
             const result = verificarLogin(usuario, password);
-            
             if (!result.success) {
                 mostrarErrorLogin(result.error);
                 return;
             }
-            
             usuarioActual = usuario;
             document.getElementById('usuarioBadge').textContent = '👤 ' + usuario;
             ocultarAuth();
@@ -1839,7 +1495,6 @@
             const email = document.getElementById('registerEmail').value.trim();
             const password = document.getElementById('registerPassword').value;
             const confirm = document.getElementById('registerConfirm').value;
-            
             if (!usuario || usuario.length < 3) {
                 mostrarErrorRegistro('El usuario debe tener al menos 3 caracteres.');
                 return;
@@ -1856,13 +1511,11 @@
                 mostrarErrorRegistro('El usuario solo puede contener letras, números y guión bajo.');
                 return;
             }
-            
             const result = registrarUsuario(usuario, password, email);
             if (!result.success) {
                 mostrarErrorRegistro(result.error);
                 return;
             }
-            
             mostrarToast('✅ Usuario registrado correctamente. Ahora inicia sesión.', 'success');
             mostrarLoginForm();
             document.getElementById('loginUsuario').value = usuario;
@@ -1933,82 +1586,25 @@
         document.getElementById('switchToRegister').addEventListener('click', mostrarRegisterForm);
         document.getElementById('switchToLogin').addEventListener('click', mostrarLoginForm);
 
-        // ============================================================
-        // MANEJO DE TECLADO EN iOS - Botón "Hecho" (Enter)
-        // ============================================================
+        document.getElementById('loginUsuario').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+        });
+        document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') iniciarSesion();
+        });
 
-        function setupIOSKeyboard() {
-            // Identificar todos los inputs numéricos
-            const numericInputs = document.querySelectorAll('input[inputmode="decimal"], input[inputmode="numeric"]');
-            
-            numericInputs.forEach(input => {
-                // Filtrar caracteres
-                input.addEventListener('input', function() {
-                    let val = this.value.replace(/[^0-9.]/g, '');
-                    const parts = val.split('.');
-                    if (parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
-                    if (val.includes('.') && val.split('.')[1].length > 2) {
-                        val = val.slice(0, val.indexOf('.') + 3);
-                    }
-                    this.value = val;
-                });
-                
-                // Formatear al perder foco
-                input.addEventListener('blur', function() {
-                    if (this.value && !isNaN(parseFloat(this.value))) {
-                        this.value = parseFloat(this.value).toFixed(2);
-                    }
-                });
-                
-                // Seleccionar al enfocar
-                input.addEventListener('focus', function() {
-                    this.select();
-                });
-                
-                // Manejar el botón "Hecho" (Enter en iOS)
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        this.blur(); // Cerrar teclado
-                        
-                        // Buscar el botón de acción
-                        const card = this.closest('.card');
-                        if (card) {
-                            const btn = card.querySelector('.btn-primary, .btn-registrar');
-                            if (btn) {
-                                btn.click();
-                                // Feedback visual
-                                btn.style.transform = 'scale(0.95)';
-                                setTimeout(() => {
-                                    btn.style.transform = '';
-                                }, 200);
-                            }
-                        }
-                    }
-                });
-            });
-            
-            // Configurar campos de login/registro
-            const loginInputs = document.querySelectorAll('#loginUsuario, #loginPassword, #registerUsuario, #registerEmail, #registerPassword, #registerConfirm');
-            loginInputs.forEach((input, index, arr) => {
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        const nextIndex = index + 1;
-                        if (nextIndex < arr.length) {
-                            arr[nextIndex].focus();
-                        } else {
-                            // Si es el último, buscar el botón de submit
-                            const form = this.closest('.auth-card');
-                            if (form) {
-                                const btn = form.querySelector('.btn-primary');
-                                if (btn) btn.click();
-                            }
-                        }
-                    }
-                });
-            });
-        }
+        document.getElementById('registerUsuario').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('registerEmail').focus();
+        });
+        document.getElementById('registerEmail').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('registerPassword').focus();
+        });
+        document.getElementById('registerPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('registerConfirm').focus();
+        });
+        document.getElementById('registerConfirm').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') registrarNuevoUsuario();
+        });
 
         // ============================================================
         // FUNCIONES PARA GUARDAR/CARGAR DATOS POR USUARIO
@@ -2062,10 +1658,8 @@
         }
 
         // ============================================================
-        // MODO OSCURO Y CONFIGURACIÓN
+        // MODO OSCURO
         // ============================================================
-
-        let simboloMoneda = '$';
 
         function aplicarModoOscuro(activar) {
             if (activar) {
@@ -2081,95 +1675,6 @@
         function toggleDarkMode() {
             const activar = !document.body.classList.contains('dark-mode');
             aplicarModoOscuro(activar);
-            if (document.getElementById('configDarkMode')) {
-                document.getElementById('configDarkMode').checked = activar;
-            }
-            guardarConfiguracion();
-        }
-
-        function aplicarTamanioFuente(tamanio) {
-            const sizes = {
-                'pequeno': '0.8rem',
-                'medio': '1rem',
-                'grande': '1.2rem',
-                'muy-grande': '1.4rem'
-            };
-            
-            const newSize = sizes[tamanio] || '1rem';
-            document.documentElement.style.setProperty('--font-size-base', newSize);
-            localStorage.setItem('gestor_font_size', tamanio);
-            document.body.style.fontSize = newSize;
-        }
-
-        // ============================================================
-        // CONFIGURACIÓN
-        // ============================================================
-
-        function cargarConfiguracion() {
-            try {
-                const config = JSON.parse(localStorage.getItem('gestor_config')) || {};
-                
-                if (config.darkMode !== undefined) {
-                    document.getElementById('configDarkMode').checked = config.darkMode;
-                    aplicarModoOscuro(config.darkMode);
-                }
-                
-                if (config.moneda) {
-                    document.getElementById('configMoneda').value = config.moneda;
-                    simboloMoneda = config.moneda;
-                }
-                
-                if (config.formatoFecha) {
-                    document.getElementById('configFormatoFecha').value = config.formatoFecha;
-                }
-                
-                if (config.comisionDefecto) {
-                    document.getElementById('configComisionDefecto').value = config.comisionDefecto;
-                    document.getElementById('clienteComision').value = config.comisionDefecto;
-                }
-                
-                const tamanioGuardado = config.tamanioFuente || localStorage.getItem('gestor_font_size') || 'medio';
-                document.getElementById('configTamanioFuente').value = tamanioGuardado;
-                aplicarTamanioFuente(tamanioGuardado);
-                
-                if (config.respaldoAuto !== undefined) {
-                    document.getElementById('configRespaldoAuto').checked = config.respaldoAuto;
-                }
-                
-                if (config.bloqueoPIN) {
-                    document.getElementById('configBloqueoPIN').checked = true;
-                    document.getElementById('configPINContainer').style.display = 'block';
-                    document.getElementById('configPIN').value = config.pin || '';
-                }
-                
-            } catch (e) {
-                console.warn('Error al cargar configuración:', e);
-            }
-        }
-
-        function guardarConfiguracion() {
-            const config = {
-                darkMode: document.getElementById('configDarkMode').checked,
-                moneda: document.getElementById('configMoneda').value,
-                formatoFecha: document.getElementById('configFormatoFecha').value,
-                comisionDefecto: parseFloat(document.getElementById('configComisionDefecto').value) || 1.5,
-                tamanioFuente: document.getElementById('configTamanioFuente').value,
-                respaldoAuto: document.getElementById('configRespaldoAuto').checked,
-                bloqueoPIN: document.getElementById('configBloqueoPIN').checked,
-                pin: document.getElementById('configPIN').value || ''
-            };
-            
-            localStorage.setItem('gestor_config', JSON.stringify(config));
-            simboloMoneda = config.moneda;
-            
-            aplicarTamanioFuente(config.tamanioFuente);
-            
-            window.formatearMoneda = function(valor) {
-                return simboloMoneda + Number(valor).toFixed(2);
-            };
-            
-            recargarTodo();
-            mostrarToast('✅ Configuración guardada', 'success');
         }
 
         // ============================================================
@@ -2228,7 +1733,7 @@
             const c = getCliente(id);
             if (c) { c.saldo = (c.saldo || 0) + delta; persistAll(); }
         }
-        function formatearMoneda(valor) { return simboloMoneda + Number(valor).toFixed(2); }
+        function formatearMoneda(valor) { return '$' + Number(valor).toFixed(2); }
         function formatearFecha(ts) { return new Date(ts).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
 
         function agregarMovimientoFinanciero(tipo, monto, descripcion, clienteId = null, reciboId = null, fecha = null) {
@@ -2295,6 +1800,100 @@
         }
 
         // ============================================================
+        // 📝 FUNCIONES PARA COPIAR MENSAJE DE TRANSFERENCIA (BPA)
+        // ============================================================
+
+        function copiarMensajeTransferencia(id) {
+            const transferencia = transferencias.find(t => t.id === id);
+            if (!transferencia) {
+                mostrarToast('Transferencia no encontrada.', 'error');
+                return;
+            }
+
+            const cliente = getCliente(transferencia.clienteId);
+            if (!cliente) {
+                mostrarToast('Cliente no encontrado.', 'error');
+                return;
+            }
+
+            // Formatear fecha
+            const fecha = new Date(transferencia.fecha);
+            const dia = String(fecha.getDate()).padStart(2, '0');
+            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+            const anio = fecha.getFullYear();
+            const fechaFormateada = `${dia}/${mes}/${anio}`;
+
+            // Formatear monto
+            const montoFormateado = transferencia.monto.toFixed(2);
+
+            // Calcular saldo restante (saldo actual del cliente)
+            const saldoRestante = cliente.saldo || 0;
+            const saldoFormateado = saldoRestante.toFixed(2);
+
+            // Generar mensaje con formato BPA
+            const mensaje = `Banco Popular de Ahorro:  La Transferencia fue completada. 
+        Fecha: ${fechaFormateada}
+        Beneficiario: 9206XXXXXXXX0000
+        Ordenante: 9212XXXXXXXX3852
+        Monto: ${montoFormateado} CUP
+        Nro. Transaccion: 0000000000000
+        Saldo restante: ${saldoFormateado} CUP.`;
+
+            // Copiar al portapapeles
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(mensaje)
+                    .then(() => {
+                        mostrarToast('✅ Mensaje copiado al portapapeles', 'success');
+                    })
+                    .catch(() => {
+                        copiarConFallback(mensaje);
+                    });
+            } else {
+                copiarConFallback(mensaje);
+            }
+        }
+
+        function copiarConFallback(texto) {
+            const textarea = document.createElement('textarea');
+            textarea.value = texto;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            textarea.style.top = '-9999px';
+            document.body.appendChild(textarea);
+            
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+            
+            try {
+                document.execCommand('copy');
+                mostrarToast('✅ Mensaje copiado al portapapeles', 'success');
+            } catch (err) {
+                mostrarToast('❌ Error al copiar. Copia manualmente.', 'error');
+                mostrarMensajeManual(texto);
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function mostrarMensajeManual(texto) {
+            // Crear modal para mostrar el mensaje
+            const modal = document.createElement('div');
+            modal.className = 'modal-mensaje-manual';
+            modal.innerHTML = `
+                <div class="contenido">
+                    <h3 style="margin-bottom:12px; color:var(--text-primary);">📋 Copia este mensaje</h3>
+                    <pre>${texto}</pre>
+                    <button class="btn-cerrar-modal" onclick="this.closest('.modal-mensaje-manual').remove()">✅ Ya lo copié</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) this.remove();
+            });
+        }
+
+        // ============================================================
         // RENDERIZADO
         // ============================================================
 
@@ -2314,13 +1913,9 @@
                             <div class="nombre">${c.nombre}</div>
                             <div class="comision">Comisión actual: ${c.comision}%</div>
                         </div>
-                        <div style="display:flex; gap:3px; align-items:center; flex-shrink:0;">
-                            <input type="text" step="0.1" min="0" value="${c.comision}" data-id="${c.id}" 
-                                   class="input-comision" 
-                                   inputmode="decimal" enterkeyhint="done"
-                                   autocomplete="off" autocorrect="off" spellcheck="false"
-                                   style="width:45px; padding:2px 4px; border:1px solid var(--border-color); border-radius:4px; background:var(--bg-input); color:var(--text-primary); font-size:var(--font-size-sm); text-align:center;">
-                            <button class="btn-small btn-primary btn-actualizar-comision" data-id="${c.id}" style="padding:2px 5px; font-size:var(--font-size-xs);">✓</button>
+                        <div style="display:flex; gap:4px; align-items:center;">
+                            <input type="number" step="0.1" min="0" value="${c.comision}" data-id="${c.id}" class="input-comision" style="width:55px; padding:4px 6px; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-input); color:var(--text-primary); font-size:0.85rem;" inputmode="decimal">
+                            <button class="btn-small btn-primary btn-actualizar-comision" data-id="${c.id}" style="width:auto; padding:3px 8px; font-size:0.65rem;">✓</button>
                         </div>
                     </div>
                 `;
@@ -2394,9 +1989,9 @@
                             <div class="nombre">${c.nombre}</div>
                             <div class="comision">Comisión: ${c.comision}% · Recibos: ${recibosCliente.length} · Transf: ${transferenciasCliente.length}</div>
                         </div>
-                        <div style="display:flex; gap:3px; align-items:center; flex-shrink:0;">
+                        <div style="display:flex; gap:4px; align-items:center;">
                             <span class="saldo ${esNegativo ? 'negativo' : ''}">${formatearMoneda(saldo)}</span>
-                            <button class="btn-eliminar" data-id="${c.id}" style="background:none; border:none; color:var(--danger); font-size:var(--font-size-sm); cursor:pointer; padding:2px 4px;">✕</button>
+                            <button class="btn-eliminar" data-id="${c.id}" style="background:none; border:none; color:var(--danger); font-size:0.9rem; cursor:pointer;">✕</button>
                         </div>
                     </div>
                 `;
@@ -2553,7 +2148,7 @@
             clientes.forEach(c => {
                 const saldo = c.saldo || 0;
                 html += `
-                    <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid var(--border-color); font-size:var(--font-size-sm);">
+                    <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border-color); font-size:0.9rem;">
                         <span>${c.nombre}</span>
                         <span style="${saldo < 0 ? 'color:var(--saldo-negativo);' : ''} font-weight:600;">${formatearMoneda(saldo)}</span>
                     </div>
@@ -2684,7 +2279,7 @@
                     <div class="operacion-card">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <span class="tipo"><span class="badge ${badgeClass}">${badgeText}</span> ${desc}</span>
-                            <button class="btn-eliminar-finanza" data-id="${m.id}" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:var(--font-size-sm); padding:2px 4px;">✕</button>
+                            <button class="btn-eliminar-finanza" data-id="${m.id}" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.8rem;">✕</button>
                         </div>
                         <div class="monto">${formatearMoneda(m.monto)}</div>
                         <div class="fecha">${formatearFecha(m.fecha)}</div>
@@ -2728,7 +2323,7 @@
         }
 
         // ============================================================
-        // RECIBOS Y TRANSFERENCIAS EN OPERACIONES
+        // RECIBOS Y TRANSFERENCIAS EN OPERACIONES (CON BOTÓN COPIAR)
         // ============================================================
 
         function renderRecibosOperaciones() {
@@ -2757,17 +2352,17 @@
                                 <span class="badge badge-recibo">Recibo</span> 
                                 ${cliente ? cliente.nombre : 'Cliente eliminado'}
                             </span>
-                            <div class="op-actions">
-                                <span class="numero-op">#${r.numeroOp}</span>
-                                <button class="btn-edit btn-editar-op" data-id="${r.id}" data-tipo="recibo" title="Editar">✏️</button>
-                                <button class="btn-delete btn-eliminar-recibo-op" data-id="${r.id}" title="Eliminar">✕</button>
-                            </div>
+                            <span class="numero-op">#${r.numeroOp}</span>
                         </div>
                         <div class="monto">${formatearMoneda(r.monto)}</div>
                         <div class="detalle">
                             Comisión: ${formatearMoneda(r.comision)} · Neto: ${formatearMoneda(r.neto)}
                         </div>
                         <div class="fecha">📅 ${fechaStr}</div>
+                        <div class="acciones-botones">
+                            <button class="btn-small btn-editar-op" data-id="${r.id}" data-tipo="recibo">✏️ Editar</button>
+                            <button class="btn-small btn-eliminar-op btn-eliminar-recibo-op" data-id="${r.id}">🗑️ Eliminar</button>
+                        </div>
                     </div>
                 `;
             });
@@ -2827,11 +2422,7 @@
                                 <span class="badge badge-transferencia">Transferencia</span> 
                                 ${cliente ? cliente.nombre : 'Cliente eliminado'}
                             </span>
-                            <div class="op-actions">
-                                <span class="numero-op">#${t.numeroOp}</span>
-                                <button class="btn-edit btn-editar-op" data-id="${t.id}" data-tipo="transferencia" title="Editar">✏️</button>
-                                <button class="btn-delete btn-eliminar-transferencia-op" data-id="${t.id}" title="Eliminar">✕</button>
-                            </div>
+                            <span class="numero-op">#${t.numeroOp}</span>
                         </div>
                         <div class="monto">${formatearMoneda(t.monto)}</div>
                         <div class="detalle">
@@ -2839,6 +2430,11 @@
                             ${esNegativo ? ' ⚠️ (Préstamo)' : ''}
                         </div>
                         <div class="fecha">📅 ${fechaStr}</div>
+                        <div class="acciones-botones">
+                            <button class="btn-small btn-editar-op" data-id="${t.id}" data-tipo="transferencia">✏️ Editar</button>
+                            <button class="btn-small btn-copiar-msg" data-id="${t.id}">📋 Copiar Mensaje</button>
+                            <button class="btn-small btn-eliminar-op btn-eliminar-transferencia-op" data-id="${t.id}">🗑️ Eliminar</button>
+                        </div>
                     </div>
                 `;
             });
@@ -2865,6 +2461,14 @@
                     const id = this.dataset.id;
                     const tipo = this.dataset.tipo;
                     abrirModalEdicion(id, tipo);
+                });
+            });
+            
+            // Evento para copiar mensaje de transferencia
+            container.querySelectorAll('.btn-copiar-msg').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    copiarMensajeTransferencia(id);
                 });
             });
         }
@@ -2914,11 +2518,9 @@
                 camposExtra.innerHTML = `
                     <div class="form-group">
                         <label>Comisión (%)</label>
-                        <input type="text" id="modalComisionPorcentaje" step="0.1" min="0" value="${getCliente(operacion.clienteId)?.comision || 0}" 
-                               inputmode="decimal" enterkeyhint="done"
-                               autocomplete="off" autocorrect="off" spellcheck="false">
+                        <input type="number" id="modalComisionPorcentaje" step="0.1" min="0" value="${getCliente(operacion.clienteId)?.comision || 0}" inputmode="decimal">
                     </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
                         <div class="form-group">
                             <label>Comisión ($)</label>
                             <input type="text" id="modalComision" class="readonly-field" readonly value="${formatearMoneda(operacion.comision)}">
@@ -2952,7 +2554,7 @@
                         <label>Saldo disponible</label>
                         <input type="text" id="modalSaldoDisponible" class="readonly-field" readonly value="${cliente ? formatearMoneda(cliente.saldo || 0) : '$0.00'}">
                     </div>
-                    <div class="form-group" style="background:var(--bg-card-alt); padding:4px 6px; border-radius:var(--radius-sm); text-align:center; font-weight:500; font-size:var(--font-size-sm);">
+                    <div class="form-group" style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); text-align:center; font-weight:500;">
                         <span id="modalSaldoRestante">Saldo restante: ${formatearMoneda((cliente?.saldo || 0) - operacion.monto)}</span>
                     </div>
                 `;
@@ -3140,11 +2742,9 @@
             if (dropBtn) dropBtn.classList.add('active-drop');
             
             if (section === 'clientes') { 
-                if (document.getElementById('sub-comisiones').style.display === 'none' &&
-                    document.getElementById('sub-agregar-cliente').style.display === 'none' &&
-                    document.getElementById('sub-ver-clientes').style.display === 'none') {
-                    document.getElementById('sub-comisiones').style.display = 'block';
-                }
+                document.getElementById('sub-agregar-cliente').style.display = 'none';
+                document.getElementById('sub-ver-clientes').style.display = 'none';
+                document.getElementById('sub-comisiones').style.display = 'block';
                 renderComisiones();
                 renderResumenClientes();
             }
@@ -3164,7 +2764,6 @@
             if (section === 'saldo') renderSaldo();
             if (section === 'historial') { actualizarFiltroHistorialClientes(); renderHistorial(); }
             if (section === 'finanzas') { renderFinanzas(); }
-            if (section === 'configuracion') { cargarConfiguracion(); }
             if (section === 'bd') actualizarEstadisticasBD();
         }
 
@@ -3331,13 +2930,13 @@
 
         document.getElementById('btnInvertirRecibos').addEventListener('click', function() {
             ordenRecibosAsc = !ordenRecibosAsc;
-            this.textContent = ordenRecibosAsc ? '⬇️ Antiguos' : '⬆️ Recientes';
+            this.textContent = ordenRecibosAsc ? '⬇️ Más antiguos' : '⬆️ Más recientes';
             renderRecibosOperaciones();
         });
 
         document.getElementById('btnInvertirTransferencias').addEventListener('click', function() {
             ordenTransferenciasAsc = !ordenTransferenciasAsc;
-            this.textContent = ordenTransferenciasAsc ? '⬇️ Antiguos' : '⬆️ Recientes';
+            this.textContent = ordenTransferenciasAsc ? '⬇️ Más antiguos' : '⬆️ Más recientes';
             renderTransferenciasOperaciones();
         });
 
@@ -3371,194 +2970,6 @@
             renderFinanzas();
             mostrarToast('Movimiento registrado.', 'success');
             setTimeout(() => document.getElementById('finanzaMonto').focus(), 100);
-        });
-
-        // ============================================================
-        // CONFIGURACIÓN - EVENTOS
-        // ============================================================
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Configurar teclado iOS
-            setupIOSKeyboard();
-            
-            cargarConfiguracion();
-            
-            document.querySelectorAll('#configDarkMode, #configMoneda, #configFormatoFecha, #configTamanioFuente, #configRespaldoAuto, #configBloqueoPIN, #configComisionDefecto, #configPIN').forEach(el => {
-                el.addEventListener('change', guardarConfiguracion);
-                el.addEventListener('input', function() {
-                    if (this.id !== 'configPIN') guardarConfiguracion();
-                });
-            });
-            
-            document.getElementById('configPIN').addEventListener('input', function() {
-                if (this.value.length === 4) guardarConfiguracion();
-            });
-            
-            document.getElementById('configBloqueoPIN').addEventListener('change', function() {
-                document.getElementById('configPINContainer').style.display = this.checked ? 'block' : 'none';
-                if (this.checked) {
-                    document.getElementById('configPIN').focus();
-                }
-            });
-            
-            document.getElementById('configDarkMode').addEventListener('change', function() {
-                aplicarModoOscuro(this.checked);
-            });
-            
-            document.getElementById('configMoneda').addEventListener('change', function() {
-                simboloMoneda = this.value;
-                recargarTodo();
-            });
-            
-            document.getElementById('configTamanioFuente').addEventListener('change', function() {
-                aplicarTamanioFuente(this.value);
-                guardarConfiguracion();
-                mostrarToast(`🔤 Tamaño cambiado a: ${this.options[this.selectedIndex].text}`, 'success');
-            });
-            
-            document.getElementById('btnExportarConfig').addEventListener('click', function() {
-                const config = localStorage.getItem('gestor_config');
-                if (!config) { mostrarToast('No hay configuración para exportar', 'error'); return; }
-                const blob = new Blob([config], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `configuracion_${new Date().toISOString().split('T')[0]}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-                mostrarToast('✅ Configuración exportada', 'success');
-            });
-            
-            document.getElementById('btnImportarConfig').addEventListener('click', function() {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.json';
-                input.onchange = function(e) {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = function(ev) {
-                        try {
-                            const config = JSON.parse(ev.target.result);
-                            localStorage.setItem('gestor_config', JSON.stringify(config));
-                            cargarConfiguracion();
-                            recargarTodo();
-                            mostrarToast('✅ Configuración importada', 'success');
-                        } catch (err) {
-                            mostrarToast('❌ Error al importar: ' + err.message, 'error');
-                        }
-                    };
-                    reader.readAsText(file);
-                };
-                input.click();
-            });
-            
-            document.getElementById('btnRestaurarConfig').addEventListener('click', function() {
-                if (!confirm('¿Restaurar configuración por defecto?')) return;
-                localStorage.removeItem('gestor_config');
-                document.getElementById('configDarkMode').checked = false;
-                document.getElementById('configMoneda').value = '$';
-                document.getElementById('configFormatoFecha').value = 'DD/MM/YYYY';
-                document.getElementById('configComisionDefecto').value = '1.5';
-                document.getElementById('configTamanioFuente').value = 'medio';
-                document.getElementById('configRespaldoAuto').checked = true;
-                document.getElementById('configBloqueoPIN').checked = false;
-                document.getElementById('configPINContainer').style.display = 'none';
-                document.getElementById('configPIN').value = '';
-                simboloMoneda = '$';
-                aplicarTamanioFuente('medio');
-                if (document.body.classList.contains('dark-mode')) {
-                    document.body.classList.remove('dark-mode');
-                    document.getElementById('btnDarkMode').textContent = '🌙';
-                }
-                recargarTodo();
-                mostrarToast('✅ Configuración restaurada', 'success');
-            });
-            
-            document.getElementById('btnCambiarPassword').addEventListener('click', function() {
-                const usuario = usuarioActual;
-                if (!usuario) { mostrarToast('No hay usuario activo', 'error'); return; }
-                const nuevaPassword = prompt('Nueva contraseña (mínimo 6 caracteres):');
-                if (!nuevaPassword) return;
-                if (nuevaPassword.length < 6) { mostrarToast('La contraseña debe tener al menos 6 caracteres', 'error'); return; }
-                const usuarios = getUsuarios();
-                if (usuarios[usuario]) {
-                    usuarios[usuario].password = hashPassword(nuevaPassword);
-                    guardarUsuarios(usuarios);
-                    mostrarToast('✅ Contraseña actualizada', 'success');
-                }
-            });
-            
-            document.getElementById('btnAyuda').addEventListener('click', function() {
-                const mensaje = 
-    `📖 GUÍA RÁPIDA
-
-    👥 CLIENTES:
-    • Agrega clientes con su comisión
-    • Edita comisiones individualmente
-    • Elimina clientes (borra todas sus operaciones)
-
-    🔄 OPERACIONES:
-    • Recibo: Añade dinero al cliente
-    • Transferencia: Retira dinero del cliente
-    • Las comisiones se calculan automáticamente
-
-    💰 SALDO:
-    • Muestra el saldo total y por cliente
-    • Los saldos negativos indican préstamos
-
-    📜 HISTORIAL:
-    • Filtra por cliente, fecha y tipo
-    • Exporta a Excel o PDF
-
-    💹 FINANZAS:
-    • Registra ingresos y gastos personales
-    • Lleva un control de tus finanzas
-
-    ⚙️ CONFIGURACIÓN:
-    • Personaliza la app a tu gusto
-    • Cambia moneda, tamaño de fuente y más
-
-    🗄️ BASE DE DATOS:
-    • Exporta/importa todos los datos
-    • Importa desde Excel`;
-                alert(mensaje);
-            });
-            
-            document.getElementById('btnTutorial').addEventListener('click', function() {
-                const pasos = [
-                    { seccion: 'clientes', mensaje: '👥 Aquí gestionas tus clientes y sus comisiones' },
-                    { seccion: 'operaciones', mensaje: '🔄 Registra recibos y transferencias' },
-                    { seccion: 'saldo', mensaje: '💰 Revisa el saldo de todos tus clientes' },
-                    { seccion: 'historial', mensaje: '📜 Consulta y filtra el historial completo' },
-                    { seccion: 'finanzas', mensaje: '💹 Lleva el control de tus finanzas personales' },
-                    { seccion: 'configuracion', mensaje: '⚙️ Personaliza la app a tu gusto' },
-                    { seccion: 'bd', mensaje: '🗄️ Gestiona tus datos y haz respaldos' }
-                ];
-                let i = 0;
-                function mostrarPaso() {
-                    if (i >= pasos.length) {
-                        mostrarToast('🎉 ¡Tour completado!', 'success');
-                        return;
-                    }
-                    const paso = pasos[i];
-                    mostrarSeccion(paso.seccion);
-                    setTimeout(() => {
-                        mostrarToast(`📍 ${paso.mensaje}`, 'info');
-                    }, 300);
-                    i++;
-                    setTimeout(mostrarPaso, 2500);
-                }
-                mostrarPaso();
-            });
-            
-            document.getElementById('btnContacto').addEventListener('click', function() {
-                const email = 'soporte@tuaplicacion.com';
-                const subject = encodeURIComponent('Soporte - Gestor de Pagos');
-                const body = encodeURIComponent('Hola, necesito ayuda con...');
-                window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-                mostrarToast('📧 Abriendo correo...', 'info');
-            });
         });
 
         // ============================================================
@@ -3805,23 +3216,11 @@
                 aplicarModoOscuro(true);
             }
             
-            cargarConfiguracion();
-            
             mostrarSeccion('clientes');
             recargarTodo();
             renderRecibosOperaciones();
             renderTransferenciasOperaciones();
             cambiarPestanaOperaciones('recibir');
-            
-            if (clientes.length > 0) {
-                document.getElementById('sub-comisiones').style.display = 'block';
-                document.getElementById('sub-agregar-cliente').style.display = 'none';
-                document.getElementById('sub-ver-clientes').style.display = 'none';
-            } else {
-                document.getElementById('sub-agregar-cliente').style.display = 'block';
-                document.getElementById('sub-ver-clientes').style.display = 'none';
-                document.getElementById('sub-comisiones').style.display = 'none';
-            }
         }
 
         // ============================================================
