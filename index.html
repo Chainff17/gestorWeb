@@ -575,37 +575,32 @@
         .operacion-card .acciones-botones {
             display: flex;
             gap: 6px;
-            margin-top: 8px;
+            margin-top: 6px;
             flex-wrap: wrap;
         }
-        .operacion-card .acciones-botones .btn-small {
-            padding: 4px 12px;
-            font-size: 0.65rem;
-            border-radius: 6px;
+        .operacion-card .acciones-botones .btn-icono {
+            background: none;
             border: none;
-            font-weight: 600;
+            font-size: 1.1rem;
             cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 6px;
             transition: var(--transition);
+            line-height: 1.4;
+            color: var(--text-muted);
         }
-        .operacion-card .acciones-botones .btn-small:active {
-            transform: scale(0.95);
+        .operacion-card .acciones-botones .btn-icono:active {
+            transform: scale(0.9);
+            background: var(--btn-hover);
         }
-        .btn-editar-op {
-            background: var(--primary) !important;
-            color: white !important;
+        .operacion-card .acciones-botones .btn-editar-icono {
+            color: var(--primary);
         }
-        .btn-copiar-msg {
-            background: var(--success) !important;
-            color: white !important;
+        .operacion-card .acciones-botones .btn-copiar-icono {
+            color: var(--success);
         }
-        .btn-eliminar-op {
-            background: var(--danger) !important;
-            color: white !important;
-        }
-        .btn-editar-op:hover,
-        .btn-copiar-msg:hover,
-        .btn-eliminar-op:hover {
-            opacity: 0.85;
+        .operacion-card .acciones-botones .btn-eliminar-icono {
+            color: var(--danger);
         }
 
         /* ===== ESTILOS PARA BOTONES DE PESTAÑAS ===== */
@@ -822,6 +817,10 @@
             .bottom-menu button .icon { font-size: 1rem; }
             .header-title { font-size: 0.9rem; }
             .header-info { font-size: 0.6rem; }
+            .operacion-card .acciones-botones .btn-icono {
+                font-size: 0.95rem;
+                padding: 1px 4px;
+            }
         }
 
         /* ===== TOAST NOTIFICATION ===== */
@@ -988,6 +987,20 @@
         .modal-mensaje-manual .contenido .btn-cerrar-modal:active {
             transform: scale(0.97);
         }
+
+        /* ===== BOTÓN SETTINGS EN HEADER ===== */
+        .btn-settings {
+            background: var(--bg-input);
+            border: none;
+            border-radius: 30px;
+            padding: 4px 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: var(--transition);
+            line-height: 1.4;
+        }
+        .btn-settings:active { transform: scale(0.92); }
     </style>
 </head>
 <body>
@@ -1080,6 +1093,7 @@
                     <span class="usuario-badge" id="usuarioBadge">👤 USUARIO</span>
                 </div>
                 <div class="header-actions">
+                    <button class="btn-settings" id="btnSettings" title="Configuración">⚙️</button>
                     <button class="btn-dark-mode" id="btnDarkMode" title="Alternar modo oscuro">🌙</button>
                     <button class="btn-logout" id="btnLogout" title="Cerrar sesión">🚪</button>
                     <button class="menu-hamburguesa" id="menuHamburguesa" title="Menú">☰</button>
@@ -1816,21 +1830,16 @@
                 return;
             }
 
-            // Formatear fecha
             const fecha = new Date(transferencia.fecha);
             const dia = String(fecha.getDate()).padStart(2, '0');
             const mes = String(fecha.getMonth() + 1).padStart(2, '0');
             const anio = fecha.getFullYear();
             const fechaFormateada = `${dia}/${mes}/${anio}`;
 
-            // Formatear monto
             const montoFormateado = transferencia.monto.toFixed(2);
-
-            // Calcular saldo restante (saldo actual del cliente)
             const saldoRestante = cliente.saldo || 0;
             const saldoFormateado = saldoRestante.toFixed(2);
 
-            // Generar mensaje con formato BPA
             const mensaje = `Banco Popular de Ahorro:  La Transferencia fue completada. 
         Fecha: ${fechaFormateada}
         Beneficiario: 9206XXXXXXXX0000
@@ -1839,15 +1848,10 @@
         Nro. Transaccion: 0000000000000
         Saldo restante: ${saldoFormateado} CUP.`;
 
-            // Copiar al portapapeles
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(mensaje)
-                    .then(() => {
-                        mostrarToast('✅ Mensaje copiado al portapapeles', 'success');
-                    })
-                    .catch(() => {
-                        copiarConFallback(mensaje);
-                    });
+                    .then(() => mostrarToast('✅ Mensaje copiado al portapapeles', 'success'))
+                    .catch(() => copiarConFallback(mensaje));
             } else {
                 copiarConFallback(mensaje);
             }
@@ -1876,7 +1880,6 @@
         }
 
         function mostrarMensajeManual(texto) {
-            // Crear modal para mostrar el mensaje
             const modal = document.createElement('div');
             modal.className = 'modal-mensaje-manual';
             modal.innerHTML = `
@@ -2323,7 +2326,7 @@
         }
 
         // ============================================================
-        // RECIBOS Y TRANSFERENCIAS EN OPERACIONES (CON BOTÓN COPIAR)
+        // RECIBOS Y TRANSFERENCIAS EN OPERACIONES (CON ICONOS)
         // ============================================================
 
         function renderRecibosOperaciones() {
@@ -2360,8 +2363,8 @@
                         </div>
                         <div class="fecha">📅 ${fechaStr}</div>
                         <div class="acciones-botones">
-                            <button class="btn-small btn-editar-op" data-id="${r.id}" data-tipo="recibo">✏️ Editar</button>
-                            <button class="btn-small btn-eliminar-op btn-eliminar-recibo-op" data-id="${r.id}">🗑️ Eliminar</button>
+                            <button class="btn-icono btn-editar-icono" data-id="${r.id}" data-tipo="recibo" title="Editar">✏️</button>
+                            <button class="btn-icono btn-eliminar-icono btn-eliminar-recibo-op" data-id="${r.id}" title="Eliminar">🗑️</button>
                         </div>
                     </div>
                 `;
@@ -2385,7 +2388,7 @@
                 });
             });
             
-            container.querySelectorAll('.btn-editar-op').forEach(btn => {
+            container.querySelectorAll('.btn-editar-icono').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = this.dataset.id;
                     const tipo = this.dataset.tipo;
@@ -2431,9 +2434,9 @@
                         </div>
                         <div class="fecha">📅 ${fechaStr}</div>
                         <div class="acciones-botones">
-                            <button class="btn-small btn-editar-op" data-id="${t.id}" data-tipo="transferencia">✏️ Editar</button>
-                            <button class="btn-small btn-copiar-msg" data-id="${t.id}">📋 Copiar Mensaje</button>
-                            <button class="btn-small btn-eliminar-op btn-eliminar-transferencia-op" data-id="${t.id}">🗑️ Eliminar</button>
+                            <button class="btn-icono btn-editar-icono" data-id="${t.id}" data-tipo="transferencia" title="Editar">✏️</button>
+                            <button class="btn-icono btn-copiar-icono" data-id="${t.id}" title="Copiar mensaje BPA">📋</button>
+                            <button class="btn-icono btn-eliminar-icono btn-eliminar-transferencia-op" data-id="${t.id}" title="Eliminar">🗑️</button>
                         </div>
                     </div>
                 `;
@@ -2456,7 +2459,7 @@
                 });
             });
             
-            container.querySelectorAll('.btn-editar-op').forEach(btn => {
+            container.querySelectorAll('.btn-editar-icono').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = this.dataset.id;
                     const tipo = this.dataset.tipo;
@@ -2464,8 +2467,7 @@
                 });
             });
             
-            // Evento para copiar mensaje de transferencia
-            container.querySelectorAll('.btn-copiar-msg').forEach(btn => {
+            container.querySelectorAll('.btn-copiar-icono').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = this.dataset.id;
                     copiarMensajeTransferencia(id);
@@ -2803,6 +2805,15 @@
 
         document.getElementById('btnDarkMode').addEventListener('click', toggleDarkMode);
         document.getElementById('btnLogout').addEventListener('click', cerrarSesion);
+        document.getElementById('btnSettings').addEventListener('click', function() {
+            mostrarSeccion('clientes');
+            document.getElementById('sub-agregar-cliente').style.display = 'none';
+            document.getElementById('sub-ver-clientes').style.display = 'none';
+            document.getElementById('sub-comisiones').style.display = 'block';
+            document.getElementById('btnMostrarComisiones').classList.add('active-comisiones');
+            renderComisiones();
+            mostrarToast('⚙️ Configuración de comisiones', 'info');
+        });
 
         // ============================================================
         // CLIENTES
