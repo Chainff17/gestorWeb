@@ -112,47 +112,6 @@
             padding-bottom: 80px;
         }
 
-        /* ===== SPLASH SCREEN ===== */
-        #splashScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--bg-body);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
-        }
-        #splashScreen .splash-icon {
-            font-size: 4rem;
-            margin-bottom: 12px;
-        }
-        #splashScreen h2 {
-            color: var(--text-primary);
-            font-size: 1.5rem;
-            margin-bottom: 4px;
-        }
-        #splashScreen p {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-        #splashScreen .splash-loader {
-            margin-top: 20px;
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--border-color);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
         /* ===== LOGIN/REGISTER SCREEN ===== */
         #authScreen {
             display: flex;
@@ -1186,25 +1145,9 @@
         .bd-import-row input[type="file"]::-webkit-file-upload-button {
             display: none;
         }
-        .bd-import-row .file-name {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100px;
-        }
     </style>
 </head>
 <body>
-
-    <!-- ===== SPLASH SCREEN ===== -->
-    <div id="splashScreen">
-        <div class="splash-icon">💳</div>
-        <h2>Gestor de Pagos</h2>
-        <p>Cargando...</p>
-        <div class="splash-loader"></div>
-    </div>
 
     <!-- ===== AUTH SCREEN (LOGIN / REGISTER) ===== -->
     <div id="authScreen">
@@ -1638,7 +1581,6 @@
                 <button class="btn-small btn-secondary" id="btnImportarJSON" style="width:100%; margin-bottom:6px;">📥 Importar JSON</button>
                 <input type="file" id="inputImportarJSON" accept=".json" style="display:none;">
                 
-                <!-- ===== NUEVO: IMPORTAR EXCEL SIN TEXTO "NINGÚN ARCHIVO SELECCIONADO" ===== -->
                 <div style="margin-top:6px;">
                     <label style="font-size:0.75rem; font-weight:500;">Importar Excel/CSV</label>
                     <div class="bd-import-row">
@@ -1716,11 +1658,6 @@
             mostrarToast('✅ Bienvenido ' + usuario, 'success');
             initApp();
             limpiarCamposLogin();
-            setTimeout(() => {
-                const splash = document.getElementById('splashScreen');
-                splash.style.opacity = '0';
-                setTimeout(() => { splash.style.display = 'none'; }, 500);
-            }, 300);
         }
 
         function registrarNuevoUsuario() {
@@ -1748,9 +1685,6 @@
             mostrarAuth();
             mostrarToast('👋 Sesión cerrada', 'info');
             mostrarLoginForm();
-            const splash = document.getElementById('splashScreen');
-            splash.style.display = 'flex';
-            splash.style.opacity = '1';
         }
 
         function mostrarLoginForm() {
@@ -3246,16 +3180,13 @@
         // ============================================================
         // CLIENTES - BOTONES CON MISMA INTERACCIÓN
         // ============================================================
-        // Función para manejar la selección de pestañas en clientes
         function cambiarPestanaClientes(pestana) {
             const btnAgregar = document.getElementById('btnMostrarAgregarCliente');
             const btnLista = document.getElementById('btnMostrarListaClientes');
             const btnComisiones = document.getElementById('btnMostrarComisiones');
             
-            // Remover active de todos
             [btnAgregar, btnLista, btnComisiones].forEach(b => b.classList.remove('active'));
             
-            // Ocultar todas las sub-secciones
             document.getElementById('sub-agregar-cliente').style.display = 'none';
             document.getElementById('sub-ver-clientes').style.display = 'none';
             document.getElementById('sub-comisiones').style.display = 'none';
@@ -3463,9 +3394,6 @@
             this.value = '';
         });
         
-        // ============================================================
-        // IMPORTAR EXCEL - CON ESTILO MEJORADO
-        // ============================================================
         document.getElementById('btnImportarExcel').addEventListener('click', function() {
             const input = document.getElementById('inputImportarExcel');
             if (!input.files || !input.files[0]) { mostrarToast('Selecciona un archivo.', 'error'); return; }
@@ -3682,7 +3610,6 @@
             reordenarNumerosOperaciones();
             if (localStorage.getItem('gestor_dark_mode') === 'true') { aplicarModoOscuro(true); }
             
-            // Activar pestaña por defecto en clientes
             cambiarPestanaClientes('lista');
             
             recargarTodo();
