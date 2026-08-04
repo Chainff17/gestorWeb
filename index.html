@@ -695,6 +695,7 @@
             background: var(--bg-input);
             color: var(--text-primary);
             transition: var(--transition);
+            height: 42px;
         }
         .form-group input:focus,
         .form-group select:focus {
@@ -810,6 +811,7 @@
         .filtros-row .form-group select {
             padding: 6px 8px;
             font-size: 0.8rem;
+            height: 38px;
         }
 
         /* ===== TARJETAS DE RESUMEN ===== */
@@ -883,6 +885,12 @@
             .operacion-card .acciones-botones .btn-icono {
                 font-size: 0.95rem;
                 padding: 1px 4px;
+            }
+            .form-group input,
+            .form-group select {
+                height: 38px;
+                padding: 6px 10px;
+                font-size: 0.85rem;
             }
         }
         @media (min-width: 768px) {
@@ -1088,6 +1096,10 @@
             cursor: pointer;
             transition: var(--transition);
             text-align: center;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .selector-destino .btn-opcion.active {
             border-color: var(--primary);
@@ -1114,11 +1126,73 @@
             font-size: 0.85rem;
             margin-bottom: 10px;
             transition: var(--transition);
+            height: 42px;
         }
         .buscador-cliente:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+        }
+
+        /* ===== BOTONES DE CLIENTES ===== */
+        .btn-cliente-opcion {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            text-align: center;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-cliente-opcion.active {
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            border-color: var(--btn-primary-bg);
+        }
+        .btn-cliente-opcion:active { transform: scale(0.97); }
+
+        /* ===== BASE DE DATOS - IMPORTAR EXCEL ===== */
+        .bd-import-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            margin-top: 6px;
+        }
+        .bd-import-row .btn-small {
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .bd-import-row input[type="file"] {
+            flex: 1;
+            padding: 6px 8px;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            height: 38px;
+        }
+        .bd-import-row input[type="file"]::file-selector-button {
+            display: none;
+        }
+        .bd-import-row input[type="file"]::-webkit-file-upload-button {
+            display: none;
+        }
+        .bd-import-row .file-name {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100px;
         }
     </style>
 </head>
@@ -1276,9 +1350,9 @@
         <!-- SECCIÓN CLIENTES -->
         <div id="section-clientes" class="section visible">
             <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
-                <button class="btn-small btn-primary" id="btnMostrarAgregarCliente" style="flex:1;">➕ Agregar</button>
-                <button class="btn-small btn-secondary" id="btnMostrarListaClientes" style="flex:1;">📋 Ver Clientes</button>
-                <button class="btn-small btn-comisiones" id="btnMostrarComisiones" style="flex:1;">📊 Comisiones</button>
+                <button class="btn-cliente-opcion" id="btnMostrarAgregarCliente" style="flex:1;">➕ Agregar</button>
+                <button class="btn-cliente-opcion" id="btnMostrarListaClientes" style="flex:1;">📋 Ver Clientes</button>
+                <button class="btn-cliente-opcion" id="btnMostrarComisiones" style="flex:1;">📊 Comisiones</button>
             </div>
 
             <div id="sub-agregar-cliente" class="card">
@@ -1299,7 +1373,6 @@
                     <h3>Clientes</h3>
                     <span class="badge-count" id="totalClientes">0</span>
                 </div>
-                <!-- ===== NUEVO: BUSCADOR DE CLIENTES ===== -->
                 <input type="text" id="buscadorCliente" class="buscador-cliente" placeholder="🔍 Buscar cliente...">
                 <div id="listaClientesResumen"></div>
             </div>
@@ -1350,7 +1423,6 @@
                 </div>
                 <div style="display:flex; gap:6px; margin-top:4px;">
                     <button class="btn-primary" id="btnRegistrarRecibo" style="flex:1;">Registrar Recibo</button>
-                    <!-- ===== NUEVO: BOTÓN DICTADO ===== -->
                     <button class="btn-small btn-secondary" id="btnDictarMontoRecibo" title="Dictar monto" style="font-size:1.2rem; padding:8px 12px;">🎤</button>
                 </div>
             </div>
@@ -1428,7 +1500,6 @@
                 <h3 style="margin-bottom:10px;">Saldo por Cliente</h3>
                 <div id="saldosPorCliente"></div>
             </div>
-            <!-- ===== NUEVO: ALERTA DE SALDOS NEGATIVOS ===== -->
             <div id="alertaSaldosNegativos" style="display:none; background:var(--gasto-bg); color:var(--gasto-text); padding:10px; border-radius:8px; margin-top:10px; font-size:0.85rem; text-align:center;">
                 ⚠️ <span id="cantidadNegativos">0</span> cliente(s) con saldo negativo
             </div>
@@ -1439,15 +1510,15 @@
             <div class="card">
                 <h3 style="margin-bottom:10px;">Historial Completo</h3>
                 <div class="filtros-row">
-                    <div class="form-group">
+                    <div class="form-group" style="flex:2;">
                         <label>Cliente</label>
                         <select id="historialCliente"><option value="todos">Todos</option></select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="flex:2;">
                         <label>Fecha</label>
                         <input type="date" id="historialFecha">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="flex:1.5;">
                         <label>Tipo</label>
                         <select id="historialTipo">
                             <option value="todos">Todos</option>
@@ -1460,7 +1531,6 @@
                     <button class="btn-small btn-secondary" id="btnInvertirOrden">⬆️ Invertir</button>
                     <button class="btn-small btn-success" id="btnExportarExcelHistorial" style="background:#1d6f42; color:white;">📊 Excel</button>
                     <button class="btn-small btn-danger" id="btnExportarPDFHistorial" style="background:#b22234; color:white;">📄 PDF</button>
-                    <!-- ===== NUEVO: EXPORTAR CSV ===== -->
                     <button class="btn-small btn-secondary" id="btnExportarCSVHistorial" style="background:#2d6a4f; color:white;">📋 CSV</button>
                 </div>
                 <div id="listaHistorial"></div>
@@ -1472,7 +1542,6 @@
             <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
                 <button class="btn-small btn-primary" id="btnMostrarResumenFinanzas" style="flex:1;">📊 Resumen</button>
                 <button class="btn-small btn-secondary" id="btnMostrarRegistrarFinanza" style="flex:1;">➕ Registrar</button>
-                <!-- ===== NUEVO: BOTÓN GRÁFICO ===== -->
                 <button class="btn-small btn-secondary" id="btnMostrarGrafico" style="flex:1;">📈 Gráfico</button>
             </div>
 
@@ -1495,7 +1564,6 @@
                         <div class="monto" id="saldoFinanzas">$0.00</div>
                     </div>
                 </div>
-                <!-- ===== NUEVO: GRÁFICO ===== -->
                 <div id="sub-grafico" style="display:none;">
                     <div class="card" style="margin-bottom:10px;">
                         <h4 style="margin-bottom:8px; font-size:0.85rem;">📈 Distribución Financiera</h4>
@@ -1510,7 +1578,7 @@
                         <span class="badge-count" id="contadorFinanzas">0</span>
                     </div>
                     <div class="filtros-row">
-                        <div class="form-group">
+                        <div class="form-group" style="flex:1.5;">
                             <label>Tipo</label>
                             <select id="filtroFinanzasTipo">
                                 <option value="todos">Todos</option>
@@ -1519,7 +1587,7 @@
                                 <option value="gasto">Gastos</option>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="flex:1.5;">
                             <label>Fecha</label>
                             <input type="date" id="filtroFinanzasFecha">
                         </div>
@@ -1569,11 +1637,13 @@
                 <button class="btn-small btn-success" id="btnExportarJSON" style="width:100%; margin-bottom:6px;">📤 Exportar JSON</button>
                 <button class="btn-small btn-secondary" id="btnImportarJSON" style="width:100%; margin-bottom:6px;">📥 Importar JSON</button>
                 <input type="file" id="inputImportarJSON" accept=".json" style="display:none;">
+                
+                <!-- ===== NUEVO: IMPORTAR EXCEL SIN TEXTO "NINGÚN ARCHIVO SELECCIONADO" ===== -->
                 <div style="margin-top:6px;">
                     <label style="font-size:0.75rem; font-weight:500;">Importar Excel/CSV</label>
-                    <div style="display:flex; gap:4px;">
-                        <input type="file" id="inputImportarExcel" accept=".xlsx,.xls,.csv" style="flex:1; padding:4px; font-size:0.8rem;">
-                        <button class="btn-small btn-success" id="btnImportarExcel">Importar</button>
+                    <div class="bd-import-row">
+                        <input type="file" id="inputImportarExcel" accept=".xlsx,.xls,.csv" style="flex:1;">
+                        <button class="btn-small btn-success" id="btnImportarExcel" style="white-space:nowrap;">📥 Importar</button>
                     </div>
                 </div>
                 <button class="btn-small btn-danger" id="btnBorrarTodo" style="width:100%; margin-top:10px;">🗑️ Borrar todos los datos</button>
@@ -1646,7 +1716,6 @@
             mostrarToast('✅ Bienvenido ' + usuario, 'success');
             initApp();
             limpiarCamposLogin();
-            // Ocultar splash después de login
             setTimeout(() => {
                 const splash = document.getElementById('splashScreen');
                 splash.style.opacity = '0';
@@ -1679,7 +1748,6 @@
             mostrarAuth();
             mostrarToast('👋 Sesión cerrada', 'info');
             mostrarLoginForm();
-            // Mostrar splash de nuevo
             const splash = document.getElementById('splashScreen');
             splash.style.display = 'flex';
             splash.style.opacity = '1';
@@ -2069,7 +2137,7 @@
         }
 
         // ============================================================
-        // NUEVO: DICTADO POR VOZ
+        // DICTADO POR VOZ
         // ============================================================
         function iniciarDictado(inputId) {
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -2082,7 +2150,6 @@
             recognition.interimResults = false;
             recognition.onresult = function(event) {
                 const texto = event.results[0][0].transcript;
-                // Extraer números del texto
                 const numeros = texto.replace(/[^0-9.,]/g, '').replace(',', '.');
                 const monto = parseFloat(numeros);
                 if (!isNaN(monto) && monto > 0) {
@@ -2105,7 +2172,7 @@
         }
 
         // ============================================================
-        // NUEVO: ALERTA DE SALDOS NEGATIVOS
+        // ALERTA DE SALDOS NEGATIVOS
         // ============================================================
         function verificarSaldosNegativos() {
             const negativos = clientes.filter(c => (c.saldo || 0) < 0);
@@ -2113,7 +2180,6 @@
             if (negativos.length > 0) {
                 alerta.style.display = 'block';
                 document.getElementById('cantidadNegativos').textContent = negativos.length;
-                // También mostrar en badge
                 const badge = document.getElementById('notifClientes');
                 badge.textContent = negativos.length;
                 badge.style.display = 'block';
@@ -2124,7 +2190,7 @@
         }
 
         // ============================================================
-        // NUEVO: BÚSQUEDA DE CLIENTES
+        // BÚSQUEDA DE CLIENTES
         // ============================================================
         function filtrarClientes() {
             const busqueda = document.getElementById('buscadorCliente').value.toLowerCase().trim();
@@ -2136,7 +2202,6 @@
                 item.style.display = visible ? 'flex' : 'none';
                 if (visible) visibles++;
             });
-            // Mostrar mensaje si no hay resultados
             const container = document.getElementById('listaClientesResumen');
             const emptyMsg = container.querySelector('.empty-msg');
             if (visibles === 0 && items.length > 0) {
@@ -2154,7 +2219,7 @@
         }
 
         // ============================================================
-        // NUEVO: GRÁFICO DE FINANZAS
+        // GRÁFICO DE FINANZAS
         // ============================================================
         function actualizarGrafico() {
             const ctx = document.getElementById('graficoFinanzas').getContext('2d');
@@ -2196,7 +2261,7 @@
         }
 
         // ============================================================
-        // NUEVO: EXPORTAR CSV
+        // EXPORTAR CSV
         // ============================================================
         function exportarCSV() {
             const ops = obtenerDatosHistorialFiltrados();
@@ -2317,7 +2382,6 @@
             container.querySelectorAll('.btn-eliminar').forEach(btn => {
                 btn.addEventListener('click', function() { eliminarCliente(this.dataset.id); });
             });
-            // Aplicar filtro si hay búsqueda
             if (document.getElementById('buscadorCliente').value) {
                 filtrarClientes();
             }
@@ -2617,7 +2681,6 @@
                     renderFinanzas();
                 });
             });
-            // Actualizar gráfico si está visible
             if (document.getElementById('sub-grafico').style.display !== 'none') {
                 actualizarGrafico();
             }
@@ -3081,7 +3144,7 @@
         });
 
         // ============================================================
-        // NUEVO: TECLAS DE ATAJO
+        // TECLAS DE ATAJO
         // ============================================================
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.key >= '1' && e.key <= '6') {
@@ -3098,7 +3161,7 @@
         });
 
         // ============================================================
-        // NUEVO: BOTONES DE DICTADO
+        // BOTONES DE DICTADO
         // ============================================================
         document.getElementById('btnDictarMontoRecibo').addEventListener('click', function() {
             iniciarDictado('recibirMonto');
@@ -3108,12 +3171,12 @@
         });
 
         // ============================================================
-        // NUEVO: BUSCADOR DE CLIENTES
+        // BUSCADOR DE CLIENTES
         // ============================================================
         document.getElementById('buscadorCliente').addEventListener('input', filtrarClientes);
 
         // ============================================================
-        // NUEVO: BOTÓN GRÁFICO
+        // BOTÓN GRÁFICO
         // ============================================================
         document.getElementById('btnMostrarGrafico').addEventListener('click', function() {
             const subGrafico = document.getElementById('sub-grafico');
@@ -3133,12 +3196,12 @@
         });
 
         // ============================================================
-        // NUEVO: EXPORTAR CSV
+        // EXPORTAR CSV
         // ============================================================
         document.getElementById('btnExportarCSVHistorial').addEventListener('click', exportarCSV);
 
         // ============================================================
-        // NUEVO: COPIAS DE SEGURIDAD AUTOMÁTICAS
+        // COPIAS DE SEGURIDAD AUTOMÁTICAS
         // ============================================================
         setInterval(() => {
             if (usuarioActual) {
@@ -3148,7 +3211,7 @@
         }, 60000);
 
         // ============================================================
-        // NUEVO: SINCRO OFF LINE
+        // SINCRO OFFLINE
         // ============================================================
         let operacionesPendientes = [];
 
@@ -3181,45 +3244,47 @@
         });
 
         // ============================================================
-        // CLIENTES
+        // CLIENTES - BOTONES CON MISMA INTERACCIÓN
         // ============================================================
-        document.getElementById('btnMostrarAgregarCliente').addEventListener('click', function() {
-            document.getElementById('sub-agregar-cliente').style.display = 'block';
+        // Función para manejar la selección de pestañas en clientes
+        function cambiarPestanaClientes(pestana) {
+            const btnAgregar = document.getElementById('btnMostrarAgregarCliente');
+            const btnLista = document.getElementById('btnMostrarListaClientes');
+            const btnComisiones = document.getElementById('btnMostrarComisiones');
+            
+            // Remover active de todos
+            [btnAgregar, btnLista, btnComisiones].forEach(b => b.classList.remove('active'));
+            
+            // Ocultar todas las sub-secciones
+            document.getElementById('sub-agregar-cliente').style.display = 'none';
             document.getElementById('sub-ver-clientes').style.display = 'none';
             document.getElementById('sub-comisiones').style.display = 'none';
-            document.getElementById('btnMostrarComisiones').classList.remove('active-comisiones');
-            setTimeout(() => document.getElementById('clienteNombre').focus(), 100);
+            
+            if (pestana === 'agregar') {
+                btnAgregar.classList.add('active');
+                document.getElementById('sub-agregar-cliente').style.display = 'block';
+                setTimeout(() => document.getElementById('clienteNombre').focus(), 100);
+            } else if (pestana === 'lista') {
+                btnLista.classList.add('active');
+                document.getElementById('sub-ver-clientes').style.display = 'block';
+                renderResumenClientes();
+                document.getElementById('buscadorCliente').value = '';
+                filtrarClientes();
+            } else if (pestana === 'comisiones') {
+                btnComisiones.classList.add('active');
+                document.getElementById('sub-comisiones').style.display = 'block';
+                renderComisiones();
+            }
+        }
+
+        document.getElementById('btnMostrarAgregarCliente').addEventListener('click', function() {
+            cambiarPestanaClientes('agregar');
         });
         document.getElementById('btnMostrarListaClientes').addEventListener('click', function() {
-            document.getElementById('sub-agregar-cliente').style.display = 'none';
-            document.getElementById('sub-ver-clientes').style.display = 'block';
-            document.getElementById('sub-comisiones').style.display = 'none';
-            document.getElementById('btnMostrarComisiones').classList.remove('active-comisiones');
-            renderResumenClientes();
-            // Limpiar buscador
-            document.getElementById('buscadorCliente').value = '';
-            filtrarClientes();
+            cambiarPestanaClientes('lista');
         });
         document.getElementById('btnMostrarComisiones').addEventListener('click', function() {
-            document.getElementById('sub-agregar-cliente').style.display = 'none';
-            document.getElementById('sub-ver-clientes').style.display = 'none';
-            document.getElementById('sub-comisiones').style.display = 'block';
-            this.classList.add('active-comisiones');
-            renderComisiones();
-        });
-        document.getElementById('btnAgregarCliente').addEventListener('click', function() {
-            const nombre = document.getElementById('clienteNombre').value.trim();
-            const comision = parseFloat(document.getElementById('clienteComision').value);
-            if (!nombre) { mostrarToast('Ingresa un nombre.', 'error'); return; }
-            if (isNaN(comision) || comision < 0) { mostrarToast('Ingresa una comisión válida.', 'error'); return; }
-            if (clientes.some(c => c.nombre.toLowerCase() === nombre.toLowerCase())) { mostrarToast(
-                    'Ya existe ese cliente.', 'error'); return; }
-            clientes.push({ id: generarId(), nombre, comision, saldo: 0 });
-            persistAll();
-            document.getElementById('clienteNombre').value = '';
-            recargarTodo();
-            mostrarToast('Cliente agregado.', 'success');
-            setTimeout(() => document.getElementById('clienteNombre').focus(), 100);
+            cambiarPestanaClientes('comisiones');
         });
 
         // ============================================================
@@ -3397,6 +3462,10 @@
             reader.readAsText(this.files[0]);
             this.value = '';
         });
+        
+        // ============================================================
+        // IMPORTAR EXCEL - CON ESTILO MEJORADO
+        // ============================================================
         document.getElementById('btnImportarExcel').addEventListener('click', function() {
             const input = document.getElementById('inputImportarExcel');
             if (!input.files || !input.files[0]) { mostrarToast('Selecciona un archivo.', 'error'); return; }
@@ -3478,6 +3547,7 @@
             reader.readAsArrayBuffer(input.files[0]);
             input.value = '';
         });
+        
         document.getElementById('btnBorrarTodo').addEventListener('click', function() {
             if (!confirm('⚠️ ¿Borrar TODOS los datos?')) return;
             if (!confirm('Confirmación final:')) return;
@@ -3611,12 +3681,14 @@
             actualizarSelectorDestino('tarjeta');
             reordenarNumerosOperaciones();
             if (localStorage.getItem('gestor_dark_mode') === 'true') { aplicarModoOscuro(true); }
-            mostrarSeccion('clientes');
+            
+            // Activar pestaña por defecto en clientes
+            cambiarPestanaClientes('lista');
+            
             recargarTodo();
             renderRecibosOperaciones();
             renderTransferenciasOperaciones();
             cambiarPestanaOperaciones('recibir');
-            // Verificar saldos negativos al inicio
             verificarSaldosNegativos();
         }
 
