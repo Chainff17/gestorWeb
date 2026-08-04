@@ -111,7 +111,6 @@
             padding-bottom: 80px;
         }
 
-        /* ===== LOGIN/REGISTER SCREEN ===== */
         #authScreen {
             display: flex;
             justify-content: center;
@@ -200,7 +199,6 @@
             text-decoration: underline;
         }
 
-        /* ===== APP CONTENT ===== */
         #appContent {
             display: none;
         }
@@ -208,7 +206,6 @@
             display: block;
         }
 
-        /* ===== HEADER ===== */
         header {
             background: var(--bg-header);
             padding: 12px 16px 10px;
@@ -393,7 +390,6 @@
             50% { opacity: 0.5; transform: scale(0.8); }
         }
 
-        /* ===== MENÚ INFERIOR ===== */
         .bottom-menu {
             position: fixed;
             bottom: 0;
@@ -453,14 +449,12 @@
             font-weight: 700;
         }
 
-        /* ===== SECCIONES ===== */
         .section {
             display: none;
             padding: 12px 16px 20px;
         }
         .section.visible { display: block; }
 
-        /* ===== TARJETAS ===== */
         .card {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -492,7 +486,6 @@
             font-weight: 600;
         }
 
-        /* ===== CLIENTES ===== */
         .cliente-card {
             display: flex;
             justify-content: space-between;
@@ -536,7 +529,6 @@
         .cliente-card .acciones button:active { background: var(--btn-hover); }
         .cliente-card .acciones .btn-eliminar { color: var(--danger); }
 
-        /* ===== OPERACIONES ===== */
         .operacion-card {
             background: var(--bg-card-alt);
             border-radius: var(--radius-sm);
@@ -602,8 +594,16 @@
         .operacion-card .acciones-botones .btn-eliminar-icono {
             color: var(--danger);
         }
+        .operacion-card .destino-tarjeta {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            background: var(--badge-bg);
+            padding: 2px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 2px;
+        }
 
-        /* ===== ESTILOS PARA BOTONES DE PESTAÑAS ===== */
         .tab-btn {
             flex: 1;
             padding: 8px 12px;
@@ -623,7 +623,6 @@
         }
         .tab-btn:active { transform: scale(0.97); }
 
-        /* ===== FORMULARIOS ===== */
         .form-group {
             margin-bottom: 12px;
         }
@@ -659,8 +658,17 @@
             border-color: var(--primary);
             background: var(--bg-card);
         }
+        .form-group input.numero-destino {
+            font-family: monospace;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .form-group .hint {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
 
-        /* ===== BOTONES ===== */
         .btn-primary {
             width: 100%;
             padding: 12px;
@@ -692,7 +700,6 @@
         }
         .btn-small:active { transform: scale(0.94); }
 
-        /* ===== SALDO ===== */
         .saldo-total {
             font-size: 2rem;
             font-weight: 700;
@@ -710,7 +717,6 @@
             color: var(--text-muted);
         }
 
-        /* ===== BADGES ===== */
         .badge {
             background: var(--badge-bg);
             color: var(--badge-text);
@@ -724,8 +730,9 @@
         .badge-comision { background: var(--comision-bg); color: var(--comision-text); }
         .badge-ingreso { background: var(--ingreso-bg); color: var(--ingreso-text); }
         .badge-gasto { background: var(--gasto-bg); color: var(--gasto-text); }
+        .badge-tarjeta { background: #dbeafe; color: #1e40af; }
+        .badge-monedero { background: #d1fae5; color: #065f46; }
 
-        /* ===== FILTROS ===== */
         .filtros-row {
             display: flex;
             flex-wrap: wrap;
@@ -749,7 +756,6 @@
             font-size: 0.8rem;
         }
 
-        /* ===== TARJETAS DE RESUMEN ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -780,7 +786,6 @@
         }
         .stat-card.total .label { color: rgba(255,255,255,0.7); }
 
-        /* ===== EMPTY STATE ===== */
         .empty-msg {
             text-align: center;
             padding: 24px 12px;
@@ -795,7 +800,6 @@
             font-size: 0.85rem;
         }
 
-        /* ===== AVISO ===== */
         .aviso-negativo {
             display: none;
             background: var(--gasto-bg);
@@ -807,7 +811,6 @@
         }
         .aviso-negativo.visible { display: block; }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 400px) {
             .bottom-menu button {
                 font-size: 0.45rem;
@@ -823,7 +826,6 @@
             }
         }
 
-        /* ===== TOAST NOTIFICATION ===== */
         .toast {
             position: fixed;
             bottom: 80px;
@@ -857,7 +859,6 @@
             border-left: 4px solid var(--primary);
         }
 
-        /* ===== MODAL DE EDICIÓN ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -922,7 +923,6 @@
             color: var(--btn-primary-text);
         }
 
-        /* Estilo para el botón Comisiones */
         .btn-comisiones {
             background: var(--bg-card);
             border: 2px solid var(--primary);
@@ -938,7 +938,6 @@
             color: white;
         }
 
-        /* Estilo para mensaje manual (modal de copiado) */
         .modal-mensaje-manual {
             position: fixed;
             top: 0;
@@ -988,7 +987,6 @@
             transform: scale(0.97);
         }
 
-        /* ===== BOTÓN SETTINGS EN HEADER ===== */
         .btn-settings {
             background: var(--bg-input);
             border: none;
@@ -1001,17 +999,40 @@
             line-height: 1.4;
         }
         .btn-settings:active { transform: scale(0.92); }
+
+        .selector-destino {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .selector-destino .btn-opcion {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+        .selector-destino .btn-opcion.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+        .selector-destino .btn-opcion:active { transform: scale(0.97); }
     </style>
 </head>
 <body>
 
-    <!-- ===== AUTH SCREEN (LOGIN / REGISTER) ===== -->
+    <!-- ===== AUTH SCREEN ===== -->
     <div id="authScreen">
         <div class="auth-card">
             <h2 id="authTitle">🔐 Gestor de Pagos</h2>
             <p class="subtitle" id="authSubtitle">Inicia sesión para acceder a tus datos</p>
-            
-            <!-- Login Form -->
             <div id="loginForm">
                 <div class="form-group">
                     <label>👤 Usuario o Email</label>
@@ -1027,8 +1048,6 @@
                     ¿No tienes cuenta? <a id="switchToRegister">Regístrate aquí</a>
                 </div>
             </div>
-
-            <!-- Register Form -->
             <div id="registerForm" style="display:none;">
                 <div class="form-group">
                     <label>👤 Nombre de usuario</label>
@@ -1055,10 +1074,10 @@
         </div>
     </div>
 
-    <!-- ===== TOAST NOTIFICATION ===== -->
+    <!-- ===== TOAST ===== -->
     <div id="toast" class="toast"></div>
 
-    <!-- ===== MODAL DE EDICIÓN ===== -->
+    <!-- ===== MODAL EDICIÓN ===== -->
     <div class="modal-overlay" id="modalEditar">
         <div class="modal">
             <h3 id="modalTitulo">✏️ Editar Operación</h3>
@@ -1085,7 +1104,6 @@
     <!-- ===== APP CONTENT ===== -->
     <div id="appContent">
 
-        <!-- ===== HEADER ===== -->
         <header>
             <div class="header-top">
                 <div class="header-title">
@@ -1109,9 +1127,7 @@
             </div>
             <div class="header-info">
                 <span class="datetime" id="fechaHora">--/--/---- --:--</span>
-                <span class="clientes-count">
-                    👥 <span id="clientesCountHeader">0</span>
-                </span>
+                <span class="clientes-count">👥 <span id="clientesCountHeader">0</span></span>
                 <span class="status" id="statusIndicator">
                     <span class="dot online" id="statusDot"></span>
                     <span id="statusText">Online</span>
@@ -1119,38 +1135,22 @@
             </div>
         </header>
 
-        <!-- ===== MENÚ INFERIOR ===== -->
         <nav class="bottom-menu" id="bottomMenu">
-            <button data-section="clientes" class="active">
-                <span class="icon">👥</span> Clientes
-            </button>
-            <button data-section="operaciones">
-                <span class="icon">🔄</span> Operaciones
-            </button>
-            <button data-section="saldo">
-                <span class="icon">💰</span> Saldo
-            </button>
-            <button data-section="historial">
-                <span class="icon">📜</span> Historial
-            </button>
-            <button data-section="finanzas">
-                <span class="icon">💹</span> Finanzas
-            </button>
-            <button data-section="bd">
-                <span class="icon">🗄️</span> BD
-            </button>
+            <button data-section="clientes" class="active"><span class="icon">👥</span> Clientes</button>
+            <button data-section="operaciones"><span class="icon">🔄</span> Operaciones</button>
+            <button data-section="saldo"><span class="icon">💰</span> Saldo</button>
+            <button data-section="historial"><span class="icon">📜</span> Historial</button>
+            <button data-section="finanzas"><span class="icon">💹</span> Finanzas</button>
+            <button data-section="bd"><span class="icon">🗄️</span> BD</button>
         </nav>
 
-        <!-- ===== CONTENIDO ===== -->
-
-        <!-- SECCIÓN CLIENTES -->
+        <!-- CLIENTES -->
         <div id="section-clientes" class="section visible">
             <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
                 <button class="btn-small btn-primary" id="btnMostrarAgregarCliente" style="flex:1;">➕ Agregar</button>
                 <button class="btn-small btn-secondary" id="btnMostrarListaClientes" style="flex:1;">📋 Ver Clientes</button>
                 <button class="btn-small btn-comisiones" id="btnMostrarComisiones" style="flex:1;">📊 Comisiones</button>
             </div>
-
             <div id="sub-agregar-cliente" class="card">
                 <h3 style="margin-bottom:10px;">Agregar Cliente</h3>
                 <div class="form-group">
@@ -1163,32 +1163,23 @@
                 </div>
                 <button class="btn-primary" id="btnAgregarCliente">Agregar</button>
             </div>
-
             <div id="sub-ver-clientes" class="card" style="display:none;">
-                <div class="card-header">
-                    <h3>Clientes</h3>
-                    <span class="badge-count" id="totalClientes">0</span>
-                </div>
+                <div class="card-header"><h3>Clientes</h3><span class="badge-count" id="totalClientes">0</span></div>
                 <div id="listaClientesResumen"></div>
             </div>
-
             <div id="sub-comisiones" class="card" style="display:none;">
-                <div class="card-header">
-                    <h3>📊 Editar Comisiones</h3>
-                    <span class="badge-count" id="totalComisionesClientes">0</span>
-                </div>
+                <div class="card-header"><h3>📊 Editar Comisiones</h3><span class="badge-count" id="totalComisionesClientes">0</span></div>
                 <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">Edita la comisión de cada cliente de forma individual</p>
                 <div id="listaComisiones"></div>
             </div>
         </div>
 
-        <!-- SECCIÓN OPERACIONES -->
+        <!-- OPERACIONES -->
         <div id="section-operaciones" class="section">
             <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
                 <button class="tab-btn active" id="btnMostrarRecibir">📥 Recibir</button>
                 <button class="tab-btn" id="btnMostrarTransferir">📤 Transferir</button>
             </div>
-
             <div id="sub-recibir" class="card">
                 <h3 style="margin-bottom:10px;">📥 Registrar Recibo</h3>
                 <div class="form-group">
@@ -1234,6 +1225,18 @@
                     <input type="date" id="transferirFecha">
                 </div>
                 <div class="form-group">
+                    <label>Tipo de destino</label>
+                    <div class="selector-destino">
+                        <button class="btn-opcion active" id="btnTipoTarjeta" data-tipo="tarjeta">💳 Tarjeta (16 dígitos)</button>
+                        <button class="btn-opcion" id="btnTipoMonedero" data-tipo="monedero">📱 Mi Transfer (8 dígitos)</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="labelNumeroDestino">Número de tarjeta</label>
+                    <input type="text" id="numeroDestino" class="numero-destino" placeholder="Ej: 1234 5678 9012 3456" maxlength="16" inputmode="numeric" autocomplete="off">
+                    <div class="hint" id="hintNumeroDestino">Ingresa 16 dígitos numéricos</div>
+                </div>
+                <div class="form-group">
                     <label>Saldo disponible</label>
                     <input type="text" id="transferirSaldoDisponible" class="readonly-field" readonly>
                 </div>
@@ -1267,7 +1270,7 @@
             </div>
         </div>
 
-        <!-- SECCIÓN SALDO -->
+        <!-- SALDO -->
         <div id="section-saldo" class="section">
             <div class="card" style="background:var(--gradient); border:none; color:white;">
                 <div class="saldo-total" style="-webkit-text-fill-color:white; color:white;" id="saldoTotal">$0.00</div>
@@ -1279,7 +1282,7 @@
             </div>
         </div>
 
-        <!-- SECCIÓN HISTORIAL -->
+        <!-- HISTORIAL -->
         <div id="section-historial" class="section">
             <div class="card">
                 <h3 style="margin-bottom:10px;">Historial Completo</h3>
@@ -1310,37 +1313,21 @@
             </div>
         </div>
 
-        <!-- SECCIÓN FINANZAS -->
+        <!-- FINANZAS -->
         <div id="section-finanzas" class="section">
             <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
                 <button class="btn-small btn-primary" id="btnMostrarResumenFinanzas" style="flex:1;">📊 Resumen</button>
                 <button class="btn-small btn-secondary" id="btnMostrarRegistrarFinanza" style="flex:1;">➕ Registrar</button>
             </div>
-
             <div id="sub-resumen-finanzas" class="card">
                 <div class="stats-grid">
-                    <div class="stat-card comisiones">
-                        <div class="label">Comisiones</div>
-                        <div class="monto" id="totalComisiones">$0.00</div>
-                    </div>
-                    <div class="stat-card ingresos">
-                        <div class="label">Ingresos</div>
-                        <div class="monto" id="totalIngresos">$0.00</div>
-                    </div>
-                    <div class="stat-card gastos">
-                        <div class="label">Gastos</div>
-                        <div class="monto" id="totalGastos">$0.00</div>
-                    </div>
-                    <div class="stat-card total">
-                        <div class="label">Saldo Total</div>
-                        <div class="monto" id="saldoFinanzas">$0.00</div>
-                    </div>
+                    <div class="stat-card comisiones"><div class="label">Comisiones</div><div class="monto" id="totalComisiones">$0.00</div></div>
+                    <div class="stat-card ingresos"><div class="label">Ingresos</div><div class="monto" id="totalIngresos">$0.00</div></div>
+                    <div class="stat-card gastos"><div class="label">Gastos</div><div class="monto" id="totalGastos">$0.00</div></div>
+                    <div class="stat-card total"><div class="label">Saldo Total</div><div class="monto" id="saldoFinanzas">$0.00</div></div>
                 </div>
                 <div style="margin-top:10px;">
-                    <div class="card-header">
-                        <h3>Movimientos Financieros</h3>
-                        <span class="badge-count" id="contadorFinanzas">0</span>
-                    </div>
+                    <div class="card-header"><h3>Movimientos Financieros</h3><span class="badge-count" id="contadorFinanzas">0</span></div>
                     <div class="filtros-row">
                         <div class="form-group">
                             <label>Tipo</label>
@@ -1362,7 +1349,6 @@
                     <div id="listaFinanzas"></div>
                 </div>
             </div>
-
             <div id="sub-registrar-finanza" class="card" style="display:none;">
                 <h3 style="margin-bottom:10px;">Registrar Movimiento</h3>
                 <div class="form-group">
@@ -1388,7 +1374,7 @@
             </div>
         </div>
 
-        <!-- SECCIÓN BASE DE DATOS -->
+        <!-- BASE DE DATOS -->
         <div id="section-bd" class="section">
             <div class="card">
                 <h3 style="margin-bottom:10px;">🗄️ Base de Datos</h3>
@@ -1416,9 +1402,8 @@
 
     <script>
         // ============================================================
-        // 🔐 SISTEMA DE AUTENTICACIÓN SEGURO
+        // AUTENTICACIÓN
         // ============================================================
-
         function hashPassword(password) {
             let hash = 0;
             for (let i = 0; i < password.length; i++) {
@@ -1430,47 +1415,29 @@
         }
 
         function getUsuarios() {
-            try {
-                return JSON.parse(localStorage.getItem('gestor_usuarios')) || {};
-            } catch {
-                return {};
-            }
+            try { return JSON.parse(localStorage.getItem('gestor_usuarios')) || {}; } catch { return {}; }
         }
 
-        function guardarUsuarios(usuarios) {
-            localStorage.setItem('gestor_usuarios', JSON.stringify(usuarios));
-        }
+        function guardarUsuarios(usuarios) { localStorage.setItem('gestor_usuarios', JSON.stringify(usuarios)); }
 
         function registrarUsuario(usuario, password, email = '') {
             const usuarios = getUsuarios();
-            if (usuarios[usuario]) {
-                return { success: false, error: 'El usuario ya existe' };
-            }
-            usuarios[usuario] = {
-                password: hashPassword(password),
-                email: email,
-                fechaRegistro: new Date().toISOString()
-            };
+            if (usuarios[usuario]) return { success: false, error: 'El usuario ya existe' };
+            usuarios[usuario] = { password: hashPassword(password), email: email, fechaRegistro: new Date().toISOString() };
             guardarUsuarios(usuarios);
             return { success: true };
         }
 
         function verificarLogin(usuario, password) {
             const usuarios = getUsuarios();
-            if (!usuarios[usuario]) {
-                return { success: false, error: 'Usuario no encontrado' };
-            }
-            const hashIngresado = hashPassword(password);
-            if (usuarios[usuario].password !== hashIngresado) {
-                return { success: false, error: 'Contraseña incorrecta' };
-            }
+            if (!usuarios[usuario]) return { success: false, error: 'Usuario no encontrado' };
+            if (usuarios[usuario].password !== hashPassword(password)) return { success: false, error: 'Contraseña incorrecta' };
             return { success: true, usuario: usuario };
         }
 
         // ============================================================
         // GESTIÓN DE SESIÓN
         // ============================================================
-
         let usuarioActual = null;
 
         function mostrarAuth() {
@@ -1486,15 +1453,9 @@
         function iniciarSesion() {
             const usuario = document.getElementById('loginUsuario').value.trim();
             const password = document.getElementById('loginPassword').value;
-            if (!usuario || !password) {
-                mostrarErrorLogin('Completa todos los campos.');
-                return;
-            }
+            if (!usuario || !password) { mostrarErrorLogin('Completa todos los campos.'); return; }
             const result = verificarLogin(usuario, password);
-            if (!result.success) {
-                mostrarErrorLogin(result.error);
-                return;
-            }
+            if (!result.success) { mostrarErrorLogin(result.error); return; }
             usuarioActual = usuario;
             document.getElementById('usuarioBadge').textContent = '👤 ' + usuario;
             ocultarAuth();
@@ -1509,27 +1470,12 @@
             const email = document.getElementById('registerEmail').value.trim();
             const password = document.getElementById('registerPassword').value;
             const confirm = document.getElementById('registerConfirm').value;
-            if (!usuario || usuario.length < 3) {
-                mostrarErrorRegistro('El usuario debe tener al menos 3 caracteres.');
-                return;
-            }
-            if (password.length < 6) {
-                mostrarErrorRegistro('La contraseña debe tener al menos 6 caracteres.');
-                return;
-            }
-            if (password !== confirm) {
-                mostrarErrorRegistro('Las contraseñas no coinciden.');
-                return;
-            }
-            if (!/^[a-zA-Z0-9_]+$/.test(usuario)) {
-                mostrarErrorRegistro('El usuario solo puede contener letras, números y guión bajo.');
-                return;
-            }
+            if (!usuario || usuario.length < 3) { mostrarErrorRegistro('El usuario debe tener al menos 3 caracteres.'); return; }
+            if (password.length < 6) { mostrarErrorRegistro('La contraseña debe tener al menos 6 caracteres.'); return; }
+            if (password !== confirm) { mostrarErrorRegistro('Las contraseñas no coinciden.'); return; }
+            if (!/^[a-zA-Z0-9_]+$/.test(usuario)) { mostrarErrorRegistro('El usuario solo puede contener letras, números y guión bajo.'); return; }
             const result = registrarUsuario(usuario, password, email);
-            if (!result.success) {
-                mostrarErrorRegistro(result.error);
-                return;
-            }
+            if (!result.success) { mostrarErrorRegistro(result.error); return; }
             mostrarToast('✅ Usuario registrado correctamente. Ahora inicia sesión.', 'success');
             mostrarLoginForm();
             document.getElementById('loginUsuario').value = usuario;
@@ -1545,10 +1491,6 @@
             mostrarToast('👋 Sesión cerrada', 'info');
             mostrarLoginForm();
         }
-
-        // ============================================================
-        // UI DE AUTH
-        // ============================================================
 
         function mostrarLoginForm() {
             document.getElementById('loginForm').style.display = 'block';
@@ -1591,10 +1533,6 @@
             document.getElementById('registerError').classList.remove('show');
         }
 
-        // ============================================================
-        // EVENTOS DE AUTH
-        // ============================================================
-
         document.getElementById('btnLogin').addEventListener('click', iniciarSesion);
         document.getElementById('btnRegister').addEventListener('click', registrarNuevoUsuario);
         document.getElementById('switchToRegister').addEventListener('click', mostrarRegisterForm);
@@ -1606,7 +1544,6 @@
         document.getElementById('loginPassword').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') iniciarSesion();
         });
-
         document.getElementById('registerUsuario').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') document.getElementById('registerEmail').focus();
         });
@@ -1621,25 +1558,16 @@
         });
 
         // ============================================================
-        // FUNCIONES PARA GUARDAR/CARGAR DATOS POR USUARIO
+        // GUARDAR/CARGAR DATOS
         // ============================================================
-
-        function getStorageKey(usuario, tipo) {
-            return 'gestor_' + usuario + '_' + tipo;
-        }
+        function getStorageKey(usuario, tipo) { return 'gestor_' + usuario + '_' + tipo; }
 
         function loadUserData(usuario, tipo) {
-            try {
-                const key = getStorageKey(usuario, tipo);
-                return JSON.parse(localStorage.getItem(key)) || [];
-            } catch {
-                return [];
-            }
+            try { return JSON.parse(localStorage.getItem(getStorageKey(usuario, tipo))) || []; } catch { return []; }
         }
 
         function saveUserData(usuario, tipo, data) {
-            const key = getStorageKey(usuario, tipo);
-            localStorage.setItem(key, JSON.stringify(data));
+            localStorage.setItem(getStorageKey(usuario, tipo), JSON.stringify(data));
         }
 
         function cargarDatosUsuario(usuario) {
@@ -1658,23 +1586,19 @@
         }
 
         // ============================================================
-        // TOAST NOTIFICATION
+        // TOAST
         // ============================================================
-
         function mostrarToast(mensaje, tipo = 'success') {
             const toast = document.getElementById('toast');
             toast.textContent = mensaje;
             toast.className = 'toast ' + tipo + ' show';
             clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            toast._timeout = setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
         // ============================================================
         // MODO OSCURO
         // ============================================================
-
         function aplicarModoOscuro(activar) {
             if (activar) {
                 document.body.classList.add('dark-mode');
@@ -1692,9 +1616,8 @@
         }
 
         // ============================================================
-        // RELOJ Y ESTADO DE CONEXIÓN
+        // RELOJ Y ESTADO
         // ============================================================
-
         function actualizarReloj() {
             const now = new Date();
             const fecha = now.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -1725,7 +1648,6 @@
         // ============================================================
         // FUNCIONES DE LA APLICACIÓN
         // ============================================================
-
         let clientes = [];
         let recibos = [];
         let transferencias = [];
@@ -1735,20 +1657,23 @@
         let ordenRecibosAsc = false;
         let ordenTransferenciasAsc = false;
         let operacionEditando = null;
+        let tipoDestinoSeleccionado = 'tarjeta';
 
-        function generarId() {
-            return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-        }
-
+        function generarId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
         function getCliente(id) { return clientes.find(c => c.id === id); }
         function getClientePorNombre(nombre) { return clientes.find(c => c.nombre.toLowerCase() === nombre.toLowerCase()); }
         function getSaldoCliente(id) { const c = getCliente(id); return c ? c.saldo : 0; }
-        function actualizarSaldoCliente(id, delta) {
-            const c = getCliente(id);
-            if (c) { c.saldo = (c.saldo || 0) + delta; persistAll(); }
-        }
+        function actualizarSaldoCliente(id, delta) { const c = getCliente(id); if (c) { c.saldo = (c.saldo || 0) + delta; persistAll(); } }
         function formatearMoneda(valor) { return '$' + Number(valor).toFixed(2); }
         function formatearFecha(ts) { return new Date(ts).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
+
+        function formatearNumero(numero) {
+            return Math.round(Number(numero)).toLocaleString('es-ES');
+        }
+
+        function formatearMontoConDecimales(numero) {
+            return Number(numero).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
 
         function agregarMovimientoFinanciero(tipo, monto, descripcion, clienteId = null, reciboId = null, fecha = null) {
             const mov = { id: generarId(), tipo, monto, descripcion, clienteId, reciboId, fecha: fecha || Date.now() };
@@ -1765,7 +1690,6 @@
             recibos.forEach(r => operaciones.push({ ...r, tipo: 'recibo' }));
             transferencias.forEach(t => operaciones.push({ ...t, tipo: 'transferencia' }));
             operaciones.sort((a, b) => a.fecha - b.fecha);
-            
             operaciones.forEach((op, index) => {
                 const nuevoNumero = index + 1;
                 if (op.tipo === 'recibo') {
@@ -1784,21 +1708,13 @@
             recibos.forEach(r => numerosUsados.add(r.numeroOp));
             transferencias.forEach(t => numerosUsados.add(t.numeroOp));
             let numero = 1;
-            while (numerosUsados.has(numero)) {
-                numero++;
-            }
+            while (numerosUsados.has(numero)) numero++;
             return numero;
         }
 
-        function actualizarClientesHeader() {
-            document.getElementById('clientesCountHeader').textContent = clientes.length;
-        }
+        function actualizarClientesHeader() { document.getElementById('clientesCountHeader').textContent = clientes.length; }
 
-        function persistAll() {
-            if (usuarioActual) {
-                guardarDatosUsuario(usuarioActual);
-            }
-        }
+        function persistAll() { if (usuarioActual) guardarDatosUsuario(usuarioActual); }
 
         function setupEnterListener(inputId, buttonId) {
             const input = document.getElementById(inputId);
@@ -1814,8 +1730,16 @@
         }
 
         // ============================================================
-        // 📝 FUNCIONES PARA COPIAR MENSAJE DE TRANSFERENCIA (BPA)
+        // COPIAR MENSAJES (FORMATO EXACTO BPA)
         // ============================================================
+        const TRANSACCION_OCULTA = 'XXXXXXXXXXXXX';
+
+        function formatearTarjeta(numero) {
+            if (!numero || numero.length < 16) return '9206XXXXXXXX0000';
+            const primeros = numero.substring(0, 4);
+            const ultimos = numero.substring(12, 16);
+            return primeros + 'XXXXXXXX' + ultimos;
+        }
 
         function copiarMensajeTransferencia(id) {
             const transferencia = transferencias.find(t => t.id === id);
@@ -1831,22 +1755,40 @@
             }
 
             const fecha = new Date(transferencia.fecha);
-            const dia = String(fecha.getDate()).padStart(2, '0');
-            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+            const dia = fecha.getDate();
+            const mes = fecha.getMonth() + 1;
             const anio = fecha.getFullYear();
             const fechaFormateada = `${dia}/${mes}/${anio}`;
 
-            const montoFormateado = transferencia.monto.toFixed(2);
-            const saldoRestante = cliente.saldo || 0;
-            const saldoFormateado = saldoRestante.toFixed(2);
+            const montoFormateado = formatearMontoConDecimales(transferencia.monto);
+            const saldoRestante = transferencia.saldoAntes - transferencia.monto;
+            const saldoFormateado = formatearNumero(saldoRestante);
+            const esNegativo = saldoRestante < 0;
+            const prefijoSaldo = esNegativo ? 'DB' : 'CR';
 
-            const mensaje = `Banco Popular de Ahorro:  La Transferencia fue completada. 
-        Fecha: ${fechaFormateada}
-        Beneficiario: 9206XXXXXXXX0000
-        Ordenante: 9212XXXXXXXX3852
-        Monto: ${montoFormateado} CUP
-        Nro. Transaccion: 0000000000000
-        Saldo restante: ${saldoFormateado} CUP.`;
+            let mensaje = '';
+
+            if (transferencia.tipoDestino === 'monedero') {
+                const telefono = transferencia.numeroDestino || 'XXXXXXXXXX';
+                mensaje = 
+`Banco Popular de Ahorro:  La recarga de la cuenta CUP se realizo con exito. 
+movil del monedero recargado:${telefono} 
+Importe Recargado:${montoFormateado} CUP. 
+Id Monedero: TMW182078006. 
+Id Transaccion: ${TRANSACCION_OCULTA}  
+Saldo Restante: ${prefijoSaldo} ${saldoFormateado} CUP. 
+Gracias por utilizar nuestros servicios, ETECSA.`;
+            } else {
+                const tarjetaFormateada = formatearTarjeta(transferencia.numeroDestino);
+                mensaje = 
+`Banco Popular de Ahorro:  La Transferencia fue completada. 
+Fecha: ${fechaFormateada} 
+Beneficiario: ${tarjetaFormateada} 
+Ordenante: 9212XXXXXXXX3852 
+Monto: ${montoFormateado} CUP 
+Nro. Transaccion: ${TRANSACCION_OCULTA} 
+Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
+            }
 
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(mensaje)
@@ -1864,10 +1806,8 @@
             textarea.style.left = '-9999px';
             textarea.style.top = '-9999px';
             document.body.appendChild(textarea);
-            
             textarea.select();
             textarea.setSelectionRange(0, 99999);
-            
             try {
                 document.execCommand('copy');
                 mostrarToast('✅ Mensaje copiado al portapapeles', 'success');
@@ -1875,7 +1815,6 @@
                 mostrarToast('❌ Error al copiar. Copia manualmente.', 'error');
                 mostrarMensajeManual(texto);
             }
-            
             document.body.removeChild(textarea);
         }
 
@@ -1890,16 +1829,57 @@
                 </div>
             `;
             document.body.appendChild(modal);
-            
             modal.addEventListener('click', function(e) {
                 if (e.target === this) this.remove();
             });
         }
 
         // ============================================================
+        // SELECTOR TARJETA / MONEDERO
+        // ============================================================
+        function actualizarSelectorDestino(tipo) {
+            tipoDestinoSeleccionado = tipo;
+            const btnTarjeta = document.getElementById('btnTipoTarjeta');
+            const btnMonedero = document.getElementById('btnTipoMonedero');
+            const label = document.getElementById('labelNumeroDestino');
+            const input = document.getElementById('numeroDestino');
+            const hint = document.getElementById('hintNumeroDestino');
+
+            if (tipo === 'tarjeta') {
+                btnTarjeta.classList.add('active');
+                btnMonedero.classList.remove('active');
+                label.textContent = 'Número de tarjeta (16 dígitos)';
+                input.placeholder = 'Ej: 1234 5678 9012 3456';
+                input.maxLength = 16;
+                hint.textContent = 'Ingresa 16 dígitos numéricos';
+                input.value = input.value.replace(/\D/g, '').slice(0, 16);
+            } else {
+                btnTarjeta.classList.remove('active');
+                btnMonedero.classList.add('active');
+                label.textContent = 'Número de Mi Transfer (8 dígitos)';
+                input.placeholder = 'Ej: 12345678';
+                input.maxLength = 8;
+                hint.textContent = 'Ingresa 8 dígitos numéricos';
+                input.value = input.value.replace(/\D/g, '').slice(0, 8);
+            }
+        }
+
+        function validarNumeroDestino() {
+            const input = document.getElementById('numeroDestino');
+            const valor = input.value.replace(/\D/g, '');
+            const longitudRequerida = tipoDestinoSeleccionado === 'tarjeta' ? 16 : 8;
+            if (valor.length === longitudRequerida && /^\d+$/.test(valor)) {
+                input.style.borderColor = 'var(--success)';
+                return true;
+            } else {
+                input.style.borderColor = 'var(--danger)';
+                return false;
+            }
+        }
+
+        // ============================================================
         // RENDERIZADO
         // ============================================================
-
         function renderComisiones() {
             const container = document.getElementById('listaComisiones');
             if (!container) return;
@@ -1931,29 +1911,18 @@
                     const id = this.dataset.id;
                     const parentDiv = this.closest('.cliente-card');
                     const input = parentDiv ? parentDiv.querySelector('.input-comision') : null;
-                    
-                    if (!input) {
-                        mostrarToast('Error: no se encontró el campo de comisión.', 'error');
-                        return;
-                    }
-                    
+                    if (!input) { mostrarToast('Error: no se encontró el campo de comisión.', 'error'); return; }
                     const nuevoValor = parseFloat(input.value);
-                    if (isNaN(nuevoValor) || nuevoValor < 0) { 
-                        mostrarToast('Ingresa una comisión válida.', 'error'); 
-                        return; 
-                    }
-                    
+                    if (isNaN(nuevoValor) || nuevoValor < 0) { mostrarToast('Ingresa una comisión válida.', 'error'); return; }
                     const cliente = getCliente(id);
-                    if (cliente) { 
-                        cliente.comision = nuevoValor; 
-                        persistAll(); 
-                        renderComisiones(); 
+                    if (cliente) {
+                        cliente.comision = nuevoValor;
+                        persistAll();
+                        renderComisiones();
                         actualizarSelectores();
                         const subRecibir = document.getElementById('sub-recibir');
-                        if (subRecibir && subRecibir.style.display !== 'none') {
-                            actualizarCamposRecibo();
-                        }
-                        mostrarToast(`Comisión de ${cliente.nombre} actualizada al ${nuevoValor}%`, 'success'); 
+                        if (subRecibir && subRecibir.style.display !== 'none') actualizarCamposRecibo();
+                        mostrarToast(`Comisión de ${cliente.nombre} actualizada al ${nuevoValor}%`, 'success');
                     } else {
                         mostrarToast('Cliente no encontrado.', 'error');
                     }
@@ -2179,32 +2148,12 @@
             const fechaStr = document.getElementById('historialFecha').value;
             const tipo = document.getElementById('historialTipo').value;
             let ops = [];
-            recibos.forEach(r => ops.push({ 
-                id: r.id, 
-                tipo: 'recibo', 
-                clienteId: r.clienteId, 
-                monto: r.monto, 
-                comision: r.comision, 
-                neto: r.neto, 
-                fecha: r.fecha, 
-                saldoAntes: null,
-                numeroOp: r.numeroOp 
-            }));
-            transferencias.forEach(t => ops.push({ 
-                id: t.id, 
-                tipo: 'transferencia', 
-                clienteId: t.clienteId, 
-                monto: t.monto, 
-                comision: null, 
-                neto: null, 
-                fecha: t.fecha, 
-                saldoAntes: t.saldoAntes,
-                numeroOp: t.numeroOp 
-            }));
+            recibos.forEach(r => ops.push({ id: r.id, tipo: 'recibo', clienteId: r.clienteId, monto: r.monto, comision: r.comision, neto: r.neto, fecha: r.fecha, saldoAntes: null, numeroOp: r.numeroOp }));
+            transferencias.forEach(t => ops.push({ id: t.id, tipo: 'transferencia', clienteId: t.clienteId, monto: t.monto, comision: null, neto: null, fecha: t.fecha, saldoAntes: t.saldoAntes, numeroOp: t.numeroOp }));
             if (clienteId !== 'todos') ops = ops.filter(op => op.clienteId === clienteId);
             if (fechaStr) {
-                const fi = new Date(fechaStr); fi.setHours(0,0,0,0);
-                const ff = new Date(fechaStr); ff.setHours(23,59,59,999);
+                const fi = new Date(fechaStr); fi.setHours(0, 0, 0, 0);
+                const ff = new Date(fechaStr); ff.setHours(23, 59, 59, 999);
                 ops = ops.filter(op => { const d = new Date(op.fecha); return d >= fi && d <= ff; });
             }
             if (tipo !== 'todos') ops = ops.filter(op => op.tipo === tipo);
@@ -2260,8 +2209,8 @@
             let movs = [...finanzas];
             if (tipoFiltro !== 'todos') movs = movs.filter(m => m.tipo === tipoFiltro);
             if (fechaFiltro) {
-                const fi = new Date(fechaFiltro); fi.setHours(0,0,0,0);
-                const ff = new Date(fechaFiltro); ff.setHours(23,59,59,999);
+                const fi = new Date(fechaFiltro); fi.setHours(0, 0, 0, 0);
+                const ff = new Date(fechaFiltro); ff.setHours(23, 59, 59, 999);
                 movs = movs.filter(m => { const d = new Date(m.fecha); return d >= fi && d <= ff; });
             }
             movs.sort((a, b) => ordenFinanzasAsc ? a.fecha - b.fecha : b.fecha - a.fecha);
@@ -2274,10 +2223,14 @@
             }
             let html = '';
             movs.forEach(m => {
-                let badgeClass = '', badgeText = '', desc = m.descripcion || '';
-                if (m.tipo === 'comision') { badgeClass = 'badge-comision'; badgeText = 'Comisión'; const c = getCliente(m.clienteId); desc = c ? `Comisión de ${c.nombre}` : 'Comisión'; }
-                else if (m.tipo === 'ingreso') { badgeClass = 'badge-ingreso'; badgeText = 'Ingreso'; }
-                else if (m.tipo === 'gasto') { badgeClass = 'badge-gasto'; badgeText = 'Gasto'; }
+                let badgeClass = '',
+                    badgeText = '',
+                    desc = m.descripcion || '';
+                if (m.tipo === 'comision') { badgeClass = 'badge-comision';
+                    badgeText = 'Comisión'; const c = getCliente(m.clienteId);
+                    desc = c ? `Comisión de ${c.nombre}` : 'Comisión'; } else if (m.tipo === 'ingreso') { badgeClass = 'badge-ingreso';
+                    badgeText = 'Ingreso'; } else if (m.tipo === 'gasto') { badgeClass = 'badge-gasto';
+                    badgeText = 'Gasto'; }
                 html += `
                     <div class="operacion-card">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -2326,28 +2279,22 @@
         }
 
         // ============================================================
-        // RECIBOS Y TRANSFERENCIAS EN OPERACIONES (CON ICONOS)
+        // RENDER RECIBOS Y TRANSFERENCIAS EN OPERACIONES
         // ============================================================
-
         function renderRecibosOperaciones() {
             const container = document.getElementById('listaRecibosOperaciones');
             if (!container) return;
-            
             let lista = [...recibos];
             lista.sort((a, b) => ordenRecibosAsc ? a.numeroOp - b.numeroOp : b.numeroOp - a.numeroOp);
-            
             document.getElementById('contadorRecibosOperaciones').textContent = recibos.length;
-            
             if (lista.length === 0) {
                 container.innerHTML = '<div class="empty-msg"><p>No hay recibos registrados</p></div>';
                 return;
             }
-            
             let html = '';
             lista.forEach(r => {
                 const cliente = getCliente(r.clienteId);
                 const fechaStr = formatearFecha(r.fecha);
-                
                 html += `
                     <div class="operacion-card">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -2358,9 +2305,7 @@
                             <span class="numero-op">#${r.numeroOp}</span>
                         </div>
                         <div class="monto">${formatearMoneda(r.monto)}</div>
-                        <div class="detalle">
-                            Comisión: ${formatearMoneda(r.comision)} · Neto: ${formatearMoneda(r.neto)}
-                        </div>
+                        <div class="detalle">Comisión: ${formatearMoneda(r.comision)} · Neto: ${formatearMoneda(r.neto)}</div>
                         <div class="fecha">📅 ${fechaStr}</div>
                         <div class="acciones-botones">
                             <button class="btn-icono btn-editar-icono" data-id="${r.id}" data-tipo="recibo" title="Editar">✏️</button>
@@ -2370,7 +2315,6 @@
                 `;
             });
             container.innerHTML = html;
-            
             container.querySelectorAll('.btn-eliminar-recibo-op').forEach(btn => {
                 btn.addEventListener('click', function() {
                     if (!confirm('¿Eliminar este recibo?')) return;
@@ -2387,7 +2331,6 @@
                     mostrarToast('Recibo eliminado.', 'success');
                 });
             });
-            
             container.querySelectorAll('.btn-editar-icono').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = this.dataset.id;
@@ -2400,24 +2343,22 @@
         function renderTransferenciasOperaciones() {
             const container = document.getElementById('listaTransferenciasOperaciones');
             if (!container) return;
-            
             let lista = [...transferencias];
             lista.sort((a, b) => ordenTransferenciasAsc ? a.numeroOp - b.numeroOp : b.numeroOp - a.numeroOp);
-            
             document.getElementById('contadorTransferenciasOperaciones').textContent = transferencias.length;
-            
             if (lista.length === 0) {
                 container.innerHTML = '<div class="empty-msg"><p>No hay transferencias registradas</p></div>';
                 return;
             }
-            
             let html = '';
             lista.forEach(t => {
                 const cliente = getCliente(t.clienteId);
                 const saldoRestante = t.saldoAntes - t.monto;
                 const fechaStr = formatearFecha(t.fecha);
                 const esNegativo = saldoRestante < 0;
-                
+                const badgeTipo = t.tipoDestino === 'monedero' ? 'badge-monedero' : 'badge-tarjeta';
+                const labelTipo = t.tipoDestino === 'monedero' ? '📱 Mi Transfer' : '💳 Tarjeta';
+                const numeroMostrado = t.numeroDestino || 'N/D';
                 html += `
                     <div class="operacion-card" style="border-left-color:${esNegativo ? 'var(--danger)' : 'var(--primary)'};">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -2432,6 +2373,10 @@
                             Saldo restante: <span style="${esNegativo ? 'color:var(--saldo-negativo);' : ''}font-weight:600;">${formatearMoneda(saldoRestante)}</span>
                             ${esNegativo ? ' ⚠️ (Préstamo)' : ''}
                         </div>
+                        <div>
+                            <span class="badge ${badgeTipo}">${labelTipo}</span>
+                            <span class="destino-tarjeta">${numeroMostrado}</span>
+                        </div>
                         <div class="fecha">📅 ${fechaStr}</div>
                         <div class="acciones-botones">
                             <button class="btn-icono btn-editar-icono" data-id="${t.id}" data-tipo="transferencia" title="Editar">✏️</button>
@@ -2442,7 +2387,6 @@
                 `;
             });
             container.innerHTML = html;
-            
             container.querySelectorAll('.btn-eliminar-transferencia-op').forEach(btn => {
                 btn.addEventListener('click', function() {
                     if (!confirm('¿Eliminar esta transferencia?')) return;
@@ -2458,7 +2402,6 @@
                     mostrarToast('Transferencia eliminada.', 'success');
                 });
             });
-            
             container.querySelectorAll('.btn-editar-icono').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = this.dataset.id;
@@ -2466,7 +2409,6 @@
                     abrirModalEdicion(id, tipo);
                 });
             });
-            
             container.querySelectorAll('.btn-copiar-icono').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = this.dataset.id;
@@ -2478,7 +2420,6 @@
         // ============================================================
         // MODAL DE EDICIÓN
         // ============================================================
-
         function abrirModalEdicion(id, tipo) {
             const modal = document.getElementById('modalEditar');
             const titulo = document.getElementById('modalTitulo');
@@ -2486,23 +2427,14 @@
             const inputMonto = document.getElementById('modalMonto');
             const inputFecha = document.getElementById('modalFecha');
             const camposExtra = document.getElementById('modalCamposExtra');
-            
+
             let operacion = null;
-            if (tipo === 'recibo') {
-                operacion = recibos.find(r => r.id === id);
-            } else {
-                operacion = transferencias.find(t => t.id === id);
-            }
-            
-            if (!operacion) {
-                mostrarToast('Operación no encontrada.', 'error');
-                return;
-            }
-            
+            if (tipo === 'recibo') { operacion = recibos.find(r => r.id === id); } else { operacion = transferencias.find(t => t.id === id); }
+            if (!operacion) { mostrarToast('Operación no encontrada.', 'error'); return; }
+
             operacionEditando = { ...operacion, tipo };
-            
             titulo.textContent = tipo === 'recibo' ? '✏️ Editar Recibo' : '✏️ Editar Transferencia';
-            
+
             selectCliente.innerHTML = '';
             clientes.forEach(c => {
                 const opt = document.createElement('option');
@@ -2511,10 +2443,10 @@
                 if (c.id === operacion.clienteId) opt.selected = true;
                 selectCliente.appendChild(opt);
             });
-            
+
             inputMonto.value = operacion.monto;
             inputFecha.value = new Date(operacion.fecha).toISOString().split('T')[0];
-            
+
             camposExtra.innerHTML = '';
             if (tipo === 'recibo') {
                 camposExtra.innerHTML = `
@@ -2533,10 +2465,9 @@
                         </div>
                     </div>
                 `;
-                
                 const inputMontoModal = inputMonto;
                 const inputPorcentaje = document.getElementById('modalComisionPorcentaje');
-                
+
                 function actualizarCamposReciboModal() {
                     const monto = parseFloat(inputMontoModal.value) || 0;
                     const porcentaje = parseFloat(inputPorcentaje.value) || 0;
@@ -2545,7 +2476,6 @@
                     document.getElementById('modalComision').value = formatearMoneda(comision);
                     document.getElementById('modalNeto').value = formatearMoneda(neto);
                 }
-                
                 inputMontoModal.addEventListener('input', actualizarCamposReciboModal);
                 inputPorcentaje.addEventListener('input', actualizarCamposReciboModal);
                 actualizarCamposReciboModal();
@@ -2560,7 +2490,6 @@
                         <span id="modalSaldoRestante">Saldo restante: ${formatearMoneda((cliente?.saldo || 0) - operacion.monto)}</span>
                     </div>
                 `;
-                
                 inputMonto.addEventListener('input', function() {
                     const clienteActual = getCliente(selectCliente.value);
                     const saldoActual = clienteActual?.saldo || 0;
@@ -2572,7 +2501,6 @@
                         span.style.color = saldoRestante < 0 ? 'var(--saldo-negativo)' : 'var(--text-primary)';
                     }
                 });
-                
                 selectCliente.addEventListener('change', function() {
                     const clienteActual = getCliente(this.value);
                     const saldoActual = clienteActual?.saldo || 0;
@@ -2586,97 +2514,62 @@
                     }
                 });
             }
-            
             modal.classList.add('open');
         }
 
         function guardarEdicion() {
             if (!operacionEditando) return;
-            
             const selectCliente = document.getElementById('modalCliente');
             const inputMonto = document.getElementById('modalMonto');
             const inputFecha = document.getElementById('modalFecha');
-            
             const nuevoClienteId = selectCliente.value;
             const nuevoMonto = parseFloat(inputMonto.value);
             const nuevaFecha = new Date(inputFecha.value + 'T00:00:00').getTime();
-            
-            if (!nuevoClienteId) {
-                mostrarToast('Selecciona un cliente.', 'error');
-                return;
-            }
-            if (isNaN(nuevoMonto) || nuevoMonto <= 0) {
-                mostrarToast('Ingresa un monto válido.', 'error');
-                return;
-            }
-            
+            if (!nuevoClienteId) { mostrarToast('Selecciona un cliente.', 'error'); return; }
+            if (isNaN(nuevoMonto) || nuevoMonto <= 0) { mostrarToast('Ingresa un monto válido.', 'error'); return; }
             const cliente = getCliente(nuevoClienteId);
-            if (!cliente) {
-                mostrarToast('Cliente no encontrado.', 'error');
-                return;
-            }
-            
+            if (!cliente) { mostrarToast('Cliente no encontrado.', 'error'); return; }
+
             if (operacionEditando.tipo === 'recibo') {
                 const reciboOriginal = recibos.find(r => r.id === operacionEditando.id);
                 if (reciboOriginal) {
                     actualizarSaldoCliente(reciboOriginal.clienteId, -reciboOriginal.neto);
-                    
                     const porcentaje = parseFloat(document.getElementById('modalComisionPorcentaje')?.value) || cliente.comision;
                     const nuevaComision = nuevoMonto * (porcentaje / 100);
                     const nuevoNeto = nuevoMonto - nuevaComision;
-                    
-                    if (nuevoNeto < 0) {
-                        mostrarToast('La comisión no puede ser mayor al monto.', 'error');
-                        actualizarSaldoCliente(reciboOriginal.clienteId, reciboOriginal.neto);
-                        return;
-                    }
-                    
+                    if (nuevoNeto < 0) { mostrarToast('La comisión no puede ser mayor al monto.', 'error');
+                        actualizarSaldoCliente(reciboOriginal.clienteId, reciboOriginal.neto); return; }
                     reciboOriginal.clienteId = nuevoClienteId;
                     reciboOriginal.monto = nuevoMonto;
                     reciboOriginal.comision = nuevaComision;
                     reciboOriginal.neto = nuevoNeto;
                     reciboOriginal.fecha = nuevaFecha;
-                    
                     actualizarSaldoCliente(nuevoClienteId, nuevoNeto);
-                    
                     const finanzaAsociada = finanzas.find(f => f.reciboId === reciboOriginal.id);
-                    if (finanzaAsociada) {
-                        finanzaAsociada.monto = nuevaComision;
+                    if (finanzaAsociada) { finanzaAsociada.monto = nuevaComision;
                         finanzaAsociada.descripcion = `Comisión de ${cliente.nombre}`;
-                        finanzaAsociada.clienteId = nuevoClienteId;
-                    }
-                    
+                        finanzaAsociada.clienteId = nuevoClienteId; }
                     mostrarToast(`Recibo #${reciboOriginal.numeroOp} actualizado.`, 'success');
                 }
             } else {
                 const transferenciaOriginal = transferencias.find(t => t.id === operacionEditando.id);
                 if (transferenciaOriginal) {
                     actualizarSaldoCliente(transferenciaOriginal.clienteId, transferenciaOriginal.monto);
-                    
                     const saldoActual = cliente.saldo || 0;
                     const nuevoSaldoRestante = saldoActual - nuevoMonto;
-                    
                     transferenciaOriginal.clienteId = nuevoClienteId;
                     transferenciaOriginal.monto = nuevoMonto;
                     transferenciaOriginal.saldoAntes = saldoActual;
                     transferenciaOriginal.fecha = nuevaFecha;
-                    
                     actualizarSaldoCliente(nuevoClienteId, -nuevoMonto);
-                    
                     if (nuevoSaldoRestante < 0) {
                         const prestamo = Math.abs(nuevoSaldoRestante);
                         let prestamoExistente = finanzas.find(f => f.clienteId === nuevoClienteId && f.descripcion && f.descripcion.includes('Préstamo a'));
-                        if (prestamoExistente) {
-                            prestamoExistente.monto = prestamo;
-                        } else {
-                            agregarMovimientoFinanciero('gasto', prestamo, `Préstamo a ${cliente.nombre}`, nuevoClienteId, null, nuevaFecha);
-                        }
+                        if (prestamoExistente) { prestamoExistente.monto = prestamo; } else { agregarMovimientoFinanciero('gasto', prestamo, `Préstamo a ${cliente.nombre}`, nuevoClienteId, null, nuevaFecha); }
                     }
-                    
                     mostrarToast(`Transferencia #${transferenciaOriginal.numeroOp} actualizada.`, 'success');
                 }
             }
-            
             reordenarNumerosOperaciones();
             persistAll();
             recargarTodo();
@@ -2690,11 +2583,9 @@
 
         document.getElementById('modalCancelar').addEventListener('click', cerrarModal);
         document.getElementById('modalGuardar').addEventListener('click', guardarEdicion);
-        
         document.getElementById('modalEditar').addEventListener('click', function(e) {
             if (e.target === this) cerrarModal();
         });
-        
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') cerrarModal();
         });
@@ -2702,11 +2593,9 @@
         // ============================================================
         // NAVEGACIÓN Y EVENTOS
         // ============================================================
-
         function cambiarPestanaOperaciones(pestana) {
             const btnRecibir = document.getElementById('btnMostrarRecibir');
             const btnTransferir = document.getElementById('btnMostrarTransferir');
-            
             if (pestana === 'recibir') {
                 btnRecibir.classList.add('active');
                 btnTransferir.classList.remove('active');
@@ -2726,6 +2615,7 @@
                 document.getElementById('sub-lista-transferencias').style.display = 'block';
                 actualizarSelectores();
                 renderTransferenciasOperaciones();
+                actualizarSelectorDestino(tipoDestinoSeleccionado);
                 setTimeout(() => document.getElementById('transferirMonto').focus(), 100);
             }
         }
@@ -2734,24 +2624,22 @@
             document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
             const target = document.getElementById('section-' + section);
             if (target) target.classList.add('visible');
-            
             document.querySelectorAll('#bottomMenu button').forEach(b => b.classList.remove('active'));
             const bottomBtn = document.querySelector(`#bottomMenu button[data-section="${section}"]`);
             if (bottomBtn) bottomBtn.classList.add('active');
-            
             document.querySelectorAll('#dropdownMenu button').forEach(b => b.classList.remove('active-drop'));
             const dropBtn = document.querySelector(`#dropdownMenu button[data-section="${section}"]`);
             if (dropBtn) dropBtn.classList.add('active-drop');
-            
-            if (section === 'clientes') { 
+
+            if (section === 'clientes') {
                 document.getElementById('sub-agregar-cliente').style.display = 'none';
                 document.getElementById('sub-ver-clientes').style.display = 'none';
                 document.getElementById('sub-comisiones').style.display = 'block';
                 renderComisiones();
                 renderResumenClientes();
             }
-            if (section === 'operaciones') { 
-                actualizarSelectores(); 
+            if (section === 'operaciones') {
+                actualizarSelectores();
                 renderRecibosOperaciones();
                 renderTransferenciasOperaciones();
                 const btnRecibir = document.getElementById('btnMostrarRecibir');
@@ -2761,17 +2649,15 @@
                 } else {
                     document.getElementById('sub-lista-recibos').style.display = 'none';
                     document.getElementById('sub-lista-transferencias').style.display = 'block';
+                    actualizarSelectorDestino(tipoDestinoSeleccionado);
                 }
             }
             if (section === 'saldo') renderSaldo();
-            if (section === 'historial') { actualizarFiltroHistorialClientes(); renderHistorial(); }
+            if (section === 'historial') { actualizarFiltroHistorialClientes();
+                renderHistorial(); }
             if (section === 'finanzas') { renderFinanzas(); }
             if (section === 'bd') actualizarEstadisticasBD();
         }
-
-        // ============================================================
-        // EVENTOS PRINCIPALES
-        // ============================================================
 
         document.querySelectorAll('#bottomMenu button[data-section]').forEach(btn => {
             btn.addEventListener('click', function(e) {
@@ -2780,7 +2666,6 @@
                 mostrarSeccion(section);
             });
         });
-
         document.querySelectorAll('#dropdownMenu button[data-section]').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -2789,12 +2674,10 @@
                 document.getElementById('dropdownMenu').classList.remove('open');
             });
         });
-
         document.getElementById('menuHamburguesa').addEventListener('click', function(e) {
             e.stopPropagation();
             document.getElementById('dropdownMenu').classList.toggle('open');
         });
-
         document.addEventListener('click', function(e) {
             const dropdown = document.getElementById('dropdownMenu');
             const hamburger = document.getElementById('menuHamburguesa');
@@ -2802,7 +2685,6 @@
                 dropdown.classList.remove('open');
             }
         });
-
         document.getElementById('btnDarkMode').addEventListener('click', toggleDarkMode);
         document.getElementById('btnLogout').addEventListener('click', cerrarSesion);
         document.getElementById('btnSettings').addEventListener('click', function() {
@@ -2815,10 +2697,23 @@
             mostrarToast('⚙️ Configuración de comisiones', 'info');
         });
 
-        // ============================================================
-        // CLIENTES
-        // ============================================================
+        // SELECTOR TARJETA / MONEDERO
+        document.getElementById('btnTipoTarjeta').addEventListener('click', function() {
+            actualizarSelectorDestino('tarjeta');
+            document.getElementById('numeroDestino').focus();
+        });
+        document.getElementById('btnTipoMonedero').addEventListener('click', function() {
+            actualizarSelectorDestino('monedero');
+            document.getElementById('numeroDestino').focus();
+        });
+        document.getElementById('numeroDestino').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+            const maxLen = tipoDestinoSeleccionado === 'tarjeta' ? 16 : 8;
+            if (this.value.length > maxLen) { this.value = this.value.slice(0, maxLen); }
+            validarNumeroDestino();
+        });
 
+        // CLIENTES
         document.getElementById('btnMostrarAgregarCliente').addEventListener('click', function() {
             document.getElementById('sub-agregar-cliente').style.display = 'block';
             document.getElementById('sub-ver-clientes').style.display = 'none';
@@ -2826,7 +2721,6 @@
             document.getElementById('btnMostrarComisiones').classList.remove('active-comisiones');
             setTimeout(() => document.getElementById('clienteNombre').focus(), 100);
         });
-        
         document.getElementById('btnMostrarListaClientes').addEventListener('click', function() {
             document.getElementById('sub-agregar-cliente').style.display = 'none';
             document.getElementById('sub-ver-clientes').style.display = 'block';
@@ -2834,7 +2728,6 @@
             document.getElementById('btnMostrarComisiones').classList.remove('active-comisiones');
             renderResumenClientes();
         });
-
         document.getElementById('btnMostrarComisiones').addEventListener('click', function() {
             document.getElementById('sub-agregar-cliente').style.display = 'none';
             document.getElementById('sub-ver-clientes').style.display = 'none';
@@ -2842,7 +2735,6 @@
             this.classList.add('active-comisiones');
             renderComisiones();
         });
-
         document.getElementById('btnAgregarCliente').addEventListener('click', function() {
             const nombre = document.getElementById('clienteNombre').value.trim();
             const comision = parseFloat(document.getElementById('clienteComision').value);
@@ -2857,17 +2749,9 @@
             setTimeout(() => document.getElementById('clienteNombre').focus(), 100);
         });
 
-        // ============================================================
         // OPERACIONES
-        // ============================================================
-
-        document.getElementById('btnMostrarRecibir').addEventListener('click', function() {
-            cambiarPestanaOperaciones('recibir');
-        });
-
-        document.getElementById('btnMostrarTransferir').addEventListener('click', function() {
-            cambiarPestanaOperaciones('transferir');
-        });
+        document.getElementById('btnMostrarRecibir').addEventListener('click', function() { cambiarPestanaOperaciones('recibir'); });
+        document.getElementById('btnMostrarTransferir').addEventListener('click', function() { cambiarPestanaOperaciones('transferir'); });
 
         document.getElementById('recibirMonto').addEventListener('input', function() {
             actualizarCamposRecibo();
@@ -2906,23 +2790,27 @@
             actualizarSaldoOperacionTransferir();
             actualizarSaldoRestanteTransferir();
         });
-        document.getElementById('transferirMonto').addEventListener('input', function() {
-            actualizarSaldoRestanteTransferir();
-        });
+        document.getElementById('transferirMonto').addEventListener('input', function() { actualizarSaldoRestanteTransferir(); });
 
         document.getElementById('btnRegistrarTransferencia').addEventListener('click', function() {
             const clienteId = document.getElementById('transferirCliente').value;
             const monto = parseFloat(document.getElementById('transferirMonto').value);
             const fechaStr = document.getElementById('transferirFecha').value;
+            const numeroDestino = document.getElementById('numeroDestino').value.replace(/\D/g, '');
             if (!clienteId) { mostrarToast('Selecciona un cliente.', 'error'); return; }
             if (isNaN(monto) || monto <= 0) { mostrarToast('Ingresa un monto válido.', 'error'); return; }
+            const longitudRequerida = tipoDestinoSeleccionado === 'tarjeta' ? 16 : 8;
+            if (numeroDestino.length !== longitudRequerida) { mostrarToast(`El número debe tener ${longitudRequerida} dígitos.`, 'error');
+                document.getElementById('numeroDestino').focus(); return; }
+            if (!/^\d+$/.test(numeroDestino)) { mostrarToast('Solo se permiten números.', 'error');
+                document.getElementById('numeroDestino').focus(); return; }
             const cliente = getCliente(clienteId);
             if (!cliente) { mostrarToast('Cliente no encontrado.', 'error'); return; }
             const saldoActual = cliente.saldo || 0;
             const saldoRestante = saldoActual - monto;
             const fecha = new Date(fechaStr + 'T00:00:00').getTime();
             const numeroOp = obtenerSiguienteNumeroOperacion();
-            transferencias.push({ id: generarId(), clienteId, monto, saldoAntes: saldoActual, fecha, numeroOp });
+            transferencias.push({ id: generarId(), clienteId, monto, saldoAntes: saldoActual, fecha, numeroOp, tipoDestino: tipoDestinoSeleccionado, numeroDestino: numeroDestino });
             actualizarSaldoCliente(clienteId, -monto);
             if (saldoRestante < 0) {
                 const prestamo = Math.abs(saldoRestante);
@@ -2930,31 +2818,25 @@
             }
             persistAll();
             document.getElementById('transferirMonto').value = '';
+            document.getElementById('numeroDestino').value = '';
             recargarTodo();
             mostrarToast(`Transferencia #${numeroOp} registrada - Nuevo saldo: ${formatearMoneda(saldoRestante)}`, 'success');
             setTimeout(() => document.getElementById('transferirMonto').focus(), 100);
         });
 
-        // ============================================================
         // BOTONES DE INVERTIR
-        // ============================================================
-
         document.getElementById('btnInvertirRecibos').addEventListener('click', function() {
             ordenRecibosAsc = !ordenRecibosAsc;
             this.textContent = ordenRecibosAsc ? '⬇️ Más antiguos' : '⬆️ Más recientes';
             renderRecibosOperaciones();
         });
-
         document.getElementById('btnInvertirTransferencias').addEventListener('click', function() {
             ordenTransferenciasAsc = !ordenTransferenciasAsc;
             this.textContent = ordenTransferenciasAsc ? '⬇️ Más antiguos' : '⬆️ Más recientes';
             renderTransferenciasOperaciones();
         });
 
-        // ============================================================
         // FINANZAS
-        // ============================================================
-
         document.getElementById('btnMostrarResumenFinanzas').addEventListener('click', function() {
             document.getElementById('sub-resumen-finanzas').style.display = 'block';
             document.getElementById('sub-registrar-finanza').style.display = 'none';
@@ -2965,7 +2847,6 @@
             document.getElementById('sub-registrar-finanza').style.display = 'block';
             setTimeout(() => document.getElementById('finanzaMonto').focus(), 100);
         });
-
         document.getElementById('btnRegistrarFinanza').addEventListener('click', function() {
             const tipo = document.getElementById('finanzaTipo').value;
             const monto = parseFloat(document.getElementById('finanzaMonto').value);
@@ -2983,10 +2864,7 @@
             setTimeout(() => document.getElementById('finanzaMonto').focus(), 100);
         });
 
-        // ============================================================
         // BASE DE DATOS
-        // ============================================================
-
         document.getElementById('btnExportarJSON').addEventListener('click', function() {
             const data = { clientes, recibos, transferencias, finanzas, exportado: new Date().toISOString(), usuario: usuarioActual };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -2998,11 +2876,7 @@
             URL.revokeObjectURL(url);
             mostrarToast('JSON exportado correctamente.', 'success');
         });
-
-        document.getElementById('btnImportarJSON').addEventListener('click', function() {
-            document.getElementById('inputImportarJSON').click();
-        });
-
+        document.getElementById('btnImportarJSON').addEventListener('click', function() { document.getElementById('inputImportarJSON').click(); });
         document.getElementById('inputImportarJSON').addEventListener('change', function(e) {
             if (!this.files || !this.files[0]) return;
             const reader = new FileReader();
@@ -3011,19 +2885,19 @@
                     const data = JSON.parse(ev.target.result);
                     if (!data.clientes || !data.recibos || !data.transferencias || !data.finanzas) throw new Error('Archivo inválido.');
                     if (!confirm('Esto reemplazará TODOS los datos. ¿Continuar?')) return;
-                    clientes = data.clientes; recibos = data.recibos; transferencias = data.transferencias; finanzas = data.finanzas;
+                    clientes = data.clientes;
+                    recibos = data.recibos;
+                    transferencias = data.transferencias;
+                    finanzas = data.finanzas;
                     reordenarNumerosOperaciones();
                     persistAll();
                     recargarTodo();
                     mostrarToast('Datos importados correctamente.', 'success');
-                } catch (err) {
-                    mostrarToast('Error al importar: ' + err.message, 'error');
-                }
+                } catch (err) { mostrarToast('Error al importar: ' + err.message, 'error'); }
             };
             reader.readAsText(this.files[0]);
             this.value = '';
         });
-
         document.getElementById('btnImportarExcel').addEventListener('click', function() {
             const input = document.getElementById('inputImportarExcel');
             if (!input.files || !input.files[0]) { mostrarToast('Selecciona un archivo.', 'error'); return; }
@@ -3039,7 +2913,8 @@
                     const firstRow = rows[0];
                     const missing = required.filter(col => !(col in firstRow));
                     if (missing.length > 0) { mostrarToast(`Faltan columnas: ${missing.join(', ')}`, 'error'); return; }
-                    let importados = 0, errores = [];
+                    let importados = 0,
+                        errores = [];
                     rows.forEach((row, idx) => {
                         try {
                             const tipo = row.tipo.toString().toLowerCase().trim();
@@ -3053,14 +2928,15 @@
                                 if (!isNaN(parsed.getTime())) fecha = parsed.getTime();
                                 else {
                                     const parts = fechaRaw.split('-');
-                                    if (parts.length === 3) { const d = new Date(parts[0], parts[1]-1, parts[2]); if (!isNaN(d.getTime())) fecha = d.getTime(); }
+                                    if (parts.length === 3) { const d = new Date(parts[0], parts[1] - 1, parts[2]); if (!isNaN(d.getTime())) fecha = d.getTime(); }
                                 }
                             }
                             if (!fecha) throw new Error('Fecha inválida.');
                             if (isNaN(monto) || monto <= 0) throw new Error('Monto inválido.');
                             if (!['recibo', 'transferencia'].includes(tipo)) throw new Error('Tipo debe ser recibo o transferencia.');
                             let cliente = getClientePorNombre(nombreCliente);
-                            if (!cliente) { cliente = { id: generarId(), nombre: nombreCliente, comision: 0, saldo: 0 }; clientes.push(cliente); }
+                            if (!cliente) { cliente = { id: generarId(), nombre: nombreCliente, comision: 0, saldo: 0 };
+                                clientes.push(cliente); }
                             const numeroOp = obtenerSiguienteNumeroOperacion();
                             if (tipo === 'recibo') {
                                 let comision = row.comision !== undefined ? parseFloat(row.comision) : null;
@@ -3077,7 +2953,7 @@
                                 actualizarSaldoCliente(cliente.id, -monto);
                             }
                             importados++;
-                        } catch (err) { errores.push(`Fila ${idx+2}: ${err.message}`); }
+                        } catch (err) { errores.push(`Fila ${idx + 2}: ${err.message}`); }
                     });
                     reordenarNumerosOperaciones();
                     persistAll();
@@ -3090,20 +2966,19 @@
             reader.readAsArrayBuffer(input.files[0]);
             input.value = '';
         });
-
         document.getElementById('btnBorrarTodo').addEventListener('click', function() {
             if (!confirm('⚠️ ¿Borrar TODOS los datos?')) return;
             if (!confirm('Confirmación final:')) return;
-            clientes = []; recibos = []; transferencias = []; finanzas = [];
+            clientes = [];
+            recibos = [];
+            transferencias = [];
+            finanzas = [];
             persistAll();
             recargarTodo();
             mostrarToast('Todos los datos eliminados.', 'success');
         });
 
-        // ============================================================
         // FILTROS
-        // ============================================================
-
         document.getElementById('historialCliente').addEventListener('change', renderHistorial);
         document.getElementById('historialFecha').addEventListener('change', renderHistorial);
         document.getElementById('historialTipo').addEventListener('change', renderHistorial);
@@ -3112,7 +2987,6 @@
             this.textContent = ordenHistorialAsc ? '⬇️ Más antiguos' : '⬆️ Más recientes';
             renderHistorial();
         });
-
         document.getElementById('filtroFinanzasTipo').addEventListener('change', renderFinanzas);
         document.getElementById('filtroFinanzasFecha').addEventListener('change', renderFinanzas);
         document.getElementById('btnInvertirFinanzas').addEventListener('click', function() {
@@ -3120,25 +2994,16 @@
             this.textContent = ordenFinanzasAsc ? '⬇️' : '⬆️';
             renderFinanzas();
         });
-
         document.getElementById('btnExportarExcelHistorial').addEventListener('click', function() {
             const ops = obtenerDatosHistorialFiltrados();
             if (ops.length === 0) { mostrarToast('No hay datos para exportar.', 'error'); return; }
             const data = ops.map((op) => {
                 const cliente = getCliente(op.clienteId);
-                return {
-                    'N° Op': op.numeroOp,
-                    'Cliente': cliente ? cliente.nombre : 'Eliminado',
-                    'Tipo': op.tipo === 'recibo' ? 'Recibo' : 'Transferencia',
-                    'Monto': op.monto, 
-                    'Comisión': op.tipo === 'recibo' ? op.comision : null,
-                    'Saldo Restante': op.tipo === 'transferencia' ? (op.saldoAntes - op.monto) : null,
-                    'Fecha': new Date(op.fecha).toLocaleDateString('es-ES')
-                };
+                return { 'N° Op': op.numeroOp, 'Cliente': cliente ? cliente.nombre : 'Eliminado', 'Tipo': op.tipo === 'recibo' ? 'Recibo' : 'Transferencia', 'Monto': op.monto, 'Comisión': op.tipo === 'recibo' ? op.comision : null, 'Saldo Restante': op.tipo === 'transferencia' ? (op.saldoAntes - op.monto) : null, 'Fecha': new Date(op.fecha).toLocaleDateString('es-ES') };
             });
             const wb = XLSX.utils.book_new();
             const ws = XLSX.utils.json_to_sheet(data);
-            ws['!cols'] = [{wch:8},{wch:25},{wch:14},{wch:14},{wch:14},{wch:16},{wch:16}];
+            ws['!cols'] = [{ wch: 8 }, { wch: 25 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 16 }, { wch: 16 }];
             XLSX.utils.book_append_sheet(wb, ws, 'Historial');
             const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
             const blob = new Blob([wbout], { type: 'application/octet-stream' });
@@ -3150,17 +3015,18 @@
             URL.revokeObjectURL(url);
             mostrarToast('Excel exportado correctamente.', 'success');
         });
-
         document.getElementById('btnExportarPDFHistorial').addEventListener('click', function() {
             const ops = obtenerDatosHistorialFiltrados();
             if (ops.length === 0) { mostrarToast('No hay datos para exportar.', 'error'); return; }
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('landscape', 'mm', 'a4');
             const pageWidth = doc.internal.pageSize.getWidth();
-            doc.setFontSize(16); doc.setTextColor('#1a1a2e');
-            doc.text('Historial de Operaciones', pageWidth/2, 15, { align: 'center' });
-            doc.setFontSize(8); doc.setTextColor('#8888a8');
-            doc.text(`Usuario: ${usuarioActual} - Generado: ${new Date().toLocaleString()}`, pageWidth/2, 22, { align: 'center' });
+            doc.setFontSize(16);
+            doc.setTextColor('#1a1a2e');
+            doc.text('Historial de Operaciones', pageWidth / 2, 15, { align: 'center' });
+            doc.setFontSize(8);
+            doc.setTextColor('#8888a8');
+            doc.text(`Usuario: ${usuarioActual} - Generado: ${new Date().toLocaleString()}`, pageWidth / 2, 22, { align: 'center' });
             const rows = ops.map((op) => {
                 const cliente = getCliente(op.clienteId);
                 return [
@@ -3174,8 +3040,11 @@
                 ];
             });
             doc.autoTable({
-                head: [['N° Op','Cliente','Tipo','Monto','Comisión','Saldo Restante','Fecha']],
-                body: rows, startY: 28,
+                head: [
+                    ['N° Op', 'Cliente', 'Tipo', 'Monto', 'Comisión', 'Saldo Restante', 'Fecha']
+                ],
+                body: rows,
+                startY: 28,
                 styles: { fontSize: 7, cellPadding: 2, textColor: '#1a1a2e' },
                 headStyles: { fillColor: '#6c5ce7', textColor: '#ffffff', fontSize: 8, halign: 'center' },
                 alternateRowStyles: { fillColor: '#f8f9fc' },
@@ -3188,21 +3057,19 @@
                     5: { halign: 'right', cellWidth: 28 },
                     6: { halign: 'center', cellWidth: 28 }
                 },
-                margin: { left: 8, right: 8 }, tableWidth: pageWidth - 16
+                margin: { left: 8, right: 8 },
+                tableWidth: pageWidth - 16
             });
             const pageCount = doc.internal.getNumberOfPages();
             for (let i = 1; i <= pageCount; i++) {
                 doc.setPage(i);
-                doc.setFontSize(7); doc.setTextColor('#8888a8');
-                doc.text('Gestor de Pagos - Pág. ' + i + '/' + pageCount, pageWidth/2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+                doc.setFontSize(7);
+                doc.setTextColor('#8888a8');
+                doc.text('Gestor de Pagos - Pág. ' + i + '/' + pageCount, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
             }
             doc.save(`historial_${usuarioActual}_${new Date().toISOString().split('T')[0]}.pdf`);
             mostrarToast('PDF exportado correctamente.', 'success');
         });
-
-        // ============================================================
-        // LISTENERS PARA TECLA ENTER
-        // ============================================================
 
         setupEnterListener('clienteNombre', 'btnAgregarCliente');
         setupEnterListener('clienteComision', 'btnAgregarCliente');
@@ -3214,29 +3081,20 @@
         // ============================================================
         // INICIALIZACIÓN
         // ============================================================
-
         function initApp() {
             const hoy = new Date().toISOString().split('T')[0];
             document.getElementById('finanzaFecha').value = hoy;
             document.getElementById('recibirFecha').value = hoy;
             document.getElementById('transferirFecha').value = hoy;
-            
+            actualizarSelectorDestino('tarjeta');
             reordenarNumerosOperaciones();
-            
-            if (localStorage.getItem('gestor_dark_mode') === 'true') {
-                aplicarModoOscuro(true);
-            }
-            
+            if (localStorage.getItem('gestor_dark_mode') === 'true') { aplicarModoOscuro(true); }
             mostrarSeccion('clientes');
             recargarTodo();
             renderRecibosOperaciones();
             renderTransferenciasOperaciones();
             cambiarPestanaOperaciones('recibir');
         }
-
-        // ============================================================
-        // INICIAR APLICACIÓN
-        // ============================================================
 
         mostrarAuth();
         mostrarLoginForm();
