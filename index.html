@@ -7,6 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -111,6 +112,48 @@
             padding-bottom: 80px;
         }
 
+        /* ===== SPLASH SCREEN ===== */
+        #splashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-body);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        #splashScreen .splash-icon {
+            font-size: 4rem;
+            margin-bottom: 12px;
+        }
+        #splashScreen h2 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+        #splashScreen p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        #splashScreen .splash-loader {
+            margin-top: 20px;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== LOGIN/REGISTER SCREEN ===== */
         #authScreen {
             display: flex;
             justify-content: center;
@@ -199,6 +242,7 @@
             text-decoration: underline;
         }
 
+        /* ===== APP CONTENT ===== */
         #appContent {
             display: none;
         }
@@ -206,6 +250,7 @@
             display: block;
         }
 
+        /* ===== HEADER ===== */
         header {
             background: var(--bg-header);
             padding: 12px 16px 10px;
@@ -390,6 +435,7 @@
             50% { opacity: 0.5; transform: scale(0.8); }
         }
 
+        /* ===== MENÚ INFERIOR ===== */
         .bottom-menu {
             position: fixed;
             bottom: 0;
@@ -449,12 +495,14 @@
             font-weight: 700;
         }
 
+        /* ===== SECCIONES ===== */
         .section {
             display: none;
             padding: 12px 16px 20px;
         }
         .section.visible { display: block; }
 
+        /* ===== TARJETAS ===== */
         .card {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -486,6 +534,7 @@
             font-weight: 600;
         }
 
+        /* ===== CLIENTES ===== */
         .cliente-card {
             display: flex;
             justify-content: space-between;
@@ -529,6 +578,7 @@
         .cliente-card .acciones button:active { background: var(--btn-hover); }
         .cliente-card .acciones .btn-eliminar { color: var(--danger); }
 
+        /* ===== OPERACIONES ===== */
         .operacion-card {
             background: var(--bg-card-alt);
             border-radius: var(--radius-sm);
@@ -604,6 +654,7 @@
             margin-top: 2px;
         }
 
+        /* ===== ESTILOS PARA BOTONES DE PESTAÑAS ===== */
         .tab-btn {
             flex: 1;
             padding: 8px 12px;
@@ -623,6 +674,7 @@
         }
         .tab-btn:active { transform: scale(0.97); }
 
+        /* ===== FORMULARIOS ===== */
         .form-group {
             margin-bottom: 12px;
         }
@@ -669,6 +721,7 @@
             margin-top: 2px;
         }
 
+        /* ===== BOTONES ===== */
         .btn-primary {
             width: 100%;
             padding: 12px;
@@ -700,6 +753,7 @@
         }
         .btn-small:active { transform: scale(0.94); }
 
+        /* ===== SALDO ===== */
         .saldo-total {
             font-size: 2rem;
             font-weight: 700;
@@ -717,6 +771,7 @@
             color: var(--text-muted);
         }
 
+        /* ===== BADGES ===== */
         .badge {
             background: var(--badge-bg);
             color: var(--badge-text);
@@ -733,6 +788,7 @@
         .badge-tarjeta { background: #dbeafe; color: #1e40af; }
         .badge-monedero { background: #d1fae5; color: #065f46; }
 
+        /* ===== FILTROS ===== */
         .filtros-row {
             display: flex;
             flex-wrap: wrap;
@@ -756,6 +812,7 @@
             font-size: 0.8rem;
         }
 
+        /* ===== TARJETAS DE RESUMEN ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -786,6 +843,7 @@
         }
         .stat-card.total .label { color: rgba(255,255,255,0.7); }
 
+        /* ===== EMPTY STATE ===== */
         .empty-msg {
             text-align: center;
             padding: 24px 12px;
@@ -800,6 +858,7 @@
             font-size: 0.85rem;
         }
 
+        /* ===== AVISO ===== */
         .aviso-negativo {
             display: none;
             background: var(--gasto-bg);
@@ -811,6 +870,7 @@
         }
         .aviso-negativo.visible { display: block; }
 
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 400px) {
             .bottom-menu button {
                 font-size: 0.45rem;
@@ -825,7 +885,13 @@
                 padding: 1px 4px;
             }
         }
+        @media (min-width: 768px) {
+            body { max-width: 90%; padding: 20px; }
+            .bottom-menu { max-width: 90%; }
+            .stats-grid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+        }
 
+        /* ===== TOAST NOTIFICATION ===== */
         .toast {
             position: fixed;
             bottom: 80px;
@@ -859,6 +925,7 @@
             border-left: 4px solid var(--primary);
         }
 
+        /* ===== MODAL DE EDICIÓN ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -923,6 +990,7 @@
             color: var(--btn-primary-text);
         }
 
+        /* Estilo para el botón Comisiones */
         .btn-comisiones {
             background: var(--bg-card);
             border: 2px solid var(--primary);
@@ -938,6 +1006,7 @@
             color: white;
         }
 
+        /* Estilo para mensaje manual (modal de copiado) */
         .modal-mensaje-manual {
             position: fixed;
             top: 0;
@@ -987,6 +1056,7 @@
             transform: scale(0.97);
         }
 
+        /* ===== BOTÓN SETTINGS EN HEADER ===== */
         .btn-settings {
             background: var(--bg-input);
             border: none;
@@ -1000,6 +1070,7 @@
         }
         .btn-settings:active { transform: scale(0.92); }
 
+        /* ===== SELECTOR TARJETA/MONEDERO ===== */
         .selector-destino {
             display: flex;
             gap: 8px;
@@ -1024,15 +1095,50 @@
             color: white;
         }
         .selector-destino .btn-opcion:active { transform: scale(0.97); }
+
+        /* ===== GRÁFICO FINANZAS ===== */
+        .grafico-container {
+            max-height: 200px;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        /* ===== BUSCADOR CLIENTES ===== */
+        .buscador-cliente {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+        .buscador-cliente:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+        }
     </style>
 </head>
 <body>
 
-    <!-- ===== AUTH SCREEN ===== -->
+    <!-- ===== SPLASH SCREEN ===== -->
+    <div id="splashScreen">
+        <div class="splash-icon">💳</div>
+        <h2>Gestor de Pagos</h2>
+        <p>Cargando...</p>
+        <div class="splash-loader"></div>
+    </div>
+
+    <!-- ===== AUTH SCREEN (LOGIN / REGISTER) ===== -->
     <div id="authScreen">
         <div class="auth-card">
             <h2 id="authTitle">🔐 Gestor de Pagos</h2>
             <p class="subtitle" id="authSubtitle">Inicia sesión para acceder a tus datos</p>
+            
+            <!-- Login Form -->
             <div id="loginForm">
                 <div class="form-group">
                     <label>👤 Usuario o Email</label>
@@ -1048,6 +1154,8 @@
                     ¿No tienes cuenta? <a id="switchToRegister">Regístrate aquí</a>
                 </div>
             </div>
+
+            <!-- Register Form -->
             <div id="registerForm" style="display:none;">
                 <div class="form-group">
                     <label>👤 Nombre de usuario</label>
@@ -1074,10 +1182,10 @@
         </div>
     </div>
 
-    <!-- ===== TOAST ===== -->
+    <!-- ===== TOAST NOTIFICATION ===== -->
     <div id="toast" class="toast"></div>
 
-    <!-- ===== MODAL EDICIÓN ===== -->
+    <!-- ===== MODAL DE EDICIÓN ===== -->
     <div class="modal-overlay" id="modalEditar">
         <div class="modal">
             <h3 id="modalTitulo">✏️ Editar Operación</h3>
@@ -1104,6 +1212,7 @@
     <!-- ===== APP CONTENT ===== -->
     <div id="appContent">
 
+        <!-- ===== HEADER ===== -->
         <header>
             <div class="header-top">
                 <div class="header-title">
@@ -1127,7 +1236,9 @@
             </div>
             <div class="header-info">
                 <span class="datetime" id="fechaHora">--/--/---- --:--</span>
-                <span class="clientes-count">👥 <span id="clientesCountHeader">0</span></span>
+                <span class="clientes-count">
+                    👥 <span id="clientesCountHeader">0</span>
+                </span>
                 <span class="status" id="statusIndicator">
                     <span class="dot online" id="statusDot"></span>
                     <span id="statusText">Online</span>
@@ -1135,22 +1246,41 @@
             </div>
         </header>
 
+        <!-- ===== MENÚ INFERIOR ===== -->
         <nav class="bottom-menu" id="bottomMenu">
-            <button data-section="clientes" class="active"><span class="icon">👥</span> Clientes</button>
-            <button data-section="operaciones"><span class="icon">🔄</span> Operaciones</button>
-            <button data-section="saldo"><span class="icon">💰</span> Saldo</button>
-            <button data-section="historial"><span class="icon">📜</span> Historial</button>
-            <button data-section="finanzas"><span class="icon">💹</span> Finanzas</button>
-            <button data-section="bd"><span class="icon">🗄️</span> BD</button>
+            <button data-section="clientes" class="active">
+                <span class="icon">👥</span> Clientes
+                <span class="badge-menu" id="notifClientes" style="display:none;">0</span>
+            </button>
+            <button data-section="operaciones">
+                <span class="icon">🔄</span> Operaciones
+                <span class="badge-menu" id="notifOperaciones" style="display:none;">0</span>
+            </button>
+            <button data-section="saldo">
+                <span class="icon">💰</span> Saldo
+            </button>
+            <button data-section="historial">
+                <span class="icon">📜</span> Historial
+            </button>
+            <button data-section="finanzas">
+                <span class="icon">💹</span> Finanzas
+                <span class="badge-menu" id="notifFinanzas" style="display:none;">0</span>
+            </button>
+            <button data-section="bd">
+                <span class="icon">🗄️</span> BD
+            </button>
         </nav>
 
-        <!-- CLIENTES -->
+        <!-- ===== CONTENIDO ===== -->
+
+        <!-- SECCIÓN CLIENTES -->
         <div id="section-clientes" class="section visible">
             <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
                 <button class="btn-small btn-primary" id="btnMostrarAgregarCliente" style="flex:1;">➕ Agregar</button>
                 <button class="btn-small btn-secondary" id="btnMostrarListaClientes" style="flex:1;">📋 Ver Clientes</button>
                 <button class="btn-small btn-comisiones" id="btnMostrarComisiones" style="flex:1;">📊 Comisiones</button>
             </div>
+
             <div id="sub-agregar-cliente" class="card">
                 <h3 style="margin-bottom:10px;">Agregar Cliente</h3>
                 <div class="form-group">
@@ -1163,23 +1293,34 @@
                 </div>
                 <button class="btn-primary" id="btnAgregarCliente">Agregar</button>
             </div>
+
             <div id="sub-ver-clientes" class="card" style="display:none;">
-                <div class="card-header"><h3>Clientes</h3><span class="badge-count" id="totalClientes">0</span></div>
+                <div class="card-header">
+                    <h3>Clientes</h3>
+                    <span class="badge-count" id="totalClientes">0</span>
+                </div>
+                <!-- ===== NUEVO: BUSCADOR DE CLIENTES ===== -->
+                <input type="text" id="buscadorCliente" class="buscador-cliente" placeholder="🔍 Buscar cliente...">
                 <div id="listaClientesResumen"></div>
             </div>
+
             <div id="sub-comisiones" class="card" style="display:none;">
-                <div class="card-header"><h3>📊 Editar Comisiones</h3><span class="badge-count" id="totalComisionesClientes">0</span></div>
+                <div class="card-header">
+                    <h3>📊 Editar Comisiones</h3>
+                    <span class="badge-count" id="totalComisionesClientes">0</span>
+                </div>
                 <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">Edita la comisión de cada cliente de forma individual</p>
                 <div id="listaComisiones"></div>
             </div>
         </div>
 
-        <!-- OPERACIONES -->
+        <!-- SECCIÓN OPERACIONES -->
         <div id="section-operaciones" class="section">
             <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
                 <button class="tab-btn active" id="btnMostrarRecibir">📥 Recibir</button>
                 <button class="tab-btn" id="btnMostrarTransferir">📤 Transferir</button>
             </div>
+
             <div id="sub-recibir" class="card">
                 <h3 style="margin-bottom:10px;">📥 Registrar Recibo</h3>
                 <div class="form-group">
@@ -1207,7 +1348,11 @@
                 <div style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); margin:6px 0; text-align:center; font-weight:500; font-size:0.9rem;">
                     <span id="recibirSaldoActualizado">Saldo actual: $0.00</span>
                 </div>
-                <button class="btn-primary" id="btnRegistrarRecibo">Registrar Recibo</button>
+                <div style="display:flex; gap:6px; margin-top:4px;">
+                    <button class="btn-primary" id="btnRegistrarRecibo" style="flex:1;">Registrar Recibo</button>
+                    <!-- ===== NUEVO: BOTÓN DICTADO ===== -->
+                    <button class="btn-small btn-secondary" id="btnDictarMontoRecibo" title="Dictar monto" style="font-size:1.2rem; padding:8px 12px;">🎤</button>
+                </div>
             </div>
 
             <div id="sub-transferir" class="card" style="display:none;">
@@ -1244,7 +1389,10 @@
                     <span id="transferirSaldoRestante">Saldo restante: $0.00</span>
                 </div>
                 <div class="aviso-negativo" id="avisoSaldoNegativo">⚠️ Saldo negativo. Se usará dinero propio.</div>
-                <button class="btn-primary" id="btnRegistrarTransferencia">Registrar Transferencia</button>
+                <div style="display:flex; gap:6px; margin-top:4px;">
+                    <button class="btn-primary" id="btnRegistrarTransferencia" style="flex:1;">Registrar Transferencia</button>
+                    <button class="btn-small btn-secondary" id="btnDictarMontoTransferir" title="Dictar monto" style="font-size:1.2rem; padding:8px 12px;">🎤</button>
+                </div>
             </div>
 
             <div id="sub-lista-recibos" class="card">
@@ -1270,7 +1418,7 @@
             </div>
         </div>
 
-        <!-- SALDO -->
+        <!-- SECCIÓN SALDO -->
         <div id="section-saldo" class="section">
             <div class="card" style="background:var(--gradient); border:none; color:white;">
                 <div class="saldo-total" style="-webkit-text-fill-color:white; color:white;" id="saldoTotal">$0.00</div>
@@ -1280,9 +1428,13 @@
                 <h3 style="margin-bottom:10px;">Saldo por Cliente</h3>
                 <div id="saldosPorCliente"></div>
             </div>
+            <!-- ===== NUEVO: ALERTA DE SALDOS NEGATIVOS ===== -->
+            <div id="alertaSaldosNegativos" style="display:none; background:var(--gasto-bg); color:var(--gasto-text); padding:10px; border-radius:8px; margin-top:10px; font-size:0.85rem; text-align:center;">
+                ⚠️ <span id="cantidadNegativos">0</span> cliente(s) con saldo negativo
+            </div>
         </div>
 
-        <!-- HISTORIAL -->
+        <!-- SECCIÓN HISTORIAL -->
         <div id="section-historial" class="section">
             <div class="card">
                 <h3 style="margin-bottom:10px;">Historial Completo</h3>
@@ -1308,26 +1460,55 @@
                     <button class="btn-small btn-secondary" id="btnInvertirOrden">⬆️ Invertir</button>
                     <button class="btn-small btn-success" id="btnExportarExcelHistorial" style="background:#1d6f42; color:white;">📊 Excel</button>
                     <button class="btn-small btn-danger" id="btnExportarPDFHistorial" style="background:#b22234; color:white;">📄 PDF</button>
+                    <!-- ===== NUEVO: EXPORTAR CSV ===== -->
+                    <button class="btn-small btn-secondary" id="btnExportarCSVHistorial" style="background:#2d6a4f; color:white;">📋 CSV</button>
                 </div>
                 <div id="listaHistorial"></div>
             </div>
         </div>
 
-        <!-- FINANZAS -->
+        <!-- SECCIÓN FINANZAS -->
         <div id="section-finanzas" class="section">
             <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
                 <button class="btn-small btn-primary" id="btnMostrarResumenFinanzas" style="flex:1;">📊 Resumen</button>
                 <button class="btn-small btn-secondary" id="btnMostrarRegistrarFinanza" style="flex:1;">➕ Registrar</button>
+                <!-- ===== NUEVO: BOTÓN GRÁFICO ===== -->
+                <button class="btn-small btn-secondary" id="btnMostrarGrafico" style="flex:1;">📈 Gráfico</button>
             </div>
+
             <div id="sub-resumen-finanzas" class="card">
                 <div class="stats-grid">
-                    <div class="stat-card comisiones"><div class="label">Comisiones</div><div class="monto" id="totalComisiones">$0.00</div></div>
-                    <div class="stat-card ingresos"><div class="label">Ingresos</div><div class="monto" id="totalIngresos">$0.00</div></div>
-                    <div class="stat-card gastos"><div class="label">Gastos</div><div class="monto" id="totalGastos">$0.00</div></div>
-                    <div class="stat-card total"><div class="label">Saldo Total</div><div class="monto" id="saldoFinanzas">$0.00</div></div>
+                    <div class="stat-card comisiones">
+                        <div class="label">Comisiones</div>
+                        <div class="monto" id="totalComisiones">$0.00</div>
+                    </div>
+                    <div class="stat-card ingresos">
+                        <div class="label">Ingresos</div>
+                        <div class="monto" id="totalIngresos">$0.00</div>
+                    </div>
+                    <div class="stat-card gastos">
+                        <div class="label">Gastos</div>
+                        <div class="monto" id="totalGastos">$0.00</div>
+                    </div>
+                    <div class="stat-card total">
+                        <div class="label">Saldo Total</div>
+                        <div class="monto" id="saldoFinanzas">$0.00</div>
+                    </div>
+                </div>
+                <!-- ===== NUEVO: GRÁFICO ===== -->
+                <div id="sub-grafico" style="display:none;">
+                    <div class="card" style="margin-bottom:10px;">
+                        <h4 style="margin-bottom:8px; font-size:0.85rem;">📈 Distribución Financiera</h4>
+                        <div class="grafico-container">
+                            <canvas id="graficoFinanzas"></canvas>
+                        </div>
+                    </div>
                 </div>
                 <div style="margin-top:10px;">
-                    <div class="card-header"><h3>Movimientos Financieros</h3><span class="badge-count" id="contadorFinanzas">0</span></div>
+                    <div class="card-header">
+                        <h3>Movimientos Financieros</h3>
+                        <span class="badge-count" id="contadorFinanzas">0</span>
+                    </div>
                     <div class="filtros-row">
                         <div class="form-group">
                             <label>Tipo</label>
@@ -1349,6 +1530,7 @@
                     <div id="listaFinanzas"></div>
                 </div>
             </div>
+
             <div id="sub-registrar-finanza" class="card" style="display:none;">
                 <h3 style="margin-bottom:10px;">Registrar Movimiento</h3>
                 <div class="form-group">
@@ -1374,7 +1556,7 @@
             </div>
         </div>
 
-        <!-- BASE DE DATOS -->
+        <!-- SECCIÓN BASE DE DATOS -->
         <div id="section-bd" class="section">
             <div class="card">
                 <h3 style="margin-bottom:10px;">🗄️ Base de Datos</h3>
@@ -1402,8 +1584,9 @@
 
     <script>
         // ============================================================
-        // AUTENTICACIÓN
+        // 🔐 SISTEMA DE AUTENTICACIÓN SEGURO
         // ============================================================
+
         function hashPassword(password) {
             let hash = 0;
             for (let i = 0; i < password.length; i++) {
@@ -1463,6 +1646,12 @@
             mostrarToast('✅ Bienvenido ' + usuario, 'success');
             initApp();
             limpiarCamposLogin();
+            // Ocultar splash después de login
+            setTimeout(() => {
+                const splash = document.getElementById('splashScreen');
+                splash.style.opacity = '0';
+                setTimeout(() => { splash.style.display = 'none'; }, 500);
+            }, 300);
         }
 
         function registrarNuevoUsuario() {
@@ -1490,6 +1679,10 @@
             mostrarAuth();
             mostrarToast('👋 Sesión cerrada', 'info');
             mostrarLoginForm();
+            // Mostrar splash de nuevo
+            const splash = document.getElementById('splashScreen');
+            splash.style.display = 'flex';
+            splash.style.opacity = '1';
         }
 
         function mostrarLoginForm() {
@@ -1579,10 +1772,15 @@
 
         function guardarDatosUsuario(usuario) {
             if (!usuario) return;
-            saveUserData(usuario, 'clientes', clientes);
-            saveUserData(usuario, 'recibos', recibos);
-            saveUserData(usuario, 'transferencias', transferencias);
-            saveUserData(usuario, 'finanzas', finanzas);
+            try {
+                saveUserData(usuario, 'clientes', clientes);
+                saveUserData(usuario, 'recibos', recibos);
+                saveUserData(usuario, 'transferencias', transferencias);
+                saveUserData(usuario, 'finanzas', finanzas);
+            } catch (error) {
+                console.error('Error guardando datos:', error);
+                mostrarToast('Error al guardar. Revisa el almacenamiento.', 'error');
+            }
         }
 
         // ============================================================
@@ -1658,14 +1856,17 @@
         let ordenTransferenciasAsc = false;
         let operacionEditando = null;
         let tipoDestinoSeleccionado = 'tarjeta';
+        let graficoFinanzas = null;
 
         function generarId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
         function getCliente(id) { return clientes.find(c => c.id === id); }
         function getClientePorNombre(nombre) { return clientes.find(c => c.nombre.toLowerCase() === nombre.toLowerCase()); }
         function getSaldoCliente(id) { const c = getCliente(id); return c ? c.saldo : 0; }
-        function actualizarSaldoCliente(id, delta) { const c = getCliente(id); if (c) { c.saldo = (c.saldo || 0) + delta; persistAll(); } }
+        function actualizarSaldoCliente(id, delta) { const c = getCliente(id); if (c) { c.saldo = (c.saldo || 0) + delta;
+                persistAll(); } }
         function formatearMoneda(valor) { return '$' + Number(valor).toFixed(2); }
-        function formatearFecha(ts) { return new Date(ts).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
+        function formatearFecha(ts) { return new Date(ts).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit',
+                year: 'numeric' }); }
 
         function formatearNumero(numero) {
             return Math.round(Number(numero)).toLocaleString('es-ES');
@@ -1682,8 +1883,10 @@
             return mov;
         }
 
-        function eliminarMovimientoPorRecibo(reciboId) { finanzas = finanzas.filter(m => m.reciboId !== reciboId); persistAll(); }
-        function eliminarMovimientoFinanciero(id) { finanzas = finanzas.filter(m => m.id !== id); persistAll(); }
+        function eliminarMovimientoPorRecibo(reciboId) { finanzas = finanzas.filter(m => m.reciboId !== reciboId);
+            persistAll(); }
+        function eliminarMovimientoFinanciero(id) { finanzas = finanzas.filter(m => m.id !== id);
+            persistAll(); }
 
         function reordenarNumerosOperaciones() {
             const operaciones = [];
@@ -1770,24 +1973,12 @@
 
             if (transferencia.tipoDestino === 'monedero') {
                 const telefono = transferencia.numeroDestino || 'XXXXXXXXXX';
-                mensaje = 
-`Banco Popular de Ahorro:  La recarga de la cuenta CUP se realizo con exito. 
-movil del monedero recargado:${telefono} 
-Importe Recargado:${montoFormateado} CUP. 
-Id Monedero: TMW182078006. 
-Id Transaccion: ${TRANSACCION_OCULTA}  
-Saldo Restante: ${prefijoSaldo} ${saldoFormateado} CUP. 
-Gracias por utilizar nuestros servicios, ETECSA.`;
+                mensaje =
+                    `Banco Popular de Ahorro:  La recarga de la cuenta CUP se realizo con exito. \nmovil del monedero recargado:${telefono} \nImporte Recargado:${montoFormateado} CUP. \nId Monedero: TMW182078006. \nId Transaccion: ${TRANSACCION_OCULTA}  \nSaldo Restante: ${prefijoSaldo} ${saldoFormateado} CUP. \nGracias por utilizar nuestros servicios, ETECSA.`;
             } else {
                 const tarjetaFormateada = formatearTarjeta(transferencia.numeroDestino);
-                mensaje = 
-`Banco Popular de Ahorro:  La Transferencia fue completada. 
-Fecha: ${fechaFormateada} 
-Beneficiario: ${tarjetaFormateada} 
-Ordenante: 9212XXXXXXXX3852 
-Monto: ${montoFormateado} CUP 
-Nro. Transaccion: ${TRANSACCION_OCULTA} 
-Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
+                mensaje =
+                    `Banco Popular de Ahorro:  La Transferencia fue completada. \nFecha: ${fechaFormateada} \nBeneficiario: ${tarjetaFormateada} \nOrdenante: 9212XXXXXXXX3852 \nMonto: ${montoFormateado} CUP \nNro. Transaccion: ${TRANSACCION_OCULTA} \nSaldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             }
 
             if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1878,6 +2069,159 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
         }
 
         // ============================================================
+        // NUEVO: DICTADO POR VOZ
+        // ============================================================
+        function iniciarDictado(inputId) {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                mostrarToast('❌ Tu navegador no soporta reconocimiento de voz.', 'error');
+                return;
+            }
+            const recognition = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'es-ES';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.onresult = function(event) {
+                const texto = event.results[0][0].transcript;
+                // Extraer números del texto
+                const numeros = texto.replace(/[^0-9.,]/g, '').replace(',', '.');
+                const monto = parseFloat(numeros);
+                if (!isNaN(monto) && monto > 0) {
+                    document.getElementById(inputId).value = monto;
+                    document.getElementById(inputId).dispatchEvent(new Event('input'));
+                    mostrarToast(`💰 Monto detectado: ${formatearMoneda(monto)}`, 'success');
+                } else {
+                    mostrarToast('❌ No se detectó un monto válido.', 'error');
+                }
+            };
+            recognition.onerror = function(event) {
+                if (event.error === 'not-allowed') {
+                    mostrarToast('❌ Permiso de micrófono denegado.', 'error');
+                } else {
+                    mostrarToast('❌ Error al escuchar: ' + event.error, 'error');
+                }
+            };
+            recognition.start();
+            mostrarToast('🎤 Escuchando...', 'info');
+        }
+
+        // ============================================================
+        // NUEVO: ALERTA DE SALDOS NEGATIVOS
+        // ============================================================
+        function verificarSaldosNegativos() {
+            const negativos = clientes.filter(c => (c.saldo || 0) < 0);
+            const alerta = document.getElementById('alertaSaldosNegativos');
+            if (negativos.length > 0) {
+                alerta.style.display = 'block';
+                document.getElementById('cantidadNegativos').textContent = negativos.length;
+                // También mostrar en badge
+                const badge = document.getElementById('notifClientes');
+                badge.textContent = negativos.length;
+                badge.style.display = 'block';
+            } else {
+                alerta.style.display = 'none';
+                document.getElementById('notifClientes').style.display = 'none';
+            }
+        }
+
+        // ============================================================
+        // NUEVO: BÚSQUEDA DE CLIENTES
+        // ============================================================
+        function filtrarClientes() {
+            const busqueda = document.getElementById('buscadorCliente').value.toLowerCase().trim();
+            const items = document.querySelectorAll('#listaClientesResumen .cliente-card');
+            let visibles = 0;
+            items.forEach(item => {
+                const nombre = item.querySelector('.nombre')?.textContent?.toLowerCase() || '';
+                const visible = nombre.includes(busqueda);
+                item.style.display = visible ? 'flex' : 'none';
+                if (visible) visibles++;
+            });
+            // Mostrar mensaje si no hay resultados
+            const container = document.getElementById('listaClientesResumen');
+            const emptyMsg = container.querySelector('.empty-msg');
+            if (visibles === 0 && items.length > 0) {
+                if (!emptyMsg) {
+                    const msg = document.createElement('div');
+                    msg.className = 'empty-msg';
+                    msg.innerHTML = '<p>🔍 No se encontraron clientes</p>';
+                    msg.id = 'emptySearchMsg';
+                    container.appendChild(msg);
+                }
+            } else {
+                const msg = document.getElementById('emptySearchMsg');
+                if (msg) msg.remove();
+            }
+        }
+
+        // ============================================================
+        // NUEVO: GRÁFICO DE FINANZAS
+        // ============================================================
+        function actualizarGrafico() {
+            const ctx = document.getElementById('graficoFinanzas').getContext('2d');
+            const comisiones = finanzas.filter(m => m.tipo === 'comision').reduce((a, m) => a + m.monto, 0);
+            const ingresos = finanzas.filter(m => m.tipo === 'ingreso').reduce((a, m) => a + m.monto, 0);
+            const gastos = finanzas.filter(m => m.tipo === 'gasto').reduce((a, m) => a + m.monto, 0);
+
+            if (graficoFinanzas) {
+                graficoFinanzas.destroy();
+            }
+
+            const esModoOscuro = document.body.classList.contains('dark-mode');
+            const colorTexto = esModoOscuro ? '#e8e8f0' : '#1a1a2e';
+
+            graficoFinanzas = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Comisiones', 'Ingresos', 'Gastos'],
+                    datasets: [{
+                        data: [comisiones, ingresos, gastos],
+                        backgroundColor: ['#6c5ce7', '#00b894', '#fd79a8'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: colorTexto,
+                                font: { size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // NUEVO: EXPORTAR CSV
+        // ============================================================
+        function exportarCSV() {
+            const ops = obtenerDatosHistorialFiltrados();
+            if (ops.length === 0) { mostrarToast('No hay datos para exportar.', 'error'); return; }
+            let csv = 'N° Op,Cliente,Tipo,Monto,Comisión,Saldo Restante,Fecha\n';
+            ops.forEach(op => {
+                const cliente = getCliente(op.clienteId);
+                const nombre = cliente ? cliente.nombre : 'Eliminado';
+                const monto = op.monto.toFixed(2);
+                const comision = op.tipo === 'recibo' ? (op.comision || 0).toFixed(2) : '—';
+                const saldoRestante = op.tipo === 'transferencia' ? (op.saldoAntes - op.monto).toFixed(2) : '—';
+                const fecha = new Date(op.fecha).toLocaleDateString('es-ES');
+                csv += `${op.numeroOp},"${nombre}",${op.tipo},${monto},${comision},${saldoRestante},${fecha}\n`;
+            });
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `historial_${usuarioActual}_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            mostrarToast('✅ CSV exportado correctamente.', 'success');
+        }
+
+        // ============================================================
         // RENDERIZADO
         // ============================================================
         function renderComisiones() {
@@ -1913,7 +2257,8 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
                     const input = parentDiv ? parentDiv.querySelector('.input-comision') : null;
                     if (!input) { mostrarToast('Error: no se encontró el campo de comisión.', 'error'); return; }
                     const nuevoValor = parseFloat(input.value);
-                    if (isNaN(nuevoValor) || nuevoValor < 0) { mostrarToast('Ingresa una comisión válida.', 'error'); return; }
+                    if (isNaN(nuevoValor) || nuevoValor < 0) { mostrarToast('Ingresa una comisión válida.',
+                            'error'); return; }
                     const cliente = getCliente(id);
                     if (cliente) {
                         cliente.comision = nuevoValor;
@@ -1956,7 +2301,7 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
                 const saldo = c.saldo || 0;
                 const esNegativo = saldo < 0;
                 html += `
-                    <div class="cliente-card">
+                    <div class="cliente-card" data-cliente-nombre="${c.nombre.toLowerCase()}">
                         <div class="info">
                             <div class="nombre">${c.nombre}</div>
                             <div class="comision">Comisión: ${c.comision}% · Recibos: ${recibosCliente.length} · Transf: ${transferenciasCliente.length}</div>
@@ -1972,6 +2317,11 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             container.querySelectorAll('.btn-eliminar').forEach(btn => {
                 btn.addEventListener('click', function() { eliminarCliente(this.dataset.id); });
             });
+            // Aplicar filtro si hay búsqueda
+            if (document.getElementById('buscadorCliente').value) {
+                filtrarClientes();
+            }
+            verificarSaldosNegativos();
         }
 
         function eliminarCliente(id) {
@@ -2004,8 +2354,11 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
                 });
                 if (clientes.some(c => c.id === valorActual)) sel.value = valorActual;
                 else if (clientes.length > 0 && id !== 'historialCliente') sel.value = clientes[0].id;
-                if (id === 'recibirCliente') { actualizarCamposRecibo(); actualizarSaldoOperacionRecibir(); }
-                if (id === 'transferirCliente') { actualizarSaldoDisponible(); actualizarSaldoOperacionTransferir(); actualizarSaldoRestanteTransferir(); }
+                if (id === 'recibirCliente') { actualizarCamposRecibo();
+                    actualizarSaldoOperacionRecibir(); }
+                if (id === 'transferirCliente') { actualizarSaldoDisponible();
+                    actualizarSaldoOperacionTransferir();
+                    actualizarSaldoRestanteTransferir(); }
             });
         }
 
@@ -2013,8 +2366,10 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             const clienteId = document.getElementById('recibirCliente').value;
             const monto = parseFloat(document.getElementById('recibirMonto').value) || 0;
             const cliente = getCliente(clienteId);
-            let comision = 0, neto = 0;
-            if (cliente && monto > 0) { comision = monto * (cliente.comision / 100); neto = monto - comision; }
+            let comision = 0,
+                neto = 0;
+            if (cliente && monto > 0) { comision = monto * (cliente.comision / 100);
+                neto = monto - comision; }
             document.getElementById('recibirComision').value = formatearMoneda(comision);
             document.getElementById('recibirNeto').value = formatearMoneda(neto);
         }
@@ -2034,14 +2389,16 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
         function actualizarSaldoOperacionTransferir() {
             const clienteId = document.getElementById('transferirCliente').value;
             const cliente = getCliente(clienteId);
-            document.getElementById('transferirSaldoDisponible').value = cliente ? formatearMoneda(cliente.saldo || 0) : '$0.00';
+            document.getElementById('transferirSaldoDisponible').value = cliente ? formatearMoneda(cliente.saldo || 0) :
+                '$0.00';
         }
 
         function actualizarSaldoRestanteTransferir() {
             const clienteId = document.getElementById('transferirCliente').value;
             const monto = parseFloat(document.getElementById('transferirMonto').value) || 0;
             const cliente = getCliente(clienteId);
-            let saldoRestante = 0, esNegativo = false;
+            let saldoRestante = 0,
+                esNegativo = false;
             if (cliente) { saldoRestante = (cliente.saldo || 0) - monto; if (saldoRestante < 0) esNegativo = true; }
             const elemento = document.getElementById('transferirSaldoRestante');
             const aviso = document.getElementById('avisoSaldoNegativo');
@@ -2127,6 +2484,7 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
                 `;
             });
             container.innerHTML = html;
+            verificarSaldosNegativos();
         }
 
         function actualizarFiltroHistorialClientes() {
@@ -2148,12 +2506,16 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             const fechaStr = document.getElementById('historialFecha').value;
             const tipo = document.getElementById('historialTipo').value;
             let ops = [];
-            recibos.forEach(r => ops.push({ id: r.id, tipo: 'recibo', clienteId: r.clienteId, monto: r.monto, comision: r.comision, neto: r.neto, fecha: r.fecha, saldoAntes: null, numeroOp: r.numeroOp }));
-            transferencias.forEach(t => ops.push({ id: t.id, tipo: 'transferencia', clienteId: t.clienteId, monto: t.monto, comision: null, neto: null, fecha: t.fecha, saldoAntes: t.saldoAntes, numeroOp: t.numeroOp }));
+            recibos.forEach(r => ops.push({ id: r.id, tipo: 'recibo', clienteId: r.clienteId, monto: r.monto,
+                    comision: r.comision, neto: r.neto, fecha: r.fecha, saldoAntes: null, numeroOp: r.numeroOp }));
+            transferencias.forEach(t => ops.push({ id: t.id, tipo: 'transferencia', clienteId: t.clienteId, monto: t.monto,
+                    comision: null, neto: null, fecha: t.fecha, saldoAntes: t.saldoAntes, numeroOp: t.numeroOp }));
             if (clienteId !== 'todos') ops = ops.filter(op => op.clienteId === clienteId);
             if (fechaStr) {
-                const fi = new Date(fechaStr); fi.setHours(0, 0, 0, 0);
-                const ff = new Date(fechaStr); ff.setHours(23, 59, 59, 999);
+                const fi = new Date(fechaStr);
+                fi.setHours(0, 0, 0, 0);
+                const ff = new Date(fechaStr);
+                ff.setHours(23, 59, 59, 999);
                 ops = ops.filter(op => { const d = new Date(op.fecha); return d >= fi && d <= ff; });
             }
             if (tipo !== 'todos') ops = ops.filter(op => op.tipo === tipo);
@@ -2176,8 +2538,10 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
                 const badgeClass = op.tipo === 'recibo' ? 'badge-recibo' : 'badge-transferencia';
                 const badgeText = op.tipo === 'recibo' ? 'Recibo' : 'Transferencia';
                 let detalle = '';
-                if (op.tipo === 'recibo') detalle = `Monto: ${formatearMoneda(op.monto)} · Comisión: ${formatearMoneda(op.comision)} · Neto: ${formatearMoneda(op.neto)}`;
-                else detalle = `Monto: ${formatearMoneda(op.monto)} · Saldo restante: ${formatearMoneda(op.saldoAntes - op.monto)}`;
+                if (op.tipo === 'recibo') detalle =
+                    `Monto: ${formatearMoneda(op.monto)} · Comisión: ${formatearMoneda(op.comision)} · Neto: ${formatearMoneda(op.neto)}`;
+                else detalle =
+                    `Monto: ${formatearMoneda(op.monto)} · Saldo restante: ${formatearMoneda(op.saldoAntes - op.monto)}`;
                 html += `
                     <div class="operacion-card">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -2209,8 +2573,10 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             let movs = [...finanzas];
             if (tipoFiltro !== 'todos') movs = movs.filter(m => m.tipo === tipoFiltro);
             if (fechaFiltro) {
-                const fi = new Date(fechaFiltro); fi.setHours(0, 0, 0, 0);
-                const ff = new Date(fechaFiltro); ff.setHours(23, 59, 59, 999);
+                const fi = new Date(fechaFiltro);
+                fi.setHours(0, 0, 0, 0);
+                const ff = new Date(fechaFiltro);
+                ff.setHours(23, 59, 59, 999);
                 movs = movs.filter(m => { const d = new Date(m.fecha); return d >= fi && d <= ff; });
             }
             movs.sort((a, b) => ordenFinanzasAsc ? a.fecha - b.fecha : b.fecha - a.fecha);
@@ -2228,7 +2594,8 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
                     desc = m.descripcion || '';
                 if (m.tipo === 'comision') { badgeClass = 'badge-comision';
                     badgeText = 'Comisión'; const c = getCliente(m.clienteId);
-                    desc = c ? `Comisión de ${c.nombre}` : 'Comisión'; } else if (m.tipo === 'ingreso') { badgeClass = 'badge-ingreso';
+                    desc = c ? `Comisión de ${c.nombre}` : 'Comisión'; } else if (m.tipo === 'ingreso') { badgeClass =
+                        'badge-ingreso';
                     badgeText = 'Ingreso'; } else if (m.tipo === 'gasto') { badgeClass = 'badge-gasto';
                     badgeText = 'Gasto'; }
                 html += `
@@ -2250,6 +2617,10 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
                     renderFinanzas();
                 });
             });
+            // Actualizar gráfico si está visible
+            if (document.getElementById('sub-grafico').style.display !== 'none') {
+                actualizarGrafico();
+            }
         }
 
         function actualizarEstadisticasBD() {
@@ -2276,6 +2647,7 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             actualizarClientesHeader();
             renderRecibosOperaciones();
             renderTransferenciasOperaciones();
+            verificarSaldosNegativos();
         }
 
         // ============================================================
@@ -2429,7 +2801,8 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             const camposExtra = document.getElementById('modalCamposExtra');
 
             let operacion = null;
-            if (tipo === 'recibo') { operacion = recibos.find(r => r.id === id); } else { operacion = transferencias.find(t => t.id === id); }
+            if (tipo === 'recibo') { operacion = recibos.find(r => r.id === id); } else { operacion = transferencias.find(
+                    t => t.id === id); }
             if (!operacion) { mostrarToast('Operación no encontrada.', 'error'); return; }
 
             operacionEditando = { ...operacion, tipo };
@@ -2534,7 +2907,8 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
                 const reciboOriginal = recibos.find(r => r.id === operacionEditando.id);
                 if (reciboOriginal) {
                     actualizarSaldoCliente(reciboOriginal.clienteId, -reciboOriginal.neto);
-                    const porcentaje = parseFloat(document.getElementById('modalComisionPorcentaje')?.value) || cliente.comision;
+                    const porcentaje = parseFloat(document.getElementById('modalComisionPorcentaje')?.value) || cliente
+                        .comision;
                     const nuevaComision = nuevoMonto * (porcentaje / 100);
                     const nuevoNeto = nuevoMonto - nuevaComision;
                     if (nuevoNeto < 0) { mostrarToast('La comisión no puede ser mayor al monto.', 'error');
@@ -2564,8 +2938,11 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
                     actualizarSaldoCliente(nuevoClienteId, -nuevoMonto);
                     if (nuevoSaldoRestante < 0) {
                         const prestamo = Math.abs(nuevoSaldoRestante);
-                        let prestamoExistente = finanzas.find(f => f.clienteId === nuevoClienteId && f.descripcion && f.descripcion.includes('Préstamo a'));
-                        if (prestamoExistente) { prestamoExistente.monto = prestamo; } else { agregarMovimientoFinanciero('gasto', prestamo, `Préstamo a ${cliente.nombre}`, nuevoClienteId, null, nuevaFecha); }
+                        let prestamoExistente = finanzas.find(f => f.clienteId === nuevoClienteId && f.descripcion &&
+                            f.descripcion.includes('Préstamo a'));
+                        if (prestamoExistente) { prestamoExistente.monto = prestamo; } else { agregarMovimientoFinanciero(
+                                'gasto', prestamo, `Préstamo a ${cliente.nombre}`, nuevoClienteId, null,
+                            nuevaFecha); }
                     }
                     mostrarToast(`Transferencia #${transferenciaOriginal.numeroOp} actualizada.`, 'success');
                 }
@@ -2652,10 +3029,16 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
                     actualizarSelectorDestino(tipoDestinoSeleccionado);
                 }
             }
-            if (section === 'saldo') renderSaldo();
+            if (section === 'saldo') { renderSaldo();
+                verificarSaldosNegativos(); }
             if (section === 'historial') { actualizarFiltroHistorialClientes();
                 renderHistorial(); }
-            if (section === 'finanzas') { renderFinanzas(); }
+            if (section === 'finanzas') {
+                renderFinanzas();
+                if (document.getElementById('sub-grafico').style.display !== 'none') {
+                    setTimeout(actualizarGrafico, 100);
+                }
+            }
             if (section === 'bd') actualizarEstadisticasBD();
         }
 
@@ -2697,7 +3080,91 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             mostrarToast('⚙️ Configuración de comisiones', 'info');
         });
 
+        // ============================================================
+        // NUEVO: TECLAS DE ATAJO
+        // ============================================================
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key >= '1' && e.key <= '6') {
+                const sections = ['clientes', 'operaciones', 'saldo', 'historial', 'finanzas', 'bd'];
+                mostrarSeccion(sections[parseInt(e.key) - 1]);
+                e.preventDefault();
+                mostrarToast(`🔀 Navegando a ${sections[parseInt(e.key) - 1].toUpperCase()}`, 'info');
+            }
+            if (e.key === 'Escape') {
+                cerrarModal();
+                const dropdown = document.getElementById('dropdownMenu');
+                if (dropdown.classList.contains('open')) dropdown.classList.remove('open');
+            }
+        });
+
+        // ============================================================
+        // NUEVO: BOTONES DE DICTADO
+        // ============================================================
+        document.getElementById('btnDictarMontoRecibo').addEventListener('click', function() {
+            iniciarDictado('recibirMonto');
+        });
+        document.getElementById('btnDictarMontoTransferir').addEventListener('click', function() {
+            iniciarDictado('transferirMonto');
+        });
+
+        // ============================================================
+        // NUEVO: BUSCADOR DE CLIENTES
+        // ============================================================
+        document.getElementById('buscadorCliente').addEventListener('input', filtrarClientes);
+
+        // ============================================================
+        // NUEVO: BOTÓN GRÁFICO
+        // ============================================================
+        document.getElementById('btnMostrarGrafico').addEventListener('click', function() {
+            const subGrafico = document.getElementById('sub-grafico');
+            if (subGrafico.style.display === 'none') {
+                subGrafico.style.display = 'block';
+                this.classList.add('active');
+                this.style.background = 'var(--primary)';
+                this.style.color = 'white';
+                setTimeout(actualizarGrafico, 100);
+                mostrarToast('📈 Mostrando gráfico', 'info');
+            } else {
+                subGrafico.style.display = 'none';
+                this.classList.remove('active');
+                this.style.background = '';
+                this.style.color = '';
+            }
+        });
+
+        // ============================================================
+        // NUEVO: EXPORTAR CSV
+        // ============================================================
+        document.getElementById('btnExportarCSVHistorial').addEventListener('click', exportarCSV);
+
+        // ============================================================
+        // NUEVO: COPIAS DE SEGURIDAD AUTOMÁTICAS
+        // ============================================================
+        setInterval(() => {
+            if (usuarioActual) {
+                guardarDatosUsuario(usuarioActual);
+                console.log('💾 Copia de seguridad automática');
+            }
+        }, 60000);
+
+        // ============================================================
+        // NUEVO: SINCRO OFF LINE
+        // ============================================================
+        let operacionesPendientes = [];
+
+        function sincronizarOffline() {
+            if (navigator.onLine && operacionesPendientes.length > 0) {
+                mostrarToast(`🔄 Sincronizando ${operacionesPendientes.length} operaciones pendientes...`, 'info');
+                operacionesPendientes = [];
+                recargarTodo();
+                mostrarToast('✅ Datos sincronizados correctamente', 'success');
+            }
+        }
+        window.addEventListener('online', sincronizarOffline);
+
+        // ============================================================
         // SELECTOR TARJETA / MONEDERO
+        // ============================================================
         document.getElementById('btnTipoTarjeta').addEventListener('click', function() {
             actualizarSelectorDestino('tarjeta');
             document.getElementById('numeroDestino').focus();
@@ -2713,7 +3180,9 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             validarNumeroDestino();
         });
 
+        // ============================================================
         // CLIENTES
+        // ============================================================
         document.getElementById('btnMostrarAgregarCliente').addEventListener('click', function() {
             document.getElementById('sub-agregar-cliente').style.display = 'block';
             document.getElementById('sub-ver-clientes').style.display = 'none';
@@ -2727,6 +3196,9 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             document.getElementById('sub-comisiones').style.display = 'none';
             document.getElementById('btnMostrarComisiones').classList.remove('active-comisiones');
             renderResumenClientes();
+            // Limpiar buscador
+            document.getElementById('buscadorCliente').value = '';
+            filtrarClientes();
         });
         document.getElementById('btnMostrarComisiones').addEventListener('click', function() {
             document.getElementById('sub-agregar-cliente').style.display = 'none';
@@ -2740,7 +3212,8 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             const comision = parseFloat(document.getElementById('clienteComision').value);
             if (!nombre) { mostrarToast('Ingresa un nombre.', 'error'); return; }
             if (isNaN(comision) || comision < 0) { mostrarToast('Ingresa una comisión válida.', 'error'); return; }
-            if (clientes.some(c => c.nombre.toLowerCase() === nombre.toLowerCase())) { mostrarToast('Ya existe ese cliente.', 'error'); return; }
+            if (clientes.some(c => c.nombre.toLowerCase() === nombre.toLowerCase())) { mostrarToast(
+                    'Ya existe ese cliente.', 'error'); return; }
             clientes.push({ id: generarId(), nombre, comision, saldo: 0 });
             persistAll();
             document.getElementById('clienteNombre').value = '';
@@ -2749,9 +3222,13 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             setTimeout(() => document.getElementById('clienteNombre').focus(), 100);
         });
 
+        // ============================================================
         // OPERACIONES
-        document.getElementById('btnMostrarRecibir').addEventListener('click', function() { cambiarPestanaOperaciones('recibir'); });
-        document.getElementById('btnMostrarTransferir').addEventListener('click', function() { cambiarPestanaOperaciones('transferir'); });
+        // ============================================================
+        document.getElementById('btnMostrarRecibir').addEventListener('click', function() { cambiarPestanaOperaciones(
+                'recibir'); });
+        document.getElementById('btnMostrarTransferir').addEventListener('click', function() { cambiarPestanaOperaciones(
+                'transferir'); });
 
         document.getElementById('recibirMonto').addEventListener('input', function() {
             actualizarCamposRecibo();
@@ -2777,7 +3254,8 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             const numeroOp = obtenerSiguienteNumeroOperacion();
             recibos.push({ id: generarId(), clienteId, monto, comision, neto, fecha, numeroOp });
             actualizarSaldoCliente(clienteId, neto);
-            if (comision > 0) agregarMovimientoFinanciero('comision', comision, `Comisión de ${cliente.nombre}`, clienteId, null, fecha);
+            if (comision > 0) agregarMovimientoFinanciero('comision', comision, `Comisión de ${cliente.nombre}`,
+                clienteId, null, fecha);
             persistAll();
             document.getElementById('recibirMonto').value = '';
             recargarTodo();
@@ -2800,7 +3278,8 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             if (!clienteId) { mostrarToast('Selecciona un cliente.', 'error'); return; }
             if (isNaN(monto) || monto <= 0) { mostrarToast('Ingresa un monto válido.', 'error'); return; }
             const longitudRequerida = tipoDestinoSeleccionado === 'tarjeta' ? 16 : 8;
-            if (numeroDestino.length !== longitudRequerida) { mostrarToast(`El número debe tener ${longitudRequerida} dígitos.`, 'error');
+            if (numeroDestino.length !== longitudRequerida) { mostrarToast(
+                    `El número debe tener ${longitudRequerida} dígitos.`, 'error');
                 document.getElementById('numeroDestino').focus(); return; }
             if (!/^\d+$/.test(numeroDestino)) { mostrarToast('Solo se permiten números.', 'error');
                 document.getElementById('numeroDestino').focus(); return; }
@@ -2810,21 +3289,26 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             const saldoRestante = saldoActual - monto;
             const fecha = new Date(fechaStr + 'T00:00:00').getTime();
             const numeroOp = obtenerSiguienteNumeroOperacion();
-            transferencias.push({ id: generarId(), clienteId, monto, saldoAntes: saldoActual, fecha, numeroOp, tipoDestino: tipoDestinoSeleccionado, numeroDestino: numeroDestino });
+            transferencias.push({ id: generarId(), clienteId, monto, saldoAntes: saldoActual, fecha, numeroOp,
+                tipoDestino: tipoDestinoSeleccionado, numeroDestino: numeroDestino });
             actualizarSaldoCliente(clienteId, -monto);
             if (saldoRestante < 0) {
                 const prestamo = Math.abs(saldoRestante);
-                agregarMovimientoFinanciero('gasto', prestamo, `Préstamo a ${cliente.nombre}`, clienteId, null, fecha);
+                agregarMovimientoFinanciero('gasto', prestamo, `Préstamo a ${cliente.nombre}`, clienteId, null,
+                fecha);
             }
             persistAll();
             document.getElementById('transferirMonto').value = '';
             document.getElementById('numeroDestino').value = '';
             recargarTodo();
-            mostrarToast(`Transferencia #${numeroOp} registrada - Nuevo saldo: ${formatearMoneda(saldoRestante)}`, 'success');
+            mostrarToast(`Transferencia #${numeroOp} registrada - Nuevo saldo: ${formatearMoneda(saldoRestante)}`,
+                'success');
             setTimeout(() => document.getElementById('transferirMonto').focus(), 100);
         });
 
+        // ============================================================
         // BOTONES DE INVERTIR
+        // ============================================================
         document.getElementById('btnInvertirRecibos').addEventListener('click', function() {
             ordenRecibosAsc = !ordenRecibosAsc;
             this.textContent = ordenRecibosAsc ? '⬇️ Más antiguos' : '⬆️ Más recientes';
@@ -2836,15 +3320,25 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             renderTransferenciasOperaciones();
         });
 
+        // ============================================================
         // FINANZAS
+        // ============================================================
         document.getElementById('btnMostrarResumenFinanzas').addEventListener('click', function() {
             document.getElementById('sub-resumen-finanzas').style.display = 'block';
             document.getElementById('sub-registrar-finanza').style.display = 'none';
+            document.getElementById('sub-grafico').style.display = 'none';
+            document.getElementById('btnMostrarGrafico').classList.remove('active');
+            document.getElementById('btnMostrarGrafico').style.background = '';
+            document.getElementById('btnMostrarGrafico').style.color = '';
             renderFinanzas();
         });
         document.getElementById('btnMostrarRegistrarFinanza').addEventListener('click', function() {
             document.getElementById('sub-resumen-finanzas').style.display = 'none';
             document.getElementById('sub-registrar-finanza').style.display = 'block';
+            document.getElementById('sub-grafico').style.display = 'none';
+            document.getElementById('btnMostrarGrafico').classList.remove('active');
+            document.getElementById('btnMostrarGrafico').style.background = '';
+            document.getElementById('btnMostrarGrafico').style.color = '';
             setTimeout(() => document.getElementById('finanzaMonto').focus(), 100);
         });
         document.getElementById('btnRegistrarFinanza').addEventListener('click', function() {
@@ -2864,9 +3358,12 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             setTimeout(() => document.getElementById('finanzaMonto').focus(), 100);
         });
 
+        // ============================================================
         // BASE DE DATOS
+        // ============================================================
         document.getElementById('btnExportarJSON').addEventListener('click', function() {
-            const data = { clientes, recibos, transferencias, finanzas, exportado: new Date().toISOString(), usuario: usuarioActual };
+            const data = { clientes, recibos, transferencias, finanzas, exportado: new Date().toISOString(),
+                usuario: usuarioActual };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -2876,14 +3373,16 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             URL.revokeObjectURL(url);
             mostrarToast('JSON exportado correctamente.', 'success');
         });
-        document.getElementById('btnImportarJSON').addEventListener('click', function() { document.getElementById('inputImportarJSON').click(); });
+        document.getElementById('btnImportarJSON').addEventListener('click', function() { document.getElementById(
+                'inputImportarJSON').click(); });
         document.getElementById('inputImportarJSON').addEventListener('change', function(e) {
             if (!this.files || !this.files[0]) return;
             const reader = new FileReader();
             reader.onload = function(ev) {
                 try {
                     const data = JSON.parse(ev.target.result);
-                    if (!data.clientes || !data.recibos || !data.transferencias || !data.finanzas) throw new Error('Archivo inválido.');
+                    if (!data.clientes || !data.recibos || !data.transferencias || !data.finanzas) throw new Error(
+                        'Archivo inválido.');
                     if (!confirm('Esto reemplazará TODOS los datos. ¿Continuar?')) return;
                     clientes = data.clientes;
                     recibos = data.recibos;
@@ -2908,11 +3407,13 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
                     const workbook = XLSX.read(data, { type: 'array' });
                     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
                     const rows = XLSX.utils.sheet_to_json(firstSheet);
-                    if (!rows || rows.length === 0) { mostrarToast('Archivo vacío o sin encabezados.', 'error'); return; }
+                    if (!rows || rows.length === 0) { mostrarToast('Archivo vacío o sin encabezados.',
+                            'error'); return; }
                     const required = ['tipo', 'cliente', 'monto', 'fecha'];
                     const firstRow = rows[0];
                     const missing = required.filter(col => !(col in firstRow));
-                    if (missing.length > 0) { mostrarToast(`Faltan columnas: ${missing.join(', ')}`, 'error'); return; }
+                    if (missing.length > 0) { mostrarToast(`Faltan columnas: ${missing.join(', ')}`,
+                            'error'); return; }
                     let importados = 0,
                         errores = [];
                     rows.forEach((row, idx) => {
@@ -2922,34 +3423,45 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
                             const monto = parseFloat(row.monto);
                             let fecha = null;
                             const fechaRaw = row.fecha;
-                            if (typeof fechaRaw === 'number') fecha = new Date((fechaRaw - 25569) * 86400 * 1000).getTime();
+                            if (typeof fechaRaw === 'number') fecha = new Date((fechaRaw - 25569) *
+                                86400 * 1000).getTime();
                             else if (typeof fechaRaw === 'string') {
                                 const parsed = new Date(fechaRaw);
                                 if (!isNaN(parsed.getTime())) fecha = parsed.getTime();
                                 else {
                                     const parts = fechaRaw.split('-');
-                                    if (parts.length === 3) { const d = new Date(parts[0], parts[1] - 1, parts[2]); if (!isNaN(d.getTime())) fecha = d.getTime(); }
+                                    if (parts.length === 3) { const d = new Date(parts[0], parts[
+                                        1] - 1, parts[2]); if (!isNaN(d.getTime())) fecha = d
+                                            .getTime(); }
                                 }
                             }
                             if (!fecha) throw new Error('Fecha inválida.');
                             if (isNaN(monto) || monto <= 0) throw new Error('Monto inválido.');
-                            if (!['recibo', 'transferencia'].includes(tipo)) throw new Error('Tipo debe ser recibo o transferencia.');
+                            if (!['recibo', 'transferencia'].includes(tipo)) throw new Error(
+                                'Tipo debe ser recibo o transferencia.');
                             let cliente = getClientePorNombre(nombreCliente);
-                            if (!cliente) { cliente = { id: generarId(), nombre: nombreCliente, comision: 0, saldo: 0 };
+                            if (!cliente) { cliente = { id: generarId(), nombre: nombreCliente,
+                                    comision: 0, saldo: 0 };
                                 clientes.push(cliente); }
                             const numeroOp = obtenerSiguienteNumeroOperacion();
                             if (tipo === 'recibo') {
-                                let comision = row.comision !== undefined ? parseFloat(row.comision) : null;
+                                let comision = row.comision !== undefined ? parseFloat(row.comision) :
+                                    null;
                                 let neto = row.neto !== undefined ? parseFloat(row.neto) : null;
-                                if (comision === null || isNaN(comision)) comision = monto * (cliente.comision / 100);
+                                if (comision === null || isNaN(comision)) comision = monto * (
+                                    cliente.comision / 100);
                                 if (neto === null || isNaN(neto)) neto = monto - comision;
                                 if (neto < 0) throw new Error('Neto negativo.');
-                                recibos.push({ id: generarId(), clienteId: cliente.id, monto, comision, neto, fecha, numeroOp });
+                                recibos.push({ id: generarId(), clienteId: cliente.id, monto,
+                                    comision, neto, fecha, numeroOp });
                                 actualizarSaldoCliente(cliente.id, neto);
-                                if (comision > 0) agregarMovimientoFinanciero('comision', comision, `Comisión de ${cliente.nombre}`, cliente.id, null, fecha);
+                                if (comision > 0) agregarMovimientoFinanciero('comision',
+                                    comision, `Comisión de ${cliente.nombre}`, cliente.id,
+                                    null, fecha);
                             } else {
                                 const saldoActual = cliente.saldo || 0;
-                                transferencias.push({ id: generarId(), clienteId: cliente.id, monto, saldoAntes: saldoActual, fecha, numeroOp });
+                                transferencias.push({ id: generarId(), clienteId: cliente.id,
+                                    monto, saldoAntes: saldoActual, fecha, numeroOp });
                                 actualizarSaldoCliente(cliente.id, -monto);
                             }
                             importados++;
@@ -2978,7 +3490,9 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             mostrarToast('Todos los datos eliminados.', 'success');
         });
 
+        // ============================================================
         // FILTROS
+        // ============================================================
         document.getElementById('historialCliente').addEventListener('change', renderHistorial);
         document.getElementById('historialFecha').addEventListener('change', renderHistorial);
         document.getElementById('historialTipo').addEventListener('change', renderHistorial);
@@ -2999,11 +3513,17 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             if (ops.length === 0) { mostrarToast('No hay datos para exportar.', 'error'); return; }
             const data = ops.map((op) => {
                 const cliente = getCliente(op.clienteId);
-                return { 'N° Op': op.numeroOp, 'Cliente': cliente ? cliente.nombre : 'Eliminado', 'Tipo': op.tipo === 'recibo' ? 'Recibo' : 'Transferencia', 'Monto': op.monto, 'Comisión': op.tipo === 'recibo' ? op.comision : null, 'Saldo Restante': op.tipo === 'transferencia' ? (op.saldoAntes - op.monto) : null, 'Fecha': new Date(op.fecha).toLocaleDateString('es-ES') };
+                return { 'N° Op': op.numeroOp, 'Cliente': cliente ? cliente.nombre : 'Eliminado',
+                    'Tipo': op.tipo === 'recibo' ? 'Recibo' : 'Transferencia', 'Monto': op.monto,
+                    'Comisión': op.tipo === 'recibo' ? op.comision : null, 'Saldo Restante': op.tipo ===
+                        'transferencia' ? (op.saldoAntes - op.monto) : null, 'Fecha': new Date(op
+                        .fecha).toLocaleDateString('es-ES') };
             });
             const wb = XLSX.utils.book_new();
             const ws = XLSX.utils.json_to_sheet(data);
-            ws['!cols'] = [{ wch: 8 }, { wch: 25 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 16 }, { wch: 16 }];
+            ws['!cols'] = [{ wch: 8 }, { wch: 25 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 16 },
+                { wch: 16 }
+            ];
             XLSX.utils.book_append_sheet(wb, ws, 'Historial');
             const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
             const blob = new Blob([wbout], { type: 'application/octet-stream' });
@@ -3026,7 +3546,8 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             doc.text('Historial de Operaciones', pageWidth / 2, 15, { align: 'center' });
             doc.setFontSize(8);
             doc.setTextColor('#8888a8');
-            doc.text(`Usuario: ${usuarioActual} - Generado: ${new Date().toLocaleString()}`, pageWidth / 2, 22, { align: 'center' });
+            doc.text(`Usuario: ${usuarioActual} - Generado: ${new Date().toLocaleString()}`, pageWidth / 2, 22,
+            { align: 'center' });
             const rows = ops.map((op) => {
                 const cliente = getCliente(op.clienteId);
                 return [
@@ -3065,7 +3586,8 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
                 doc.setPage(i);
                 doc.setFontSize(7);
                 doc.setTextColor('#8888a8');
-                doc.text('Gestor de Pagos - Pág. ' + i + '/' + pageCount, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+                doc.text('Gestor de Pagos - Pág. ' + i + '/' + pageCount, pageWidth / 2, doc.internal.pageSize
+                    .getHeight() - 10, { align: 'center' });
             }
             doc.save(`historial_${usuarioActual}_${new Date().toISOString().split('T')[0]}.pdf`);
             mostrarToast('PDF exportado correctamente.', 'success');
@@ -3094,6 +3616,8 @@ Saldo restante: ${prefijoSaldo} ${saldoFormateado} CUP.`;
             renderRecibosOperaciones();
             renderTransferenciasOperaciones();
             cambiarPestanaOperaciones('recibir');
+            // Verificar saldos negativos al inicio
+            verificarSaldosNegativos();
         }
 
         mostrarAuth();
