@@ -612,6 +612,18 @@
             display: inline-block;
             margin-top: 2px;
         }
+        /* Badges para bancos */
+        .badge-banco {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.65rem;
+            margin-left: 4px;
+        }
+        .badge-banco.rojo { background: #e63946; color: white; }
+        .badge-banco.blanco { background: #f1f1f1; color: #333; border: 1px solid #ccc; }
+        .badge-banco.verde { background: #2d6a4f; color: white; }
 
         /* ===== ESTILOS PARA BOTONES DE PESTAÑAS ===== */
         .tab-btn {
@@ -681,12 +693,14 @@
             margin-top: 2px;
         }
         .form-group .badge-detectado {
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 12px;
-            display: inline-block;
-            margin-top: 2px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
         }
         .badge-tarjeta-detectada {
             background: #dbeafe;
@@ -696,6 +710,17 @@
             background: #d1fae5;
             color: #065f46;
         }
+        .icono-tarjeta-color {
+            display: inline-block;
+            width: 20px;
+            height: 14px;
+            border-radius: 3px;
+            border: 1px solid #999;
+            margin-right: 4px;
+        }
+        .icono-tarjeta-color.rojo { background: #e63946; }
+        .icono-tarjeta-color.blanco { background: #f1f1f1; }
+        .icono-tarjeta-color.verde { background: #2d6a4f; }
 
         /* ===== CAMPO NÚMERO DESTINO CON LOGO ===== */
         .numero-destino-wrapper {
@@ -719,12 +744,20 @@
             display: none;
         }
         .logo-miniatura.visible {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
         }
         .logo-miniatura.monedero {
             border-radius: 50%;
             padding: 4px;
+            background: #6c5ce7;
+            color: white;
         }
+        .logo-miniatura.tarjeta-rojo { background: #e63946; color: white; }
+        .logo-miniatura.tarjeta-blanco { background: #f1f1f1; color: #333; border: 1px solid #ccc; }
+        .logo-miniatura.tarjeta-verde { background: #2d6a4f; color: white; }
 
         /* ===== BOTONES ===== */
         .btn-primary {
@@ -792,9 +825,6 @@
         .badge-gasto { background: var(--gasto-bg); color: var(--gasto-text); }
         .badge-tarjeta { background: #dbeafe; color: #1e40af; }
         .badge-monedero { background: #d1fae5; color: #065f46; }
-        .badge-bandec { background: #fee2e2; color: #991b1b; }
-        .badge-bpa { background: #d1fae5; color: #065f46; }
-        .badge-metropolitano { background: #dbeafe; color: #1e40af; }
 
         /* ===== FILTROS ===== */
         .filtros-row {
@@ -1168,83 +1198,7 @@
             display: none;
         }
 
-        /* ===== LOGOS EN BASE64 (MINIATURAS) ===== */
-        .logo-bandec {
-            background: #e63946;
-            color: white;
-            font-weight: 700;
-            font-size: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            padding: 2px;
-        }
-        .logo-bpa {
-            background: #1a7a3a;
-            color: white;
-            font-weight: 700;
-            font-size: 0.45rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            padding: 2px;
-            text-align: center;
-            line-height: 1.2;
-        }
-        .logo-metropolitano {
-            background: #0d7a3e;
-            color: white;
-            font-weight: 700;
-            font-size: 0.4rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            padding: 2px;
-            text-align: center;
-            line-height: 1.2;
-        }
-        .logo-monedero {
-            background: #6c5ce7;
-            color: white;
-            font-weight: 700;
-            font-size: 0.45rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            padding: 4px;
-            width: 36px;
-            height: 36px;
-            text-align: center;
-            line-height: 1.2;
-        }
-        .logo-miniatura {
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
-            object-fit: contain;
-            background: white;
-            border: 1px solid var(--border-color);
-            padding: 2px;
-            flex-shrink: 0;
-            display: none;
-            font-size: 0.4rem;
-            font-weight: 700;
-            text-align: center;
-            line-height: 1.2;
-            align-items: center;
-            justify-content: center;
-        }
-        .logo-miniatura.visible {
-            display: flex;
-        }
-        .logo-miniatura.monedero {
-            border-radius: 50%;
-            padding: 4px;
-        }
+        /* ===== LOGOS EN BASE64 (MINIATURAS) - Ya no se usan, reemplazados por iconos de color ===== */
 
         /* ===== NUEVA REGLA PARA IGUALAR ANCHO DE FECHA Y COMPAÑERO ===== */
         .form-group input[type="date"] {
@@ -2048,32 +2002,54 @@
         }
 
         // ============================================================
-        // DETECCIÓN AUTOMÁTICA DE TARJETA / MONEDERO CON LOGO
+        // NUEVAS FUNCIONES PARA FORMATO CON GUIONES Y DETECCIÓN MEJORADA
         // ============================================================
-        
-        function limpiarNumero(texto) {
-            return texto.replace(/[\s\-\.\(\)]/g, '');
+        function formatearNumeroTarjeta(texto) {
+            // Elimina todo lo que no sea dígito
+            let digitos = texto.replace(/\D/g, '');
+            // Limitar a 16 dígitos para tarjeta, pero si es monedero puede tener menos
+            // Aplicamos guiones cada 4 dígitos solo si parece tarjeta (comienza con 92 y longitud >= 16)
+            if (digitos.length >= 16 && digitos.startsWith('92')) {
+                let partes = [];
+                for (let i = 0; i < 16 && i < digitos.length; i += 4) {
+                    partes.push(digitos.substring(i, i + 4));
+                }
+                return partes.join('-');
+            } else {
+                // Para monedero o cualquier otro, no aplicamos guiones, solo devolvemos los dígitos
+                return digitos;
+            }
         }
 
-        function detectarBanco(numero) {
-            if (!numero || numero.length < 4) return null;
-            const codigo = numero.substring(2, 6);
-            if (codigo === '0699') return { nombre: 'BANDEC', clase: 'badge-bandec', logo: 'logo-bandec', texto: 'BANDEC' };
-            if (codigo === '1299') return { nombre: 'BPA', clase: 'badge-bpa', logo: 'logo-bpa', texto: 'BPA' };
-            if (codigo === '9598') return { nombre: 'Metropolitano', clase: 'badge-metropolitano', logo: 'logo-metropolitano', texto: 'Metro' };
+        function detectarBanco(numeroLimpio) {
+            if (!numeroLimpio || numeroLimpio.length < 12) return null;
+            // Tomar los dígitos en posición 8 a 11 (0-index) = dígitos 9-12
+            const codigo = numeroLimpio.substring(8, 12);
+            if (codigo === '0699') return { nombre: 'BANDEC', color: 'rojo' };
+            if (codigo === '1299') return { nombre: 'BPA', color: 'blanco' };
+            if (codigo === '9598') return { nombre: 'Metropolitano', color: 'verde' };
             return null;
+        }
+
+        // ============================================================
+        // DETECCIÓN AUTOMÁTICA DE TARJETA / MONEDERO (ACTUALIZADA)
+        // ============================================================
+        function limpiarNumero(texto) {
+            return texto.replace(/[\s\-\.\(\)]/g, '');
         }
 
         function detectarTipoNumero(texto) {
             const limpio = limpiarNumero(texto);
             if (!limpio) return { tipo: 'desconocido', limpio: '', banco: null };
             
+            // Si comienza con 92 y tiene al menos 16 dígitos, es tarjeta
             if (limpio.startsWith('92') && limpio.length >= 16) {
                 const numeroTarjeta = limpio.substring(0, 16);
                 const banco = detectarBanco(numeroTarjeta);
                 return { tipo: 'tarjeta', limpio: numeroTarjeta, banco: banco };
             }
             
+            // Si comienza con +53, 5 o 6, es monedero
             const patronMonedero = /^(\+53|\+5|5|6)/;
             if (patronMonedero.test(limpio)) {
                 let numeroMonedero = limpio.replace(/^\+/, '');
@@ -2087,10 +2063,12 @@
                 return { tipo: 'monedero', limpio: numeroMonedero, banco: null };
             }
             
+            // Si es exactamente 8 dígitos, asumimos monedero
             if (/^\d{8}$/.test(limpio)) {
                 return { tipo: 'monedero', limpio: limpio, banco: null };
             }
             
+            // Si es 16 dígitos y empieza con 92, lo tratamos como tarjeta (aunque no tenga el formato completo)
             if (/^\d{16}$/.test(limpio) && limpio.startsWith('92')) {
                 const banco = detectarBanco(limpio);
                 return { tipo: 'tarjeta', limpio: limpio, banco: banco };
@@ -2101,33 +2079,43 @@
 
         function actualizarDetectorNumero() {
             const input = document.getElementById('numeroDestino');
+            // Aplicar formateo con guiones mientras escribe
             const texto = input.value;
-            const resultado = detectarTipoNumero(texto);
+            const formateado = formatearNumeroTarjeta(texto);
+            // Solo actualizar si cambió para evitar bucles
+            if (formateado !== texto) {
+                const cursorPos = input.selectionStart;
+                input.value = formateado;
+                // Mantener el cursor aproximadamente en la misma posición
+                const newPos = Math.min(cursorPos + (formateado.length - texto.length), formateado.length);
+                input.setSelectionRange(newPos, newPos);
+            }
+            
+            const resultado = detectarTipoNumero(input.value);
             const badge = document.getElementById('tipoDetectado');
             const hint = document.getElementById('hintNumeroDestino');
             const logo = document.getElementById('logoMiniatura');
             
             if (resultado.tipo === 'tarjeta') {
-                badge.style.display = 'inline-block';
-                badge.className = 'badge-detectado badge-tarjeta-detectada';
-                let bancoTexto = '';
+                badge.style.display = 'inline-flex';
+                badge.className = 'badge-detectado';
                 if (resultado.banco) {
-                    bancoTexto = ` (${resultado.banco.nombre})`;
-                    badge.className = `badge-detectado ${resultado.banco.clase}`;
-                    logo.className = `logo-miniatura visible ${resultado.banco.logo}`;
-                    logo.textContent = resultado.banco.texto;
+                    const colorClass = resultado.banco.color;
+                    badge.innerHTML = `<span class="icono-tarjeta-color ${colorClass}"></span> ${resultado.banco.nombre}`;
+                    logo.className = `logo-miniatura visible tarjeta-${colorClass}`;
+                    logo.textContent = '💳';
                 } else {
+                    badge.innerHTML = '💳 Tarjeta';
                     logo.className = 'logo-miniatura visible';
                     logo.textContent = '💳';
                 }
-                badge.textContent = `💳 Tarjeta detectada${bancoTexto}`;
                 hint.textContent = 'Tarjeta: ' + resultado.limpio;
                 input.style.borderColor = '#3b82f6';
                 tipoDestinoSeleccionado = 'tarjeta';
             } else if (resultado.tipo === 'monedero') {
-                badge.style.display = 'inline-block';
+                badge.style.display = 'inline-flex';
                 badge.className = 'badge-detectado badge-monedero-detectado';
-                badge.textContent = '📱 Monedero detectado';
+                badge.innerHTML = '📱 Monedero';
                 hint.textContent = 'Monedero: ' + resultado.limpio;
                 input.style.borderColor = '#10b981';
                 logo.className = 'logo-miniatura visible monedero';
@@ -2137,7 +2125,7 @@
                 badge.style.display = 'none';
                 logo.className = 'logo-miniatura';
                 logo.textContent = '';
-                if (texto.length > 0) {
+                if (input.value.length > 0) {
                     hint.textContent = '⚠️ No se detectó un formato válido (Tarjeta: empieza con 92 | Monedero: +53, 5 o 6)';
                     input.style.borderColor = 'var(--danger)';
                 } else {
@@ -2150,8 +2138,10 @@
             input.dataset.tipoDetectado = resultado.tipo;
             if (resultado.banco) {
                 input.dataset.banco = resultado.banco.nombre;
+                input.dataset.bancoColor = resultado.banco.color;
             } else {
                 input.dataset.banco = '';
+                input.dataset.bancoColor = '';
             }
         }
 
@@ -2725,8 +2715,14 @@
                 let detalle = '';
                 if (op.tipo === 'recibo') detalle =
                     `Monto: ${formatearMoneda(op.monto)} · Comisión: ${formatearMoneda(op.comision)} · Neto: ${formatearMoneda(op.neto)}`;
-                else detalle =
-                    `Monto: ${formatearMoneda(op.monto)} · Saldo restante: ${formatearMoneda(op.saldoAntes - op.monto)}`;
+                else {
+                    detalle =
+                        `Monto: ${formatearMoneda(op.monto)} · Saldo restante: ${formatearMoneda(op.saldoAntes - op.monto)}`;
+                    // Mostrar banco si existe
+                    if (op.banco) {
+                        detalle += ` · Banco: <span class="badge-banco ${op.bancoColor}">${op.banco}</span>`;
+                    }
+                }
                 html += `
                     <div class="operacion-card">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -2948,7 +2944,12 @@
                 const esNegativo = saldoRestante < 0;
                 const badgeTipo = t.tipoDestino === 'monedero' ? 'badge-monedero' : 'badge-tarjeta';
                 const labelTipo = t.tipoDestino === 'monedero' ? '📱 Mi Transfer' : '💳 Tarjeta';
-                const numeroMostrado = t.numeroDestino || 'N/D';
+                let destinoMostrado = t.numeroDestino || 'N/D';
+                // Si es tarjeta y tiene banco, mostrarlo
+                let bancoHtml = '';
+                if (t.tipoDestino === 'tarjeta' && t.banco) {
+                    bancoHtml = ` <span class="badge-banco ${t.bancoColor || 'rojo'}">${t.banco}</span>`;
+                }
                 html += `
                     <div class="operacion-card" style="border-left-color:${esNegativo ? 'var(--danger)' : 'var(--primary)'};">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -2965,7 +2966,7 @@
                         </div>
                         <div>
                             <span class="badge ${badgeTipo}">${labelTipo}</span>
-                            <span class="destino-tarjeta">${numeroMostrado}</span>
+                            <span class="destino-tarjeta">${destinoMostrado}${bancoHtml}</span>
                         </div>
                         <div class="fecha">📅 ${fechaStr}</div>
                         <div class="acciones-botones">
@@ -3477,6 +3478,8 @@
             const inputNumero = document.getElementById('numeroDestino');
             const numeroLimpio = inputNumero.dataset.numeroLimpio || '';
             const tipoDetectado = inputNumero.dataset.tipoDetectado || 'desconocido';
+            const bancoNombre = inputNumero.dataset.banco || '';
+            const bancoColor = inputNumero.dataset.bancoColor || '';
             
             if (!clienteId) { mostrarToast('Selecciona un cliente.', 'error'); return; }
             if (isNaN(monto) || monto <= 0) { mostrarToast('Ingresa un monto válido.', 'error'); return; }
@@ -3516,7 +3519,9 @@
                 fecha, 
                 numeroOp,
                 tipoDestino: tipoDetectado,
-                numeroDestino: numeroLimpio
+                numeroDestino: numeroLimpio,
+                banco: bancoNombre || null,
+                bancoColor: bancoColor || null
             });
             
             actualizarSaldoCliente(clienteId, -monto);
@@ -3781,6 +3786,12 @@
             { align: 'center' });
             const rows = ops.map((op) => {
                 const cliente = getCliente(op.clienteId);
+                let banco = '';
+                let bancoColor = '';
+                if (op.banco) {
+                    banco = op.banco;
+                    bancoColor = op.bancoColor || 'rojo';
+                }
                 return [
                     op.numeroOp.toString(),
                     cliente ? cliente.nombre : 'Eliminado',
@@ -3788,12 +3799,13 @@
                     formatearMoneda(op.monto),
                     op.tipo === 'recibo' ? formatearMoneda(op.comision) : '—',
                     op.tipo === 'transferencia' ? formatearMoneda(op.saldoAntes - op.monto) : '—',
-                    new Date(op.fecha).toLocaleDateString('es-ES')
+                    new Date(op.fecha).toLocaleDateString('es-ES'),
+                    banco ? `${banco}` : ''
                 ];
             });
             doc.autoTable({
                 head: [
-                    ['N° Op', 'Cliente', 'Tipo', 'Monto', 'Comisión', 'Saldo Restante', 'Fecha']
+                    ['N° Op', 'Cliente', 'Tipo', 'Monto', 'Comisión', 'Saldo Restante', 'Fecha', 'Banco']
                 ],
                 body: rows,
                 startY: 28,
@@ -3801,16 +3813,17 @@
                 headStyles: { fillColor: '#6c5ce7', textColor: '#ffffff', fontSize: 8, halign: 'center' },
                 alternateRowStyles: { fillColor: '#f8f9fc' },
                 columnStyles: {
-                    0: { halign: 'center', cellWidth: 12 },
-                    1: { cellWidth: 42 },
-                    2: { halign: 'center', cellWidth: 22 },
-                    3: { halign: 'right', cellWidth: 25 },
-                    4: { halign: 'right', cellWidth: 25 },
-                    5: { halign: 'right', cellWidth: 28 },
-                    6: { halign: 'center', cellWidth: 28 }
+                    0: { halign: 'center', cellWidth: 10 },
+                    1: { cellWidth: 35 },
+                    2: { halign: 'center', cellWidth: 20 },
+                    3: { halign: 'right', cellWidth: 22 },
+                    4: { halign: 'right', cellWidth: 22 },
+                    5: { halign: 'right', cellWidth: 25 },
+                    6: { halign: 'center', cellWidth: 22 },
+                    7: { halign: 'center', cellWidth: 20 }
                 },
-                margin: { left: 8, right: 8 },
-                tableWidth: pageWidth - 16
+                margin: { left: 6, right: 6 },
+                tableWidth: pageWidth - 12
             });
             const pageCount = doc.internal.getNumberOfPages();
             for (let i = 1; i <= pageCount; i++) {
