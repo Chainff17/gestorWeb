@@ -1245,6 +1245,17 @@
             border-radius: 50%;
             padding: 4px;
         }
+
+        /* ===== NUEVA REGLA PARA IGUALAR ANCHO DE FECHA Y COMPAÑERO ===== */
+        .form-group input[type="date"] {
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .form-group input.readonly-field {
+            width: 100%;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
@@ -1393,16 +1404,16 @@
         <!-- SECCIÓN CLIENTES -->
         <div id="section-clientes" class="section visible">
             <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
-                <button class="btn-cliente-opcion" id="btnMostrarAgregarCliente" style="flex:1;">➕ Agregar</button>
+                <button class="btn-cliente-opcion active" id="btnMostrarAgregarCliente" style="flex:1;">➕ Agregar</button>
                 <button class="btn-cliente-opcion" id="btnMostrarListaClientes" style="flex:1;">📋 Ver Clientes</button>
                 <button class="btn-cliente-opcion" id="btnMostrarComisiones" style="flex:1;">📊 Comisiones</button>
             </div>
 
-            <div id="sub-agregar-cliente" class="card">
+            <div id="sub-agregar-cliente" class="card" style="display:block;">
                 <h3 style="margin-bottom:10px;">Agregar Cliente</h3>
                 <div class="form-group">
                     <label>Nombre del cliente</label>
-                    <input type="text" id="clienteNombre" placeholder="Ej: Juan Pérez">
+                    <input type="text" id="clienteNombre" placeholder="Ej: Juan Pérez" autofocus>
                 </div>
                 <div class="form-group">
                     <label>Comisión (%)</label>
@@ -1447,19 +1458,21 @@
                     <label>Monto a recibir</label>
                     <input type="number" id="recibirMonto" placeholder="0.00" step="0.01" min="0" inputmode="decimal" autofocus>
                 </div>
-                <div class="form-group">
-                    <label>Fecha</label>
-                    <input type="date" id="recibirFecha">
-                </div>
+                <!-- Fila: Fecha + Comisión (mismo tamaño) -->
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
                     <div class="form-group">
-                        <label>Comisión</label>
-                        <input type="text" id="recibirComision" class="readonly-field" readonly>
+                        <label>Fecha</label>
+                        <input type="date" id="recibirFecha" style="font-size:0.9rem; padding:10px 12px; height:42px;">
                     </div>
                     <div class="form-group">
-                        <label>Cliente recibe</label>
-                        <input type="text" id="recibirNeto" class="readonly-field" readonly>
+                        <label>Comisión</label>
+                        <input type="text" id="recibirComision" class="readonly-field" readonly style="font-size:0.9rem; padding:10px 12px; height:42px; font-weight:600; color:var(--primary);">
                     </div>
+                </div>
+                <!-- Cliente recibe más grande -->
+                <div class="form-group" style="margin-top:2px;">
+                    <label style="font-size:0.8rem; font-weight:600;">💰 Cliente recibe</label>
+                    <input type="text" id="recibirNeto" class="readonly-field" readonly style="font-size:1.3rem; font-weight:700; color:var(--success); padding:12px 14px; background:var(--bg-card-alt); border:2px solid var(--success); border-radius:var(--radius-sm);">
                 </div>
                 <div style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); margin:6px 0; text-align:center; font-weight:500; font-size:0.9rem;">
                     <span id="recibirSaldoActualizado">Saldo actual: $0.00</span>
@@ -1476,7 +1489,6 @@
                     <label>Cliente</label>
                     <select id="transferirCliente"></select>
                 </div>
-                <!-- ===== CAMPO NÚMERO DE DESTINO (AHORA ARRIBA DEL MONTO) ===== -->
                 <div class="form-group">
                     <label id="labelNumeroDestino">Número de destino</label>
                     <div class="numero-destino-wrapper">
@@ -1486,18 +1498,20 @@
                     <div class="hint" id="hintNumeroDestino">Ingresa el número de tarjeta o monedero</div>
                     <div id="tipoDetectado" class="badge-detectado" style="display:none;"></div>
                 </div>
-
                 <div class="form-group">
                     <label>Monto a transferir</label>
                     <input type="number" id="transferirMonto" placeholder="0.00" step="0.01" min="0" inputmode="decimal" autofocus>
                 </div>
-                <div class="form-group">
-                    <label>Fecha</label>
-                    <input type="date" id="transferirFecha">
-                </div>
-                <div class="form-group">
-                    <label>Saldo disponible</label>
-                    <input type="text" id="transferirSaldoDisponible" class="readonly-field" readonly>
+                <!-- Fila: Fecha + Saldo disponible (mismo tamaño) -->
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="date" id="transferirFecha" style="font-size:0.9rem; padding:10px 12px; height:42px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Saldo disponible</label>
+                        <input type="text" id="transferirSaldoDisponible" class="readonly-field" readonly style="font-size:0.9rem; padding:10px 12px; height:42px; font-weight:600; color:var(--primary);">
+                    </div>
                 </div>
                 <div style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); margin:6px 0; text-align:center; font-weight:500; font-size:0.9rem;">
                     <span id="transferirSaldoRestante">Saldo restante: $0.00</span>
@@ -1511,7 +1525,7 @@
 
             <div id="sub-lista-recibos" class="card">
                 <div class="card-header">
-                    <h3>📋 Recibos Registrados</h3>
+                    <h3>📋 Recibos del día</h3>
                     <div style="display:flex; gap:6px; align-items:center;">
                         <button class="btn-small btn-secondary" id="btnInvertirRecibos" style="font-size:0.6rem;">⬆️ Más recientes</button>
                         <span class="badge-count" id="contadorRecibosOperaciones">0</span>
@@ -1522,7 +1536,7 @@
 
             <div id="sub-lista-transferencias" class="card" style="display:none;">
                 <div class="card-header">
-                    <h3>📋 Transferencias Registradas</h3>
+                    <h3>📋 Transferencias del día</h3>
                     <div style="display:flex; gap:6px; align-items:center;">
                         <button class="btn-small btn-secondary" id="btnInvertirTransferencias" style="font-size:0.6rem;">⬆️ Más recientes</button>
                         <span class="badge-count" id="contadorTransferenciasOperaciones">0</span>
@@ -2100,7 +2114,6 @@
                 if (resultado.banco) {
                     bancoTexto = ` (${resultado.banco.nombre})`;
                     badge.className = `badge-detectado ${resultado.banco.clase}`;
-                    // Mostrar logo
                     logo.className = `logo-miniatura visible ${resultado.banco.logo}`;
                     logo.textContent = resultado.banco.texto;
                 } else {
@@ -2822,18 +2835,34 @@
         }
 
         // ============================================================
-        // RENDER RECIBOS Y TRANSFERENCIAS EN OPERACIONES
+        // RENDER RECIBOS Y TRANSFERENCIAS EN OPERACIONES (FILTRADOS POR DÍA Y CLIENTE)
         // ============================================================
         function renderRecibosOperaciones() {
             const container = document.getElementById('listaRecibosOperaciones');
             if (!container) return;
-            let lista = [...recibos];
+
+            const clienteSelect = document.getElementById('recibirCliente');
+            const clienteId = clienteSelect.value;
+
+            const hoy = new Date();
+            const inicioDia = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 0, 0, 0, 0).getTime();
+            const finDia = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 23, 59, 59, 999).getTime();
+
+            let lista = recibos.filter(r => {
+                if (clienteId && r.clienteId !== clienteId) return false;
+                if (r.fecha < inicioDia || r.fecha > finDia) return false;
+                return true;
+            });
+
             lista.sort((a, b) => ordenRecibosAsc ? a.numeroOp - b.numeroOp : b.numeroOp - a.numeroOp);
-            document.getElementById('contadorRecibosOperaciones').textContent = recibos.length;
+
+            document.getElementById('contadorRecibosOperaciones').textContent = lista.length;
+
             if (lista.length === 0) {
-                container.innerHTML = '<div class="empty-msg"><p>No hay recibos registrados</p></div>';
+                container.innerHTML = '<div class="empty-msg"><p>📭 No hay recibos registrados hoy para este cliente</p></div>';
                 return;
             }
+
             let html = '';
             lista.forEach(r => {
                 const cliente = getCliente(r.clienteId);
@@ -2858,6 +2887,7 @@
                 `;
             });
             container.innerHTML = html;
+
             container.querySelectorAll('.btn-eliminar-recibo-op').forEach(btn => {
                 btn.addEventListener('click', function() {
                     if (!confirm('¿Eliminar este recibo?')) return;
@@ -2874,6 +2904,7 @@
                     mostrarToast('Recibo eliminado.', 'success');
                 });
             });
+
             container.querySelectorAll('.btn-editar-icono').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = this.dataset.id;
@@ -2886,13 +2917,29 @@
         function renderTransferenciasOperaciones() {
             const container = document.getElementById('listaTransferenciasOperaciones');
             if (!container) return;
-            let lista = [...transferencias];
+
+            const clienteSelect = document.getElementById('transferirCliente');
+            const clienteId = clienteSelect.value;
+
+            const hoy = new Date();
+            const inicioDia = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 0, 0, 0, 0).getTime();
+            const finDia = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 23, 59, 59, 999).getTime();
+
+            let lista = transferencias.filter(t => {
+                if (clienteId && t.clienteId !== clienteId) return false;
+                if (t.fecha < inicioDia || t.fecha > finDia) return false;
+                return true;
+            });
+
             lista.sort((a, b) => ordenTransferenciasAsc ? a.numeroOp - b.numeroOp : b.numeroOp - a.numeroOp);
-            document.getElementById('contadorTransferenciasOperaciones').textContent = transferencias.length;
+
+            document.getElementById('contadorTransferenciasOperaciones').textContent = lista.length;
+
             if (lista.length === 0) {
-                container.innerHTML = '<div class="empty-msg"><p>No hay transferencias registradas</p></div>';
+                container.innerHTML = '<div class="empty-msg"><p>📭 No hay transferencias registradas hoy para este cliente</p></div>';
                 return;
             }
+
             let html = '';
             lista.forEach(t => {
                 const cliente = getCliente(t.clienteId);
@@ -2930,6 +2977,7 @@
                 `;
             });
             container.innerHTML = html;
+
             container.querySelectorAll('.btn-eliminar-transferencia-op').forEach(btn => {
                 btn.addEventListener('click', function() {
                     if (!confirm('¿Eliminar esta transferencia?')) return;
@@ -2945,6 +2993,7 @@
                     mostrarToast('Transferencia eliminada.', 'success');
                 });
             });
+
             container.querySelectorAll('.btn-editar-icono').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = this.dataset.id;
@@ -2952,6 +3001,7 @@
                     abrirModalEdicion(id, tipo);
                 });
             });
+
             container.querySelectorAll('.btn-copiar-icono').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = this.dataset.id;
@@ -3179,11 +3229,7 @@
             if (dropBtn) dropBtn.classList.add('active-drop');
 
             if (section === 'clientes') {
-                document.getElementById('sub-agregar-cliente').style.display = 'none';
-                document.getElementById('sub-ver-clientes').style.display = 'none';
-                document.getElementById('sub-comisiones').style.display = 'block';
-                renderComisiones();
-                renderResumenClientes();
+                cambiarPestanaClientes('agregar');
             }
             if (section === 'operaciones') {
                 actualizarSelectores();
@@ -3241,10 +3287,7 @@
         document.getElementById('btnLogout').addEventListener('click', cerrarSesion);
         document.getElementById('btnSettings').addEventListener('click', function() {
             mostrarSeccion('clientes');
-            document.getElementById('sub-agregar-cliente').style.display = 'none';
-            document.getElementById('sub-ver-clientes').style.display = 'none';
-            document.getElementById('sub-comisiones').style.display = 'block';
-            document.getElementById('btnMostrarComisiones').classList.add('active-comisiones');
+            cambiarPestanaClientes('comisiones');
             renderComisiones();
             mostrarToast('⚙️ Configuración de comisiones', 'info');
         });
@@ -3355,7 +3398,7 @@
             if (pestana === 'agregar') {
                 btnAgregar.classList.add('active');
                 document.getElementById('sub-agregar-cliente').style.display = 'block';
-                setTimeout(() => document.getElementById('clienteNombre').focus(), 100);
+                setTimeout(() => document.getElementById('clienteNombre').focus(), 150);
             } else if (pestana === 'lista') {
                 btnLista.classList.add('active');
                 document.getElementById('sub-ver-clientes').style.display = 'block';
@@ -3799,7 +3842,8 @@
             reordenarNumerosOperaciones();
             if (localStorage.getItem('gestor_dark_mode') === 'true') { aplicarModoOscuro(true); }
             
-            cambiarPestanaClientes('lista');
+            // Mostrar la pestaña de AGREGAR por defecto en clientes
+            cambiarPestanaClientes('agregar');
             
             recargarTodo();
             renderRecibosOperaciones();
@@ -3808,6 +3852,55 @@
             verificarSaldosNegativos();
             
             actualizarDetectorNumero();
+
+            // ===== AGREGAR CLIENTE (LISTENER REPARADO) =====
+            document.getElementById('btnAgregarCliente').addEventListener('click', function() {
+                const nombre = document.getElementById('clienteNombre').value.trim();
+                const comision = parseFloat(document.getElementById('clienteComision').value) || 0;
+
+                if (!nombre) {
+                    mostrarToast('⚠️ Ingresa un nombre para el cliente.', 'error');
+                    document.getElementById('clienteNombre').focus();
+                    return;
+                }
+                if (comision < 0) {
+                    mostrarToast('⚠️ La comisión no puede ser negativa.', 'error');
+                    document.getElementById('clienteComision').focus();
+                    return;
+                }
+                if (getClientePorNombre(nombre)) {
+                    mostrarToast('❌ Ya existe un cliente con ese nombre.', 'error');
+                    document.getElementById('clienteNombre').focus();
+                    return;
+                }
+
+                clientes.push({
+                    id: generarId(),
+                    nombre: nombre,
+                    comision: comision,
+                    saldo: 0
+                });
+                persistAll();
+
+                document.getElementById('clienteNombre').value = '';
+                document.getElementById('clienteComision').value = '1.5';
+
+                recargarTodo();
+                cambiarPestanaClientes('lista');
+                mostrarToast(`✅ Cliente "${nombre}" agregado con éxito.`, 'success');
+            });
+
+            // ===== REFRESCAR LISTAS AL CAMBIAR DE CLIENTE =====
+            document.getElementById('recibirCliente').addEventListener('change', function() {
+                if (document.getElementById('btnMostrarRecibir').classList.contains('active')) {
+                    renderRecibosOperaciones();
+                }
+            });
+            document.getElementById('transferirCliente').addEventListener('change', function() {
+                if (document.getElementById('btnMostrarTransferir').classList.contains('active')) {
+                    renderTransferenciasOperaciones();
+                }
+            });
         }
 
         mostrarAuth();
