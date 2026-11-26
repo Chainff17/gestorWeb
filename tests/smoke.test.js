@@ -344,7 +344,7 @@ function run(label, fn) {
   });
   await new Promise(r => setTimeout(r, 50));
 
-  run('Cambiar recibo y transferencia actualiza saldos posteriores', () => {
+  run('Editar saldo mantiene los registros y su posición en historial', () => {
     document.querySelector('#bottomMenu button[data-section="operaciones"]').click();
     document.getElementById('btnMostrarTransferir').click();
     const numero = document.getElementById('numeroDestino');
@@ -353,30 +353,42 @@ function run(label, fn) {
     document.getElementById('btnRegistrarTransferencia').click();
     let data=JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123'));
     if (data.transferencias.length!==2 || data.transferencias[1].saldoAntes!==48) throw new Error('segunda transferencia incorrecta');
+    const antes=JSON.parse(JSON.stringify(data));
     document.querySelector('#bottomMenu button[data-section="historial"]').click();
+    const ids=()=>[...document.querySelectorAll('#listaHistorial [data-action="edit-op"]')].map(x=>x.dataset.id).join(',');
+    const ordenAntes=ids();
     document.querySelector('[data-action="edit-op"][data-id="'+data.transferencias[0].id+'"]').click();
+    if (!document.getElementById('modalMonto').readOnly || !document.getElementById('modalFecha').readOnly || !document.getElementById('modalCliente').disabled) throw new Error('los datos originales se pueden modificar');
     if (document.getElementById('modalSaldoDisponible').value !== '98.00') throw new Error('vista previa no es saldo histórico');
-    document.getElementById('modalMonto').value='30';
-    document.getElementById('modalGuardar').click();
-    data=JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123'));
-    if (data.transferencias[1].saldoAntes!==68 || data.clientes[0].saldo!==48) throw new Error('edición no propagada: '+JSON.stringify(data));
-    document.querySelector('[data-action="edit-op"][data-id="'+data.recibos[0].id+'"]').click();
-    document.getElementById('modalMonto').value='200';
-    document.getElementById('modalGuardar').click();
-    data=JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123'));
-    if (data.transferencias[0].saldoAntes!==196 || data.transferencias[1].saldoAntes!==166 || data.clientes[0].saldo!==146) throw new Error('recibo no propagado: '+JSON.stringify(data));
-    document.querySelector('[data-action="edit-op"][data-id="'+data.transferencias[0].id+'"]').click();
+    // Incluso manipulando el DOM, los datos originales no se usan al guardar.
+    document.getElementById('modalMonto').value='999';
+    document.getElementById('modalFecha').value='2020-01-01';
     document.getElementById('modalSaldoDisponible').value='150';
     document.getElementById('modalSaldoDisponible').dispatchEvent(new window.Event('input'));
     document.getElementById('modalGuardar').click();
     data=JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123'));
-    if (data.transferencias[0].ajusteSaldo!==-46 || data.transferencias[0].saldoAntes!==150 || data.transferencias[1].saldoAntes!==120 || data.clientes[0].saldo!==100) throw new Error('ajuste no propagado: '+JSON.stringify(data));
-    if (!document.getElementById('listaHistorial').textContent.includes('Ajuste previo: $-46.00')) throw new Error('ajuste no visible en historial');
+    if (data.transferencias[0].ajusteSaldo!==52 || data.transferencias[0].saldoAntes!==150 || data.transferencias[1].saldoAntes!==100 || data.clientes[0].saldo!==80) throw new Error('ajuste no propagado: '+JSON.stringify(data));
+    const strip=o=>{const c={...o};delete c.saldoAntes;delete c.ajusteSaldo;return JSON.stringify(c)};
+    data.transferencias.forEach((t,i)=>{if(strip(t)!==strip(antes.transferencias[i]))throw new Error('cambió el registro '+i)});
+    if(JSON.stringify(data.recibos)!==JSON.stringify(antes.recibos) || JSON.stringify(data.finanzas)!==JSON.stringify(antes.finanzas)) throw new Error('cambiaron otros registros');
+    if (ids()!==ordenAntes) throw new Error('cambió el orden o desapareció una operación');
+    const filtro=document.getElementById('historialTipo');
+    filtro.value='recibo'; filtro.dispatchEvent(new window.Event('change'));
+    if (ids() !== data.recibos[0].id) throw new Error('filtro no muestra el recibo');
     document.querySelector('[data-action="edit-op"][data-id="'+data.recibos[0].id+'"]').click();
-    document.getElementById('modalMonto').value='100';
+    document.getElementById('modalSaldoDisponible').value='10';
+    document.getElementById('modalSaldoDisponible').dispatchEvent(new window.Event('input'));
     document.getElementById('modalGuardar').click();
     data=JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123'));
-    if (data.transferencias[0].saldoAntes!==52 || data.transferencias[1].saldoAntes!==22 || data.clientes[0].saldo!==2) throw new Error('ajuste no conservado al editar recibo');
+    if (data.recibos[0].ajusteSaldo!==10 || data.transferencias[0].saldoAntes!==160 || data.transferencias[1].saldoAntes!==110 || data.clientes[0].saldo!==90) throw new Error('ajuste de recibo no propagado');
+    if (strip(data.recibos[0])!==strip(antes.recibos[0]) || ids()!==data.recibos[0].id) throw new Error('recibo cambió o desapareció del filtro');
+    if (!document.getElementById('listaHistorial').textContent.includes('Ajuste previo: $10.00')) throw new Error('ajuste de recibo no visible');
+    filtro.value='todos'; filtro.dispatchEvent(new window.Event('change'));
+    if (ids()!==ordenAntes) throw new Error('cambió el orden del historial');
+    const sinCambios=JSON.stringify(data);
+    document.querySelector('[data-action="edit-op"][data-id="'+data.transferencias[0].id+'"]').click();
+    document.getElementById('modalGuardar').click();
+    if (window.localStorage.getItem('gestor_cloud_uid-test-123')!==sinCambios) throw new Error('guardar sin cambios alteró los datos');
   });
 
   run('Conflicto de sincronización conserva ambas copias', async () => {

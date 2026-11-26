@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const html = fs.readFileSync(require('node:path').join(__dirname, '..', 'index.html'), 'utf8');
 const begin = html.indexOf('    function operacionesCronologicas()');
-const end = html.indexOf('    function obtenerSiguienteNumeroOperacion()', begin);
+const end = html.indexOf('    /** Importa datos guardados', begin);
 assert(begin >= 0 && end > begin, 'No se encontraron funciones de saldo');
 const source = html.slice(begin, end);
 function fixture() {
@@ -43,7 +43,7 @@ function fixture() {
 {
  const c=fixture(), {state:s}=c, apertura=c.saldosIniciales();
  s.transferencias[0].fecha=4; c.renumerar(); c.recalcularSaldos(apertura,['a']);
- assert.equal(s.transferencias[1].saldoAntes,90); assert.equal(s.transferencias[0].saldoAntes,80); assert.equal(s.clientes[0].saldo,60);
+ assert.equal(s.transferencias[0].saldoAntes,90); assert.equal(s.transferencias[1].saldoAntes,70); assert.equal(s.transferencias[0].numeroOp,2); assert.equal(s.clientes[0].saldo,60);
 }
 {
  const c=fixture(), {state:s}=c, apertura=c.saldosIniciales();
@@ -69,4 +69,48 @@ function fixture() {
  const anterior=c.saldosIniciales(); s.recibos[0].neto=80; c.recalcularSaldos(anterior,['a']);
  assert.equal(s.transferencias[0].saldoAntes,40); assert.equal(s.transferencias[1].saldoAntes,20); assert.equal(s.clientes[0].saldo,10);
 }
-console.log('OK: edición de montos, recibos, cliente, fecha, eliminación, préstamos y saldos iniciales');
+{
+ const c=fixture(), {state:s}=c;
+ const original=JSON.parse(JSON.stringify(s));
+ assert.equal(c.aplicarAjusteSaldo('transferencia','t1',15),true);
+ assert.equal(s.transferencias[0].saldoAntes,105); assert.equal(s.transferencias[1].saldoAntes,85);
+ assert.equal(s.transferencias[2].saldoAntes,999); assert.equal(s.clientes[0].saldo,75); assert.equal(s.clientes[1].saldo,25);
+ assert.equal(s.transferencias[0].ajusteSaldo,15);
+ const strip = x => {const copy=JSON.parse(JSON.stringify(x)); delete copy.saldoAntes; delete copy.ajusteSaldo; return copy;};
+ s.transferencias.forEach((t,i)=>assert.deepEqual(strip(t),strip(original.transferencias[i])));
+ assert.deepEqual(s.recibos,original.recibos); assert.deepEqual(s.finanzas,original.finanzas);
+ c.renumerar(); assert.equal(s.transferencias[0].numeroOp,2); assert.equal(s.transferencias[1].numeroOp,3);
+ assert.equal(c.saldosIniciales().get('a'),0);
+}
+{
+ const c=fixture(), {state:s}=c;
+ assert.equal(c.aplicarAjusteSaldo('recibo','r1',-20),true);
+ assert.equal(s.recibos[0].ajusteSaldo,-20); assert.equal(s.transferencias[0].saldoAntes,70); assert.equal(s.transferencias[1].saldoAntes,50); assert.equal(s.clientes[0].saldo,40);
+ assert.equal(c.saldosIniciales().get('a'),0);
+ assert.equal(c.saldoAntesProyectado('a',1,{...s.recibos[0],tipo:'recibo'}),0);
+ const apertura=c.saldosIniciales(); c.recalcularSaldos(apertura,['a']);
+ assert.equal(s.transferencias[0].saldoAntes,70); assert.equal(s.transferencias[1].saldoAntes,50); assert.equal(s.clientes[0].saldo,40);
+}
+{
+ const c=fixture(), {state:s}=c;
+ s.transferencias.splice(0,1); c.renumerar();
+ assert.equal(s.transferencias[0].numeroOp,3); assert.equal(s.transferencias[1].numeroOp,4);
+ assert.equal(c.obtenerSiguienteNumeroOperacion(),5);
+}
+{
+ const c=fixture(), {state:s}=c;
+ // Corrige la segunda transferencia con saldo legado inconsistente: no se toca la primera.
+ s.transferencias[0].saldoAntes = 777;
+ const antes=JSON.parse(JSON.stringify(s));
+ assert.equal(c.aplicarAjusteSaldo('transferencia','t2',-12),true);
+ assert.equal(s.transferencias[0].saldoAntes,777); assert.equal(s.transferencias[1].saldoAntes,58);
+ assert.equal(s.transferencias[2].saldoAntes,999); assert.equal(s.clientes[0].saldo,48);
+ assert.deepEqual(s.recibos,antes.recibos); assert.deepEqual(s.finanzas,antes.finanzas);
+ const sinCambios=JSON.stringify(s); assert.equal(c.aplicarAjusteSaldo('recibo','no-existe',10),false); assert.equal(JSON.stringify(s),sinCambios);
+}
+{
+ const c=fixture(), {state:s}=c;
+ s.transferencias[0].numeroOp=1; // un duplicado histórico no debe cambiarse al recargar
+ c.renumerar(); assert.equal(s.recibos[0].numeroOp,1); assert.equal(s.transferencias[0].numeroOp,1);
+}
+console.log('OK: ajuste de saldos, operaciones preservadas y numeración estable');

@@ -1553,18 +1553,19 @@
             <h3 id="modalTitulo">✏️ Editar Operación</h3>
             <div class="form-group">
                 <label>Cliente</label>
-                <select id="modalCliente"></select>
+                <select id="modalCliente" disabled></select>
             </div>
             <div class="form-group">
                 <label>Monto</label>
-                <input type="number" id="modalMonto" step="0.01" min="0" inputmode="decimal">
+                <input type="number" id="modalMonto" readonly>
             </div>
             <div class="form-group">
                 <label>Fecha</label>
-                <input type="date" id="modalFecha">
+                <input type="date" id="modalFecha" readonly>
             </div>
+            <div class="form-group"><label for="modalNumero">Número de operación</label><input type="text" id="modalNumero" readonly></div>
             <div id="modalCamposExtra"></div>
-            <p style="font-size:.78rem;color:var(--text-secondary);margin:10px 0;">Al guardar se recalculan los saldos de las operaciones posteriores de los clientes afectados.</p>
+            <p style="font-size:.78rem;color:var(--text-secondary);margin:10px 0;">Solo se ajusta el saldo; el número, tipo, cliente, monto, fecha y posición de las operaciones permanecen iguales.</p>
             <div class="modal-actions">
                 <button class="btn-modal-cancel" id="modalCancelar">Cancelar</button>
                 <button class="btn-modal-save" id="modalGuardar">💾 Guardar</button>
@@ -2273,13 +2274,11 @@
         state.finanzas = Array.isArray(p.finanzas) ? p.finanzas : [];
     }
 
-    // Orden por fecha y número previo: conserva el orden de operaciones del mismo día.
+    // El número identifica el orden de registro; nunca se cambia al editar un saldo.
     function operacionesCronologicas() {
         return state.recibos.map(op => ({ tipo: 'recibo', op }))
             .concat(state.transferencias.map(op => ({ tipo: 'transferencia', op })))
-            .sort((a, b) => (Number(a.op.fecha) || 0) - (Number(b.op.fecha) || 0)
-                || (Number(a.op.numeroOp) || 0) - (Number(b.op.numeroOp) || 0)
-                || String(a.op.id).localeCompare(String(b.op.id)));
+            .sort((a, b) => (Number(a.op.numeroOp) || Number.MAX_SAFE_INTEGER) - (Number(b.op.numeroOp) || Number.MAX_SAFE_INTEGER));
     }
 
     // Inferir el saldo inicial desde el saldo final existente permite conservar
@@ -2288,7 +2287,7 @@
         const iniciales = new Map(state.clientes.map(c => [c.id, Number(c.saldo) || 0]));
         for (const { tipo, op } of operacionesCronologicas()) {
             if (!iniciales.has(op.clienteId)) continue;
-            const cambio = tipo === 'recibo' ? (Number(op.neto) || 0) : (Number(op.ajusteSaldo) || 0) - (Number(op.monto) || 0);
+            const cambio = (Number(op.ajusteSaldo) || 0) + (tipo === 'recibo' ? (Number(op.neto) || 0) : -(Number(op.monto) || 0));
             iniciales.set(op.clienteId, iniciales.get(op.clienteId) - cambio);
         }
         return iniciales;
@@ -2300,7 +2299,7 @@
             if (!saldos.has(op.clienteId)) continue;
             const anterior = saldos.get(op.clienteId);
             if (tipo === 'recibo') {
-                saldos.set(op.clienteId, anterior + (Number(op.neto) || 0));
+                saldos.set(op.clienteId, anterior + (Number(op.ajusteSaldo) || 0) + (Number(op.neto) || 0));
             } else {
                 const saldoAjustado = anterior + (Number(op.ajusteSaldo) || 0);
                 op.saldoAntes = saldoAjustado;
@@ -2329,29 +2328,48 @@
     function saldoAntesProyectado(clienteId, fecha, editada) {
         const saldos = saldosIniciales();
         let saldo = saldos.get(clienteId) || 0;
-        const candidato = { tipo: 'transferencia', op: { id: editada.id, clienteId, fecha, numeroOp: editada.numeroOp } };
-        const ops = operacionesCronologicas().filter(x => x.op.id !== editada.id).concat(candidato)
-            .sort((a, b) => (Number(a.op.fecha) || 0) - (Number(b.op.fecha) || 0)
-                || (Number(a.op.numeroOp) || 0) - (Number(b.op.numeroOp) || 0)
-                || String(a.op.id).localeCompare(String(b.op.id)));
-        for (const item of ops) {
-            if (item === candidato) break;
-            if (item.op.clienteId === clienteId) saldo += item.tipo === 'recibo' ? (Number(item.op.neto) || 0) : (Number(item.op.ajusteSaldo) || 0) - (Number(item.op.monto) || 0);
+        const tipo = editada.tipo || 'transferencia';
+        for (const item of operacionesCronologicas()) {
+            if (item.tipo === tipo && item.op.id === editada.id) break;
+            if (item.op.clienteId === clienteId) {
+                saldo += (Number(item.op.ajusteSaldo) || 0) + (item.tipo === 'recibo' ? (Number(item.op.neto) || 0) : -(Number(item.op.monto) || 0));
+            }
         }
         return saldo;
     }
 
+    // Aplica exclusivamente la diferencia de saldo a la operación y a las
+    // transferencias posteriores del mismo cliente, sin reconstruir registros.
+    function aplicarAjusteSaldo(tipo, id, diferencia) {
+        const ops = operacionesCronologicas();
+        const indice = ops.findIndex(item => item.tipo === tipo && item.op.id === id);
+        if (indice < 0) return false;
+        const actual = ops[indice].op;
+        const cliente = getCliente(actual.clienteId);
+        if (!cliente || !Number.isFinite(diferencia)) return false;
+        actual.ajusteSaldo = (Number(actual.ajusteSaldo) || 0) + diferencia;
+        if (tipo === 'transferencia') actual.saldoAntes = (Number(actual.saldoAntes) || 0) + diferencia;
+        for (const item of ops.slice(indice + 1)) {
+            if (item.tipo === 'transferencia' && item.op.clienteId === actual.clienteId) {
+                item.op.saldoAntes = (Number(item.op.saldoAntes) || 0) + diferencia;
+            }
+        }
+        cliente.saldo = (Number(cliente.saldo) || 0) + diferencia;
+        return true;
+    }
+
+    // Completar solo números ausentes; conservar incluso duplicados históricos.
     function renumerar() {
-        operacionesCronologicas().forEach(({ op }, i) => { op.numeroOp = i + 1; });
+        const ops = operacionesCronologicas();
+        let siguiente = ops.reduce((max, item) => Math.max(max, Number.isSafeInteger(Number(item.op.numeroOp)) ? Number(item.op.numeroOp) : 0), 0) + 1;
+        for (const { op } of ops) {
+            const numero = Number(op.numeroOp);
+            if (!Number.isSafeInteger(numero) || numero <= 0) op.numeroOp = siguiente++;
+        }
     }
 
     function obtenerSiguienteNumeroOperacion() {
-        const usados = new Set();
-        state.recibos.forEach(r => usados.add(r.numeroOp));
-        state.transferencias.forEach(t => usados.add(t.numeroOp));
-        let n = 1;
-        while (usados.has(n)) n++;
-        return n;
+        return operacionesCronologicas().reduce((max, { op }) => Math.max(max, Number.isSafeInteger(Number(op.numeroOp)) ? Number(op.numeroOp) : 0), 0) + 1;
     }
 
     /** Importa datos guardados en localStorage por versiones anteriores */
@@ -3227,7 +3245,7 @@
                         <span class="numero-op">#${esc(r.numeroOp)}</span>
                     </div>
                     <div class="monto">${formatearMoneda(r.monto)}</div>
-                    <div class="detalle">Comisión: ${formatearMoneda(r.comision)} · Neto: ${formatearMoneda(r.neto)}</div>
+                    <div class="detalle">Comisión: ${formatearMoneda(r.comision)} · Neto: ${formatearMoneda(r.neto)}${Number(r.ajusteSaldo) ? ' · Ajuste previo: ' + formatearMoneda(r.ajusteSaldo) : ''}</div>
                     <div class="fecha">📅 ${formatearFecha(r.fecha)}</div>
                     <div class="acciones-botones">
                         <button class="btn-icono" data-action="share-comprobante" data-id="${r.id}" data-tipo="recibo" title="Compartir comprobante" aria-label="Compartir comprobante">↗️</button>
@@ -3480,7 +3498,7 @@
         let ops = [];
         state.recibos.forEach(r => ops.push({
             id: r.id, tipo: 'recibo', clienteId: r.clienteId, monto: r.monto,
-            comision: r.comision, neto: r.neto, fecha: r.fecha, saldoAntes: null,
+            comision: r.comision, neto: r.neto, fecha: r.fecha, saldoAntes: null, ajusteSaldo: r.ajusteSaldo,
             numeroOp: r.numeroOp, banco: null, bancoColor: null
         }));
         state.transferencias.forEach(t => ops.push({
@@ -3516,6 +3534,7 @@
             let detalle = '';
             if (op.tipo === 'recibo') {
                 detalle = 'Monto: ' + formatearMoneda(op.monto) + ' · Comisión: ' + formatearMoneda(op.comision) + ' · Neto: ' + formatearMoneda(op.neto);
+                if (Number(op.ajusteSaldo)) detalle += ' · Ajuste previo: ' + formatearMoneda(op.ajusteSaldo);
             } else {
                 detalle = 'Monto: ' + formatearMoneda(op.monto) + ' · Saldo restante: ' + formatearMoneda((op.saldoAntes || 0) - op.monto);
                 if (Number(op.ajusteSaldo)) detalle += ' · Ajuste previo: ' + formatearMoneda(op.ajusteSaldo);
@@ -3679,182 +3698,72 @@
     /* ============================================================
        MODAL EDITAR OPERACIÓN
        ============================================================ */
-    /** Conecta un listener de recálculo reemplazando el anterior (evita acumulación) */
-    function conectarRecalc(el, fn) {
-        if (!el) return;
-        if (el._recalc) el.removeEventListener(el._recalcTipo || 'input', el._recalc);
-        el._recalc = fn;
-        el._recalcTipo = (el.tagName === 'SELECT') ? 'change' : 'input';
-        el.addEventListener(el._recalcTipo, fn);
-    }
-
     function abrirModalEdicion(id, tipo) {
         const operacion = tipo === 'recibo'
             ? state.recibos.find(r => r.id === id)
             : state.transferencias.find(t => t.id === id);
         if (!operacion) { showToast('Operación no encontrada.', 'error'); return; }
-        if (state.clientes.length === 0) { showToast('No hay clientes para editar.', 'error'); return; }
-
-        operacionEditando = Object.assign({}, operacion, { tipo });
-        $('modalTitulo').textContent = tipo === 'recibo' ? '✏️ Editar Recibo' : '✏️ Editar Transferencia';
-
+        const cliente = getCliente(operacion.clienteId);
+        if (!cliente) { showToast('El cliente de esta operación ya no existe.', 'error'); return; }
+        const saldoAnterior = tipo === 'transferencia'
+            ? Number(operacion.saldoAntes) || 0
+            : saldoAntesProyectado(operacion.clienteId, operacion.fecha, { ...operacion, tipo }) + (Number(operacion.ajusteSaldo) || 0);
+        operacionEditando = Object.assign({}, operacion, { tipo, saldoAnteriorAlAbrir: saldoAnterior });
+        $('modalTitulo').textContent = tipo === 'recibo' ? '✏️ Ajustar saldo del recibo' : '✏️ Ajustar saldo de la transferencia';
         const selectCliente = $('modalCliente');
         selectCliente.innerHTML = '';
-        state.clientes.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c.id;
-            opt.textContent = c.nombre;
-            if (c.id === operacion.clienteId) opt.selected = true;
-            selectCliente.appendChild(opt);
-        });
-
+        const opt = document.createElement('option'); opt.value = cliente.id; opt.textContent = cliente.nombre; selectCliente.appendChild(opt);
         $('modalMonto').value = operacion.monto;
         $('modalFecha').value = fechaLocalISO(operacion.fecha);
-
-        const camposExtra = $('modalCamposExtra');
-        camposExtra.innerHTML = '';
-
-        if (tipo === 'recibo') {
-            const pctActual = getCliente(operacion.clienteId);
-            camposExtra.innerHTML = `
-                <div class="form-group">
-                    <label>Comisión (%)</label>
-                    <input type="number" id="modalComisionPorcentaje" step="0.1" min="0" value="${esc(operacion.monto ? (Number(operacion.comision) || 0) / operacion.monto * 100 : (pctActual ? pctActual.comision : 0))}" inputmode="decimal">
-                </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                    <div class="form-group">
-                        <label>Comisión ($)</label>
-                        <input type="text" id="modalComision" class="readonly-field" readonly value="${formatearMoneda(operacion.comision)}">
-                    </div>
-                    <div class="form-group">
-                        <label>Neto</label>
-                        <input type="text" id="modalNeto" class="readonly-field" readonly value="${formatearMoneda(operacion.neto)}">
-                    </div>
-                </div>`;
-            const recalc = () => {
-                if (!operacionEditando || operacionEditando.tipo !== 'recibo') return;
-                const monto = parseFloat($('modalMonto').value) || 0;
-                const pct = parseFloat($('modalComisionPorcentaje').value) || 0;
-                const comision = monto * (pct / 100);
-                $('modalComision').value = formatearMoneda(comision);
-                $('modalNeto').value = formatearMoneda(monto - comision);
-            };
-            conectarRecalc($('modalMonto'), recalc);
-            conectarRecalc($('modalComisionPorcentaje'), recalc);
-            recalc();
-        } else {
-            camposExtra.innerHTML = `
-                <div class="form-group">
-                    <label for="modalSaldoDisponible">Saldo anterior a la transferencia</label>
-                    <input type="number" id="modalSaldoDisponible" step="0.01" inputmode="decimal">
-                    <div class="hint">Si lo corregís, se registra un ajuste antes de esta transferencia; no se modifican las operaciones anteriores.</div>
-                </div>
-                <div class="form-group" style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); text-align:center; font-weight:500;">
-                    <span id="modalSaldoRestante"></span>
-                </div>`;
-            const actualizarSaldoAnterior = () => {
-                const cli = getCliente($('modalCliente').value);
-                const fecha = new Date(($('modalFecha').value || hoyISO()) + 'T00:00:00').getTime();
-                const base = cli ? saldoAntesProyectado(cli.id, fecha, operacionEditando) : 0;
-                if ($('modalSaldoDisponible').dataset.modificado !== 'true') {
-                    $('modalSaldoDisponible').value = (base + (Number(operacion.ajusteSaldo) || 0)).toFixed(2);
-                }
-                recalc();
-            };
-            const recalc = () => {
-                const saldoActual = Number($('modalSaldoDisponible').value) || 0;
-                const montoNuevo = parseFloat($('modalMonto').value) || 0;
-                const restante = saldoActual - montoNuevo;
-                $('modalSaldoRestante').textContent = 'Saldo restante: ' + formatearMoneda(restante);
-                $('modalSaldoRestante').style.color = restante < 0 ? 'var(--saldo-negativo)' : 'var(--text-primary)';
-            };
-            conectarRecalc($('modalMonto'), recalc);
-            conectarRecalc($('modalSaldoDisponible'), () => { $('modalSaldoDisponible').dataset.modificado = 'true'; recalc(); });
-            conectarRecalc($('modalCliente'), actualizarSaldoAnterior);
-            conectarRecalc($('modalFecha'), actualizarSaldoAnterior);
-            actualizarSaldoAnterior();
-        }
-
+        $('modalNumero').value = '#' + operacion.numeroOp;
+        $('modalCamposExtra').innerHTML = `
+            <div class="form-group">
+                <label for="modalSaldoDisponible">Saldo anterior a esta operación</label>
+                <input type="number" id="modalSaldoDisponible" step="0.01" inputmode="decimal">
+                <div class="hint">Se registra un ajuste antes de esta operación. Las operaciones anteriores y los datos de cada registro no cambian.</div>
+            </div>
+            <div class="form-group" style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); text-align:center; font-weight:500;">
+                <span id="modalSaldoRestante"></span>
+            </div>`;
+        const input = $('modalSaldoDisponible');
+        input.value = saldoAnterior.toFixed(2);
+        const recalc = () => {
+            const saldo = Number(input.value) || 0;
+            const resultado = saldo + (tipo === 'recibo' ? (Number(operacion.neto) || 0) : -(Number(operacion.monto) || 0));
+            $('modalSaldoRestante').textContent = 'Saldo después de la operación: ' + formatearMoneda(resultado);
+            $('modalSaldoRestante').style.color = resultado < 0 ? 'var(--saldo-negativo)' : 'var(--text-primary)';
+        };
+        input.addEventListener('input', () => { input.dataset.modificado = 'true'; recalc(); });
+        recalc();
         $('modalEditar').classList.add('open');
     }
 
     function guardarEdicion() {
         if (!operacionEditando) return;
-        const nuevoClienteId = val('modalCliente');
-        const nuevoMonto = parseFloat(val('modalMonto'));
-        const fechaStr = val('modalFecha');
-        if (!nuevoClienteId) { showToast('Selecciona un cliente.', 'error'); return; }
-        if (isNaN(nuevoMonto) || nuevoMonto <= 0) { showToast('Ingresa un monto válido.', 'error'); return; }
-        if (!fechaStr) { showToast('Selecciona una fecha.', 'error'); return; }
-        const cliente = getCliente(nuevoClienteId);
-        if (!cliente) { showToast('Cliente no encontrado.', 'error'); return; }
-        const nuevaFecha = new Date(fechaStr + 'T00:00:00').getTime();
-        let ajusteNuevo = 0;
-        if (operacionEditando.tipo === 'transferencia') {
-            const campoSaldo = val('modalSaldoDisponible').trim();
-            const saldoIndicado = Number(campoSaldo);
-            if (!campoSaldo || !Number.isFinite(saldoIndicado)) { showToast('Ingresa un saldo anterior válido.', 'error'); return; }
-            ajusteNuevo = $('modalSaldoDisponible').dataset.modificado === 'true'
-                ? saldoIndicado - saldoAntesProyectado(nuevoClienteId, nuevaFecha, operacionEditando)
-                : (Number(operacionEditando.ajusteSaldo) || 0);
+        const tipo = operacionEditando.tipo;
+        const operacion = tipo === 'recibo'
+            ? state.recibos.find(r => r.id === operacionEditando.id)
+            : state.transferencias.find(t => t.id === operacionEditando.id);
+        if (!operacion) { cerrarModal(); showToast('La operación ya no existe.', 'error'); return; }
+        const saldoActual = tipo === 'transferencia'
+            ? Number(operacion.saldoAntes) || 0
+            : saldoAntesProyectado(operacion.clienteId, operacion.fecha, { ...operacion, tipo }) + (Number(operacion.ajusteSaldo) || 0);
+        if (operacion.clienteId !== operacionEditando.clienteId || operacion.numeroOp !== operacionEditando.numeroOp
+            || operacion.fecha !== operacionEditando.fecha || operacion.monto !== operacionEditando.monto
+            || operacion.neto !== operacionEditando.neto || saldoActual !== operacionEditando.saldoAnteriorAlAbrir) {
+            showToast('Los datos cambiaron. Cerrá y abrí la operación nuevamente.', 'error'); return;
         }
-        const iniciales = saldosIniciales();
-
-        if (operacionEditando.tipo === 'recibo') {
-            const recibo = state.recibos.find(r => r.id === operacionEditando.id);
-            if (!recibo) { cerrarModal(); return; }
-            const clienteOriginal = getCliente(recibo.clienteId);
-            if (clienteOriginal) clienteOriginal.saldo = (clienteOriginal.saldo || 0) - (recibo.neto || 0);
-
-            const porcentaje = parseFloat(val('modalComisionPorcentaje'));
-            const pct = isNaN(porcentaje) ? (cliente.comision || 0) : porcentaje;
-            const nuevaComision = nuevoMonto * (pct / 100);
-            const nuevoNeto = nuevoMonto - nuevaComision;
-            if (pct < 0 || pct > 100 || !Number.isFinite(pct) || nuevoNeto < 0) {
-                if (clienteOriginal) clienteOriginal.saldo = (clienteOriginal.saldo || 0) + (recibo.neto || 0);
-                showToast('La comisión no puede ser mayor al monto.', 'error');
-                return;
-            }
-            recibo.clienteId = nuevoClienteId;
-            recibo.monto = nuevoMonto;
-            recibo.comision = nuevaComision;
-            recibo.neto = nuevoNeto;
-            recibo.fecha = nuevaFecha;
-            cliente.saldo = (cliente.saldo || 0) + nuevoNeto;
-
-            const finanzaAsociada = state.finanzas.find(f => f.reciboId === recibo.id);
-            if (finanzaAsociada) {
-                finanzaAsociada.monto = nuevaComision;
-                finanzaAsociada.descripcion = 'Comisión de ' + cliente.nombre;
-                finanzaAsociada.clienteId = nuevoClienteId;
-                finanzaAsociada.fecha = nuevaFecha;
-            } else if (nuevaComision > 0) {
-                state.finanzas.push({ id: generarId(), tipo: 'comision', monto: nuevaComision,
-                    descripcion: 'Comisión de ' + cliente.nombre, clienteId: nuevoClienteId, reciboId: recibo.id, fecha: nuevaFecha });
-            }
-            showToast('Recibo #' + recibo.numeroOp + ' actualizado.', 'success');
-        } else {
-            const t = state.transferencias.find(x => x.id === operacionEditando.id);
-            if (!t) { cerrarModal(); return; }
-            const clienteOriginal = getCliente(t.clienteId);
-            if (clienteOriginal) clienteOriginal.saldo = (clienteOriginal.saldo || 0) + t.monto;
-
-            const saldoActual = cliente.saldo || 0;
-            const nuevoSaldoRestante = saldoActual - nuevoMonto;
-            t.clienteId = nuevoClienteId;
-            t.monto = nuevoMonto;
-            t.saldoAntes = saldoActual;
-            t.ajusteSaldo = ajusteNuevo;
-            t.fecha = nuevaFecha;
-            cliente.saldo = saldoActual - nuevoMonto;
-
-            showToast('Transferencia #' + t.numeroOp + ' actualizada.', 'success');
+        const input = $('modalSaldoDisponible');
+        const texto = input.value.trim();
+        const saldoIndicado = Number(texto);
+        if (!texto || !Number.isFinite(saldoIndicado)) { showToast('Ingresa un saldo anterior válido.', 'error'); return; }
+        // El valor mostrado tiene dos decimales; si no se modificó, no redondear datos existentes.
+        if (input.dataset.modificado !== 'true' || saldoIndicado === Number(saldoActual.toFixed(2))) { cerrarModal(); return; }
+        if (!aplicarAjusteSaldo(tipo, operacion.id, saldoIndicado - saldoActual)) {
+            showToast('No se pudo ajustar el saldo.', 'error'); return;
         }
-        renumerar();
-        recalcularSaldos(iniciales, [operacionEditando.clienteId, nuevoClienteId]);
-        persist();
-        refresh();
-        cerrarModal();
+        persist(); refresh(); cerrarModal();
+        showToast('Saldo actualizado. La operación conserva su número y posición.', 'success');
     }
 
     function cerrarModal() {
@@ -3976,7 +3885,10 @@
             (tipo === 'recibo' ? 'Recibo' : 'Transferencia') + ' #' + op.numeroOp,
             'Fecha: ' + formatearFecha(op.fecha), 'Cliente: ' + (cliente ? cliente.nombre : 'Cliente eliminado'),
             'Monto: ' + formatearMoneda(op.monto)];
-        if (tipo === 'recibo') lineas.push('Comisión: ' + formatearMoneda(op.comision), 'Neto: ' + formatearMoneda(op.neto));
+        if (tipo === 'recibo') {
+            lineas.push('Comisión: ' + formatearMoneda(op.comision), 'Neto: ' + formatearMoneda(op.neto));
+            if (Number(op.ajusteSaldo)) lineas.push('Ajuste anterior: ' + formatearMoneda(op.ajusteSaldo));
+        }
         else {
             if (op.numeroDestino) lineas.push('Destino: •••• ' + String(op.numeroDestino).slice(-4));
             lineas.push('Saldo restante: ' + formatearMoneda((op.saldoAntes || 0) - op.monto));
