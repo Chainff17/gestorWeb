@@ -1427,12 +1427,30 @@
 
             <!-- Recuperación -->
             <div id="recoveryForm" style="display:none;">
-                <div class="form-group">
-                    <label>📧 Email</label>
-                    <input type="email" id="recoveryEmail" placeholder="tu@email.com" autocomplete="email">
+                <!-- Paso 1: pedir código -->
+                <div id="recoveryRequestStep">
+                    <div class="form-group">
+                        <label>📧 Email</label>
+                        <input type="email" id="recoveryEmail" placeholder="tu@email.com" autocomplete="email">
+                    </div>
+                    <button class="btn-primary" id="btnRecovery">📧 Enviar código</button>
+                    <div class="auth-error" id="recoveryError">❌ Error al enviar.</div>
+                    <p style="font-size:0.72rem; color:var(--text-muted); margin-top:10px;">Te enviaremos un <strong>código de verificación</strong> a tu correo para crear una contraseña nueva.</p>
                 </div>
-                <button class="btn-primary" id="btnRecovery">📧 Enviar enlace</button>
-                <div class="auth-error" id="recoveryError">❌ Error al enviar.</div>
+                <!-- Paso 2: ingresar código -->
+                <div id="recoveryCodeStep" style="display:none;">
+                    <div class="form-group">
+                        <label>🔢 Código de verificación</label>
+                        <input type="text" id="recoveryCode" placeholder="••••••••" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" maxlength="10" style="text-align:center; letter-spacing:6px; font-size:1.3rem; font-weight:700;">
+                    </div>
+                    <div class="auth-error" id="codeError">❌ Código incorrecto.</div>
+                    <button class="btn-primary" id="btnVerifyCode">✅ Verificar y crear contraseña</button>
+                    <div style="display:flex; gap:8px; margin-top:10px;">
+                        <button class="btn-primary" id="btnResendCode" style="background:var(--btn-secondary-bg); color:var(--btn-secondary-text); box-shadow:none; font-size:0.8rem; padding:9px;">🔄 Reenviar</button>
+                        <button class="btn-primary" id="btnChangeEmail" style="background:var(--btn-secondary-bg); color:var(--btn-secondary-text); box-shadow:none; font-size:0.8rem; padding:9px;">✏️ Otro email</button>
+                    </div>
+                    <p id="recoveryCodeInfo" style="font-size:0.72rem; color:var(--text-muted); margin-top:10px; text-align:center;"></p>
+                </div>
                 <div class="auth-switch">
                     <a id="switchToLoginFromRecovery">Volver a iniciar sesión</a>
                 </div>
@@ -2266,8 +2284,12 @@
         $('loginForm').style.display = 'none';
         $('registerForm').style.display = 'none';
         $('recoveryForm').style.display = 'block';
+        $('recoveryRequestStep').style.display = 'block';
+        $('recoveryCodeStep').style.display = 'none';
+        $('recoveryCode').value = '';
+        $('codeError').classList.remove('show');
         $('authTitle').textContent = 'Recuperar contraseña';
-        $('authSubtitle').textContent = 'Te enviaremos un enlace a tu email';
+        $('authSubtitle').textContent = 'Te enviaremos un código a tu email';
         $('recoveryError').classList.remove('show');
         setTimeout(() => $('recoveryEmail').focus(), 50);
     }
@@ -2365,19 +2387,90 @@
         }
     }
 
+    let recoveryEmailPendiente = '';
+
     async function enviarRecuperacion() {
         const email = val('recoveryEmail').trim();
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { mostrarErrorRecovery('Ingresa un email válido.'); return; }
         if (!sb) { mostrarErrorRecovery('No se pudo cargar Supabase.'); return; }
         const btn = $('btnRecovery');
         btn.disabled = true;
+        btn.textContent = '⏳ Enviando…';
         const { error } = await sb.auth.resetPasswordForEmail(email, {
             redirectTo: location.origin + location.pathname
         });
         btn.disabled = false;
+        btn.textContent = '📧 Enviar código';
         if (error) { mostrarErrorRecovery(mapearErrorAuth(error)); return; }
-        showToast('📧 Revisa tu correo para restablecer la contraseña', 'success');
-        mostrarLoginForm();
+        recoveryEmailPendiente = email;
+        $('recoveryRequestStep').style.display = 'none';
+        $('recoveryCodeStep').style.display = 'block';
+        $('recoveryCodeInfo').textContent = 'Código enviado a ' + email + ' · vence en 1 hora';
+        $('recoveryCode').value = '';
+        $('codeError').classList.remove('show');
+        showToast('📧 Código enviado a tu correo', 'success');
+        setTimeout(() => $('recoveryCode').focus(), 80);
+    }
+
+    async function verificarCodigoRecuperacion() {
+        const code = val('recoveryCode').replace(/\D/g, '');
+        const errEl = $('codeError');
+        errEl.classList.remove('show');
+        if (code.length < 4) {
+            errEl.textContent = '❌ Ingresa el código que llegó a tu correo.';
+            errEl.classList.add('show');
+            return;
+        }
+        if (!sb || !recoveryEmailPendiente) return;
+        const btn = $('btnVerifyCode');
+        btn.disabled = true;
+        btn.textContent = '⏳ Verificando…';
+        const { data, error } = await sb.auth.verifyOtp({
+            email: recoveryEmailPendiente,
+            token: code,
+            type: 'recovery'
+        });
+        btn.disabled = false;
+        btn.textContent = '✅ Verificar y crear contraseña';
+        if (error) {
+            const m = String((error && error.message) || '').toLowerCase();
+            let msg;
+            if (m.includes('expired')) msg = 'El código expiró. Solicita uno nuevo.';
+            else if (m.includes('invalid') || m.includes('not found') || m.includes('malformed')) msg = 'Código incorrecto. Revísalo e intenta de nuevo.';
+            else msg = mapearErrorAuth(error);
+            errEl.textContent = '❌ ' + msg;
+            errEl.classList.add('show');
+            return;
+        }
+        // Código válido → sesión establecida → crear contraseña nueva
+        if (data && data.session) {
+            if (!usuarioActual || usuarioActual.id !== data.session.user.id) {
+                await entrarConSesion(data.session);
+            }
+        }
+        $('modalPassword').classList.add('open');
+        setTimeout(() => $('npPassword').focus(), 100);
+        showToast('✅ Código verificado. Crea tu contraseña nueva', 'success');
+    }
+
+    async function reenviarCodigo() {
+        if (!recoveryEmailPendiente) { volverPasoEmail(); return; }
+        const btn = $('btnResendCode');
+        btn.disabled = true;
+        const { error } = await sb.auth.resetPasswordForEmail(recoveryEmailPendiente, {
+            redirectTo: location.origin + location.pathname
+        });
+        btn.disabled = false;
+        if (error) { showToast(mapearErrorAuth(error), 'error'); return; }
+        showToast('📧 Código reenviado a ' + recoveryEmailPendiente, 'success');
+    }
+
+    function volverPasoEmail() {
+        $('recoveryCodeStep').style.display = 'none';
+        $('recoveryRequestStep').style.display = 'block';
+        $('recoveryCode').value = '';
+        $('codeError').classList.remove('show');
+        setTimeout(() => $('recoveryEmail').focus(), 50);
     }
 
     async function guardarNuevaPassword() {
@@ -2391,6 +2484,11 @@
         $('modalPassword').classList.remove('open');
         $('npPassword').value = '';
         $('npConfirm').value = '';
+        // Si venimos del flujo de código/enlace y aún no entramos a la app, entrar ahora
+        if (!usuarioActual) {
+            const { data } = await sb.auth.getSession();
+            if (data && data.session) await entrarConSesion(data.session);
+        }
         showToast('✅ Contraseña actualizada', 'success');
     }
 
@@ -3965,6 +4063,17 @@
         $('switchToRecovery').addEventListener('click', mostrarRecoveryForm);
         $('switchToLoginFromRecovery').addEventListener('click', mostrarLoginForm);
 
+        /* --- Recuperación con código --- */
+        $('btnVerifyCode').addEventListener('click', verificarCodigoRecuperacion);
+        $('btnResendCode').addEventListener('click', reenviarCodigo);
+        $('btnChangeEmail').addEventListener('click', volverPasoEmail);
+        $('recoveryCode').addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '');
+        });
+        $('recoveryCode').addEventListener('keydown', e => {
+            if (e.key === 'Enter') { e.preventDefault(); verificarCodigoRecuperacion(); }
+        });
+
         $('loginUsuario').addEventListener('keydown', e => { if (e.key === 'Enter') $('loginPassword').focus(); });
         $('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') iniciarSesion(); });
         $('registerNombre').addEventListener('keydown', e => { if (e.key === 'Enter') $('registerEmail').focus(); });
@@ -4226,7 +4335,12 @@
         sb.auth.onAuthStateChange(async (event, session) => {
             try {
                 if (event === 'PASSWORD_RECOVERY') {
+                    // Enlace de recuperación en el correo: entrar y ofrecer contraseña nueva
+                    if (session && (!usuarioActual || usuarioActual.id !== session.user.id)) {
+                        await entrarConSesion(session);
+                    }
                     $('modalPassword').classList.add('open');
+                    setTimeout(() => $('npPassword').focus(), 100);
                     return;
                 }
                 if (session) {
