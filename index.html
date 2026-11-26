@@ -1431,6 +1431,16 @@
         .home-section-title > span { font-size:.68rem; color:var(--text-muted); }
         @media (max-width:360px) { .home-section-title > span { display:none; } .balance-hero { padding:20px; } .quick-actions button { font-size:.62rem; } }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; } }
+
+        .balance-toggle { border:1px solid rgba(255,255,255,.45); background:rgba(0,0,0,.16); color:white; border-radius:999px; padding:7px 12px; font-size:.7rem; cursor:pointer; }
+        .home-activity { padding:18px; margin-bottom:24px; }
+        .home-activity-header { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+        .home-activity-header h2 { font-size:1.06rem; margin-top:4px; }
+        .home-activity-header button { border:0; background:none; color:var(--primary); cursor:pointer; font-size:.74rem; font-weight:700; }
+        .home-activity-summary { color:var(--text-secondary); font-size:.75rem; margin:12px 0; }
+        .home-movement { display:flex; justify-content:space-between; gap:10px; padding:10px 0; border-top:1px solid var(--border-color); font-size:.78rem; }
+        .home-movement strong { display:block; overflow-wrap:anywhere; }
+        .home-movement small { color:var(--text-muted); }
     </style>
 </head>
 <body>
@@ -1525,6 +1535,18 @@
     <!-- ===== TOAST ===== -->
     <div id="toast" class="toast"></div>
 
+    <!-- Conflicto: nunca se descarta una versión sin confirmación -->
+    <div class="modal-overlay" id="modalConflicto" role="dialog" aria-modal="true" aria-labelledby="tituloConflicto">
+        <div class="modal">
+            <h3 id="tituloConflicto">⚠️ Cambios en otro dispositivo</h3>
+            <p style="margin:12px 0;line-height:1.5">Hay una versión local y otra en la nube. No se combinaron automáticamente para evitar pérdida de datos. Exportá una copia local antes de elegir.</p>
+            <button class="btn-primary" id="conflictoExportar" type="button">Descargar copia local</button>
+            <button class="btn-small btn-secondary" id="conflictoNube" type="button" style="width:100%;margin-top:10px">Usar versión de la nube</button>
+            <button class="btn-small btn-secondary" id="conflictoLocal" type="button" style="width:100%;margin-top:10px">Reemplazar nube por versión local</button>
+            <button class="btn-small btn-secondary" id="conflictoDespues" type="button" style="width:100%;margin-top:10px">Decidir después</button>
+        </div>
+    </div>
+
     <!-- ===== MODAL EDITAR OPERACIÓN ===== -->
     <div class="modal-overlay" id="modalEditar">
         <div class="modal">
@@ -1542,6 +1564,7 @@
                 <input type="date" id="modalFecha">
             </div>
             <div id="modalCamposExtra"></div>
+            <p style="font-size:.78rem;color:var(--text-secondary);margin:10px 0;">Al guardar se recalculan los saldos de las operaciones posteriores de los clientes afectados.</p>
             <div class="modal-actions">
                 <button class="btn-modal-cancel" id="modalCancelar">Cancelar</button>
                 <button class="btn-modal-save" id="modalGuardar">💾 Guardar</button>
@@ -1621,6 +1644,7 @@
 
     <!-- ===== APP ===== -->
     <div id="appContent">
+        <div id="cargandoDatos" role="status" style="display:none;position:fixed;inset:0;z-index:900;place-items:center;background:var(--bg-body);color:var(--text-primary);font-weight:700;">Preparando tus datos…</div>
 
         <!-- HEADER -->
         <header>
@@ -1647,7 +1671,7 @@
             </div>
             <div class="header-info">
                 <span class="datetime" id="fechaHora">--/--/---- --:--</span>
-                <span class="sync-status saved" id="syncStatus">☁️ <span>Sincronizado</span></span>
+                <span class="sync-status saved" id="syncStatus" role="button" tabindex="0" title="Estado de sincronización">☁️ <span>Sincronizado</span></span>
                 <span class="clientes-count">👥 <span id="clientesCountHeader">0</span></span>
                 <span class="status" id="statusIndicator">
                     <span class="dot online" id="statusDot"></span>
@@ -1685,7 +1709,7 @@
         <div id="section-clientes" class="section visible">
             <div class="home-heading"><div><span class="home-kicker">TU ESPACIO</span><h1>Tu gestión, más simple.</h1></div><span class="home-sparkle" aria-hidden="true">✦</span></div>
             <div class="balance-hero">
-                <div class="balance-top"><span>Saldo total de clientes</span><span class="balance-mark" aria-hidden="true">G</span></div>
+                <div class="balance-top"><span>Saldo total de clientes</span><button type="button" id="toggleSaldoInicio" class="balance-toggle" aria-pressed="false" aria-label="Ocultar saldo de portada">Ocultar</button></div>
                 <div class="balance-amount" id="saldoInicio">$0.00</div>
                 <div class="balance-caption">Un vistazo a tus saldos</div>
             </div>
@@ -1694,6 +1718,11 @@
                 <button type="button" id="quickTransferir"><span class="quick-icon" aria-hidden="true">↑</span><span>Transferir</span></button>
                 <button type="button" id="quickSaldo"><span class="quick-icon" aria-hidden="true">$</span><span>Saldo</span></button>
                 <button type="button" id="quickHistorial"><span class="quick-icon" aria-hidden="true">↻</span><span>Historial</span></button>
+            </div>
+            <div class="card home-activity">
+                <div class="home-activity-header"><div><span class="home-kicker">ACTIVIDAD</span><h2>Últimos movimientos</h2></div><button type="button" id="verHistorialInicio">Ver historial →</button></div>
+                <p id="resumenHoy" class="home-activity-summary"></p>
+                <div id="ultimosMovimientos"></div>
             </div>
             <div class="home-section-title"><div><span class="home-kicker">ADMINISTRACIÓN</span><h2>Mis clientes</h2></div><span>Gestioná tu actividad</span></div>
             <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
@@ -1745,6 +1774,7 @@
                 <h3 style="margin-bottom:10px;">📥 Registrar Recibo</h3>
                 <div class="form-group">
                     <label>Cliente</label>
+                    <input type="search" id="buscarClienteRecibir" placeholder="Buscar cliente" aria-label="Buscar cliente para recibo" autocomplete="off">
                     <select id="recibirCliente"></select>
                 </div>
                 <div class="form-group">
@@ -1778,7 +1808,12 @@
                 <h3 style="margin-bottom:10px;">📤 Registrar Transferencia</h3>
                 <div class="form-group">
                     <label>Cliente</label>
+                    <input type="search" id="buscarClienteTransferir" placeholder="Buscar cliente" aria-label="Buscar cliente para transferencia" autocomplete="off">
                     <select id="transferirCliente"></select>
+                </div>
+                <div class="form-group">
+                    <label for="destinosRecientes">Destinos recientes del cliente</label>
+                    <select id="destinosRecientes"><option value="">Elegir destino reciente</option></select>
                 </div>
                 <div class="form-group">
                     <label id="labelNumeroDestino">Número de destino</label>
@@ -1861,8 +1896,12 @@
                         <select id="historialCliente"><option value="todos">Todos</option></select>
                     </div>
                     <div class="form-group" style="flex:2;">
-                        <label>Fecha</label>
+                        <label>Desde</label>
                         <input type="date" id="historialFecha">
+                    </div>
+                    <div class="form-group" style="flex:2;">
+                        <label>Hasta</label>
+                        <input type="date" id="historialFechaHasta">
                     </div>
                     <div class="form-group" style="flex:1.5;">
                         <label>Tipo</label>
@@ -1893,6 +1932,9 @@
             </div>
 
             <div id="sub-resumen-finanzas" class="card">
+                <div class="form-group"><label for="periodoFinanzas">Período del resumen y gráfico</label>
+                    <select id="periodoFinanzas"><option value="todos">Todo el tiempo</option><option value="semana">Esta semana</option><option value="mes">Este mes</option></select>
+                </div>
                 <div class="stats-grid">
                     <div class="stat-card comisiones">
                         <div class="label">Comisiones</div>
@@ -1942,6 +1984,7 @@
                             <button class="btn-small btn-secondary" id="btnInvertirFinanzas">⬆️</button>
                         </div>
                     </div>
+                    <button class="btn-small btn-secondary" id="btnExportarFinanzas" type="button">📋 Exportar finanzas CSV</button>
                     <div id="listaFinanzas"></div>
                     <div id="finanzasMas"></div>
                 </div>
@@ -1984,6 +2027,7 @@
                     <div class="stat-card"><div class="monto" id="statFinanzas">0</div><div class="label">Finanzas</div></div>
                 </div>
                 <button class="btn-small btn-primary" id="btnSyncNow" style="width:100%; margin-bottom:6px;">☁️ Sincronizar ahora</button>
+                <button class="btn-small btn-secondary" id="btnInstalarApp" type="button" style="display:none;width:100%;margin-bottom:6px">📲 Instalar aplicación</button>
                 <button class="btn-small btn-success" id="btnExportarJSON" style="width:100%; margin-bottom:6px;">📤 Exportar JSON</button>
                 <button class="btn-small btn-secondary" id="btnImportarJSON" style="width:100%; margin-bottom:6px;">📥 Importar JSON</button>
                 <input type="file" id="inputImportarJSON" accept=".json" style="display:none;">
@@ -2044,11 +2088,16 @@
     let clienteEditandoId = null;
     let tipoDestinoSeleccionado = 'tarjeta';
     let graficoFinanzas = null;
+    let saldoInicioOculto = localStorage.getItem('gestor_saldo_inicio_oculto') === 'true';
     let selectFirma = '';           // firma de clientes para no reconstruir selects sin cambios
 
     /* ---------- SINCRONIZACIÓN ---------- */
     let saveTimer = null;
     let pendingPush = false;
+    let pushEnCurso = null;
+    let revisionBase = null;
+    let revisionConocida = false;
+    let hayConflicto = false;
     let suppressRealtime = false;
     let realtimeChannel = null;
 
@@ -2141,6 +2190,7 @@
             offline:['📴', 'Sin conexión', 'offline'],
             pending:['⏳', 'Pendiente', 'offline'],
             error:  ['⚠️', 'Error sync', 'error'],
+            conflict: ['⚠️', 'Conflicto: resolver', 'error'],
             local:  ['💾', 'Local', 'saved']
         };
         const cfg = map[mode] || map.saved;
@@ -2153,6 +2203,7 @@
         try {
             localStorage.setItem('gestor_cloud_' + usuarioActual.id, serializeState());
             localStorage.setItem('gestor_cloud_' + usuarioActual.id + '_at', String(Date.now()));
+            localStorage.setItem('gestor_cloud_' + usuarioActual.id + '_meta', JSON.stringify({ revision: revisionBase, conocida: revisionConocida, pendiente: pendingPush }));
         } catch (e) {
             console.error('Error guardando caché local:', e);
             showToast('⚠️ Almacenamiento local lleno. Exporta un respaldo.', 'error');
@@ -2160,31 +2211,59 @@
     }
 
     async function pushCloud() {
-        if (!sb || !usuarioActual) return;
-        clearTimeout(saveTimer);
-        if (!navigator.onLine) { pendingPush = true; setSync('pending'); return; }
-        const payload = JSON.parse(serializeState());
-        suppressRealtime = true;
-        const { error } = await sb.from('gestor_snapshots')
-            .upsert({ user_id: usuarioActual.id, payload });
-        suppressRealtime = false;
-        if (error) {
-            console.error('Error subiendo datos:', error);
-            pendingPush = true;
-            setSync(navigator.onLine ? 'error' : 'pending');
-            return;
+        if (pushEnCurso) {
+            const resultado = await pushEnCurso;
+            if (!resultado) return false;
+            return pendingPush ? pushCloud() : true;
         }
-        pendingPush = false;
-        setSync('saved');
+        pushEnCurso = enviarCloud();
+        try { return await pushEnCurso; } finally { pushEnCurso = null; }
     }
 
-    /** Guarda local + programa subida a la nube (debounce) */
+    function mostrarConflicto() {
+        hayConflicto = true;
+        pendingPush = true;
+        saveLocal();
+        setSync('conflict');
+        $('modalConflicto').classList.add('open');
+    }
+
+    async function enviarCloud() {
+        if (!sb || !usuarioActual) return false;
+        clearTimeout(saveTimer); saveTimer = null;
+        if (hayConflicto) { setSync('conflict'); return false; }
+        if (!pendingPush && revisionConocida) { setSync('saved'); return true; }
+        if (!navigator.onLine || !revisionConocida) { pendingPush = true; saveLocal(); setSync('pending'); return false; }
+        const usuarioId = usuarioActual.id;
+        const serialized = serializeState();
+        suppressRealtime = true;
+        let data, error;
+        try {
+            ({ data, error } = await sb.rpc('guardar_gestor_snapshot', { p_payload: JSON.parse(serialized), p_revision: revisionBase }));
+        } catch (e) { error = e; }
+        suppressRealtime = false;
+        if (!usuarioActual || usuarioActual.id !== usuarioId) return false;
+        if (error) {
+            console.error('Error subiendo datos:', error);
+            pendingPush = true; saveLocal(); setSync(navigator.onLine ? 'error' : 'pending'); return false;
+        }
+        if (!data || data.ok !== true) { mostrarConflicto(); return false; }
+        revisionBase = data.revision;
+        if (serializeState() !== serialized) {
+            pendingPush = true; saveLocal(); setSync('pending');
+            clearTimeout(saveTimer); saveTimer = setTimeout(pushCloud, 1000);
+            return false;
+        }
+        pendingPush = false; saveLocal(); setSync('saved'); return true;
+    }
+
     function persist() {
         if (!usuarioActual) return;
+        pendingPush = true;
         saveLocal();
-        setSync('saving');
+        setSync(hayConflicto ? 'conflict' : (navigator.onLine ? 'saving' : 'pending'));
         clearTimeout(saveTimer);
-        saveTimer = setTimeout(pushCloud, 1000);
+        if (!hayConflicto) saveTimer = setTimeout(pushCloud, 1000);
     }
 
     function aplicarPayload(p) {
@@ -2194,12 +2273,76 @@
         state.finanzas = Array.isArray(p.finanzas) ? p.finanzas : [];
     }
 
+    // Orden por fecha y número previo: conserva el orden de operaciones del mismo día.
+    function operacionesCronologicas() {
+        return state.recibos.map(op => ({ tipo: 'recibo', op }))
+            .concat(state.transferencias.map(op => ({ tipo: 'transferencia', op })))
+            .sort((a, b) => (Number(a.op.fecha) || 0) - (Number(b.op.fecha) || 0)
+                || (Number(a.op.numeroOp) || 0) - (Number(b.op.numeroOp) || 0)
+                || String(a.op.id).localeCompare(String(b.op.id)));
+    }
+
+    // Inferir el saldo inicial desde el saldo final existente permite conservar
+    // saldos anteriores a la aplicación y datos importados sin modificarlos.
+    function saldosIniciales() {
+        const iniciales = new Map(state.clientes.map(c => [c.id, Number(c.saldo) || 0]));
+        for (const { tipo, op } of operacionesCronologicas()) {
+            if (!iniciales.has(op.clienteId)) continue;
+            const cambio = tipo === 'recibo' ? (Number(op.neto) || 0) : (Number(op.ajusteSaldo) || 0) - (Number(op.monto) || 0);
+            iniciales.set(op.clienteId, iniciales.get(op.clienteId) - cambio);
+        }
+        return iniciales;
+    }
+
+    function recalcularSaldos(iniciales, clientesAfectados) {
+        const saldos = new Map([...iniciales].filter(([id]) => !clientesAfectados || clientesAfectados.includes(id)));
+        for (const { tipo, op } of operacionesCronologicas()) {
+            if (!saldos.has(op.clienteId)) continue;
+            const anterior = saldos.get(op.clienteId);
+            if (tipo === 'recibo') {
+                saldos.set(op.clienteId, anterior + (Number(op.neto) || 0));
+            } else {
+                const saldoAjustado = anterior + (Number(op.ajusteSaldo) || 0);
+                op.saldoAntes = saldoAjustado;
+                const posterior = saldoAjustado - (Number(op.monto) || 0);
+                saldos.set(op.clienteId, posterior);
+                // Solo se actualizan préstamos vinculados explícitamente; los
+                // históricos sin vínculo no se pueden atribuir con seguridad.
+                const prestamo = state.finanzas.find(f => f.transferenciaId === op.id);
+                if (op.prestamoAutomatico || prestamo) {
+                    const monto = Math.max(0, -posterior) - Math.max(0, -saldoAjustado);
+                    if (monto <= 0) {
+                        state.finanzas = state.finanzas.filter(f => f.transferenciaId !== op.id);
+                    } else {
+                        const cliente = getCliente(op.clienteId);
+                        const datos = { tipo: 'gasto', monto, clienteId: op.clienteId, fecha: op.fecha,
+                            descripcion: 'Préstamo a ' + (cliente ? cliente.nombre : 'cliente'), transferenciaId: op.id };
+                        if (prestamo) Object.assign(prestamo, datos);
+                        else state.finanzas.push(Object.assign({ id: generarId() }, datos));
+                    }
+                }
+            }
+        }
+        state.clientes.forEach(c => { if (saldos.has(c.id)) c.saldo = saldos.get(c.id); });
+    }
+
+    function saldoAntesProyectado(clienteId, fecha, editada) {
+        const saldos = saldosIniciales();
+        let saldo = saldos.get(clienteId) || 0;
+        const candidato = { tipo: 'transferencia', op: { id: editada.id, clienteId, fecha, numeroOp: editada.numeroOp } };
+        const ops = operacionesCronologicas().filter(x => x.op.id !== editada.id).concat(candidato)
+            .sort((a, b) => (Number(a.op.fecha) || 0) - (Number(b.op.fecha) || 0)
+                || (Number(a.op.numeroOp) || 0) - (Number(b.op.numeroOp) || 0)
+                || String(a.op.id).localeCompare(String(b.op.id)));
+        for (const item of ops) {
+            if (item === candidato) break;
+            if (item.op.clienteId === clienteId) saldo += item.tipo === 'recibo' ? (Number(item.op.neto) || 0) : (Number(item.op.ajusteSaldo) || 0) - (Number(item.op.monto) || 0);
+        }
+        return saldo;
+    }
+
     function renumerar() {
-        const ops = [];
-        state.recibos.forEach(r => ops.push(r));
-        state.transferencias.forEach(t => ops.push(t));
-        ops.sort((a, b) => (a.fecha || 0) - (b.fecha || 0));
-        ops.forEach((op, i) => { op.numeroOp = i + 1; });
+        operacionesCronologicas().forEach(({ op }, i) => { op.numeroOp = i + 1; });
     }
 
     function obtenerSiguienteNumeroOperacion() {
@@ -2238,78 +2381,99 @@
         return count;
     }
 
+    async function leerNube() {
+        if (!sb || !usuarioActual) throw new Error('Sin sesión');
+        const { data, error } = await sb.from('gestor_snapshots')
+            .select('payload, updated_at, revision').eq('user_id', usuarioActual.id).maybeSingle();
+        if (error) throw error;
+        return data;
+    }
+
     async function cargarDatosUsuario() {
-        // 1) Caché local instantánea
-        let local = null;
-        try { local = JSON.parse(localStorage.getItem('gestor_cloud_' + usuarioActual.id) || 'null'); } catch (e) {}
+        const key = 'gestor_cloud_' + usuarioActual.id;
+        let local = null, meta = null;
+        try { local = JSON.parse(localStorage.getItem(key) || 'null'); meta = JSON.parse(localStorage.getItem(key + '_meta') || 'null'); } catch (e) {}
+        revisionBase = meta && meta.conocida ? meta.revision : null;
+        revisionConocida = !!(meta && meta.conocida);
+        pendingPush = !!(meta && meta.pendiente);
+        hayConflicto = false;
         if (local) aplicarPayload(local);
-        renumerar();
         refresh();
         if (!sb) { setSync('local'); return; }
-
-        // 2) Nube
-        const { data, error } = await sb.from('gestor_snapshots')
-            .select('payload, updated_at')
-            .eq('user_id', usuarioActual.id)
-            .maybeSingle();
-
-        if (error) {
+        let data;
+        try { data = await leerNube(); }
+        catch (error) {
             console.error('Error leyendo nube:', error);
             setSync(navigator.onLine ? 'error' : 'offline');
             return;
         }
-
-        if (data && data.payload) {
-            const localAt = Number(localStorage.getItem('gestor_cloud_' + usuarioActual.id + '_at') || 0);
-            const remoteAt = new Date(data.updated_at).getTime();
-            if (!local || remoteAt > localAt) {
-                aplicarPayload(data.payload);
-                saveLocal();
-            } else {
-                pushCloud(); // cambios locales más recientes → subir
-            }
+        const revisionRemota = data ? data.revision : null;
+        if (local && data && stable(local) === stable(data.payload)) {
+            revisionBase = revisionRemota; revisionConocida = true; pendingPush = false;
+            aplicarPayload(data.payload); saveLocal(); setSync('saved');
+        } else if (local && data && (!meta || pendingPush)) {
+            if (!revisionConocida || revisionBase !== revisionRemota) mostrarConflicto();
+            else { setSync('pending'); pushCloud(); }
+        } else if (data) {
+            revisionBase = revisionRemota; revisionConocida = true; pendingPush = false;
+            aplicarPayload(data.payload); saveLocal(); setSync('saved');
+        } else if (local && revisionConocida && revisionBase !== null) {
+            mostrarConflicto();
         } else {
-            // Primera vez sin datos en la nube: importar versiones anteriores de este dispositivo
-            const n = importarLegado();
-            if (n > 0) {
-                showToast('📥 Se importaron ' + n + ' registros guardados en este dispositivo', 'info');
-                saveLocal();
-                pushCloud();
-            }
-            // Si no hay nada previo, la fila se crea con el primer guardado
+            revisionBase = null; revisionConocida = true;
+            const n = local ? 0 : importarLegado();
+            if (n > 0 || local) {
+                pendingPush = true; saveLocal(); pushCloud();
+                if (n > 0) showToast('📥 Se importaron ' + n + ' registros de este dispositivo', 'info');
+            } else setSync('saved');
         }
-        renumerar();
-        refresh();
-        suscribirRealtime();
+        renumerar(); refresh(); suscribirRealtime();
     }
 
     function suscribirRealtime() {
         if (!sb || !usuarioActual) return;
         if (realtimeChannel) { sb.removeChannel(realtimeChannel); realtimeChannel = null; }
         realtimeChannel = sb.channel('gestor:' + usuarioActual.id)
-            .on('postgres_changes', {
-                event: '*',
-                schema: 'public',
-                table: 'gestor_snapshots',
-                filter: 'user_id=eq.' + usuarioActual.id
-            }, payload => {
-                if (suppressRealtime || !payload.new) return;
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'gestor_snapshots',
+                filter: 'user_id=eq.' + usuarioActual.id }, payload => {
+                if (suppressRealtime || !payload.new || !payload.new.payload) return;
                 const remoto = payload.new.payload;
-                if (!remoto) return;
-                if (stable(remoto) === stable(state)) return;
-                if (pendingPush || saveTimer) return; // hay cambios locales pendientes → gana lo local
-                aplicarPayload(remoto);
-                saveLocal();
-                renumerar();
-                refresh();
+                if (stable(remoto) === stable(state)) {
+                    if (!pendingPush) { revisionBase = payload.new.revision; revisionConocida = true; saveLocal(); }
+                    return;
+                }
+                if (pendingPush || saveTimer || hayConflicto) { mostrarConflicto(); return; }
+                revisionBase = payload.new.revision; revisionConocida = true;
+                aplicarPayload(remoto); renumerar(); saveLocal(); refresh(); setSync('saved');
                 showToast('☁️ Datos actualizados desde otro dispositivo', 'info');
-            })
-            .subscribe();
+            }).subscribe();
     }
 
-    window.addEventListener('online', () => {
+    async function resolverConflicto(usarLocal) {
+        const mensaje = usarLocal
+            ? 'La versión local reemplazará la nube. ¿Descargaste una copia y querés continuar?'
+            : 'Se reemplazarán los datos de este dispositivo por los de la nube. ¿Descargaste una copia local?';
+        if (!confirm(mensaje)) return;
+        try {
+            const remoto = await leerNube();
+            if (!remoto && !usarLocal) { showToast('No hay datos en la nube para recuperar.', 'error'); return; }
+            revisionBase = remoto ? remoto.revision : null;
+            revisionConocida = true; hayConflicto = false;
+            if (usarLocal) {
+                pendingPush = true; saveLocal();
+                $('modalConflicto').classList.remove('open');
+                if (!await pushCloud() && !hayConflicto) showToast('No se pudo sincronizar la copia local.', 'error');
+            } else {
+                aplicarPayload(remoto.payload); pendingPush = false; renumerar(); saveLocal(); refresh(); setSync('saved');
+                $('modalConflicto').classList.remove('open');
+            }
+        } catch (error) { showToast('No se pudo leer la nube; tus datos locales siguen intactos.', 'error'); }
+    }
+
+    window.addEventListener('online', async () => {
         actualizarEstadoConexion();
-        if (usuarioActual && pendingPush) { setSync('saving'); pushCloud(); }
+        if (usuarioActual && !revisionConocida) await cargarDatosUsuario();
+        else if (usuarioActual && pendingPush && !hayConflicto) { setSync('saving'); pushCloud(); }
     });
     window.addEventListener('offline', () => { actualizarEstadoConexion(); setSync('offline'); });
     document.addEventListener('visibilitychange', () => {
@@ -2392,6 +2556,7 @@
         };
         aplicarPayload({}); // limpiar datos del usuario anterior
         $('usuarioBadge').textContent = '👤 ' + usuarioActual.username;
+        $('cargandoDatos').style.display = 'grid';
         ocultarAuth();
         setSync('saving');
         // fechas por defecto
@@ -2399,7 +2564,7 @@
         if (!$('recibirFecha').value) $('recibirFecha').value = h;
         if (!$('transferirFecha').value) $('transferirFecha').value = h;
         if (!$('finanzaFecha').value) $('finanzaFecha').value = h;
-        await cargarDatosUsuario();
+        try { await cargarDatosUsuario(); } finally { $('cargandoDatos').style.display = 'none'; }
         cambiarSeccion('clientes');
         showToast('👋 Bienvenido ' + usuarioActual.username, 'success');
     }
@@ -2407,7 +2572,10 @@
     async function salirDeApp() {
         if (realtimeChannel && sb) { sb.removeChannel(realtimeChannel); realtimeChannel = null; }
         clearTimeout(saveTimer);
+        saveTimer = null;
         pendingPush = false;
+        revisionBase = null; revisionConocida = false; hayConflicto = false;
+        $('modalConflicto').classList.remove('open');
         aplicarPayload({});
         usuarioActual = null;
         selectFirma = '';
@@ -2570,7 +2738,11 @@
     async function cerrarSesion() {
         if (!confirm('¿Cerrar sesión?')) return;
         clearTimeout(saveTimer);
-        if (usuarioActual) { saveLocal(); await pushCloud(); }
+        if (usuarioActual && pendingPush) {
+            saveLocal();
+            const guardado = await pushCloud();
+            if (!guardado && !confirm('Hay cambios pendientes de sincronizar. Solo están guardados en este dispositivo. ¿Cerrar sesión igualmente?')) return;
+        }
         if (sb) await sb.auth.signOut(); // dispara SIGNED_OUT → salirDeApp
     }
 
@@ -2727,7 +2899,20 @@
 
     function renderHeader() {
         $('clientesCountHeader').textContent = state.clientes.length;
-        $('saldoInicio').textContent = formatearMoneda(state.clientes.reduce((acc, c) => acc + (c.saldo || 0), 0));
+        $('saldoInicio').textContent = saldoInicioOculto ? '••••••' : formatearMoneda(state.clientes.reduce((acc, c) => acc + (c.saldo || 0), 0));
+        $('toggleSaldoInicio').textContent = saldoInicioOculto ? 'Mostrar' : 'Ocultar';
+        $('toggleSaldoInicio').setAttribute('aria-pressed', String(saldoInicioOculto));
+        $('toggleSaldoInicio').setAttribute('aria-label', saldoInicioOculto ? 'Mostrar saldo de portada' : 'Ocultar saldo de portada');
+        const operaciones = operacionesCronologicas().reverse();
+        const hoy = rangoHoy();
+        const cantidadHoy = operaciones.filter(({op}) => op.fecha >= hoy.inicio && op.fecha <= hoy.fin).length;
+        $('resumenHoy').textContent = cantidadHoy + (cantidadHoy === 1 ? ' movimiento hoy' : ' movimientos hoy');
+        $('ultimosMovimientos').innerHTML = operaciones.length ? operaciones.slice(0, 3).map(({tipo, op}) => {
+            const c = getCliente(op.clienteId);
+            return '<div class="home-movement"><div><strong>' + esc(c ? c.nombre : 'Cliente eliminado') + '</strong><small>'
+                + (tipo === 'recibo' ? 'Recibo' : 'Transferencia') + ' · ' + esc(formatearFecha(op.fecha)) + '</small></div><strong>'
+                + (saldoInicioOculto ? '••••••' : esc(formatearMoneda(op.monto))) + '</strong></div>';
+        }).join('') : '<p class="home-activity-summary">Todavía no hay movimientos.</p>';
         if (usuarioActual) {
             $('usuarioBadge').textContent = '👤 ' + usuarioActual.username;
         }
@@ -2752,11 +2937,39 @@
                 if (state.clientes.some(c => c.id === prev)) sel.value = prev;
                 else if (state.clientes.length > 0 && id !== 'historialCliente') sel.value = state.clientes[0].id;
             });
+            if (val('buscarClienteRecibir')) filtrarSelectorClientes('buscarClienteRecibir', 'recibirCliente');
+            if (val('buscarClienteTransferir')) filtrarSelectorClientes('buscarClienteTransferir', 'transferirCliente');
+            actualizarDestinosRecientes();
             actualizarCamposRecibo();
             actualizarSaldoOperacionRecibir();
             actualizarSaldoOperacionTransferir();
             actualizarSaldoRestanteTransferir();
         }
+    }
+
+    function filtrarSelectorClientes(campo, selectId) {
+        const texto = val(campo).trim().toLocaleLowerCase();
+        const select = $(selectId), previo = select.value;
+        select.innerHTML = '';
+        state.clientes.filter(c => String(c.nombre).toLocaleLowerCase().includes(texto)).forEach(c => {
+            const option = document.createElement('option'); option.value = c.id; option.textContent = c.nombre; select.appendChild(option);
+        });
+        if ([...select.options].some(o => o.value === previo)) select.value = previo;
+        select.dispatchEvent(new Event('change'));
+    }
+
+    function actualizarDestinosRecientes() {
+        const select = $('destinosRecientes');
+        const id = val('transferirCliente');
+        select.innerHTML = '<option value="">Elegir destino reciente</option>';
+        const vistos = new Set();
+        [...state.transferencias].sort((a,b) => (b.numeroOp || 0) - (a.numeroOp || 0)).forEach(t => {
+            if (t.clienteId !== id || !t.numeroDestino || vistos.has(t.numeroDestino) || vistos.size >= 5) return;
+            vistos.add(t.numeroDestino);
+            const option = document.createElement('option'); option.value = t.numeroDestino;
+            option.textContent = (t.banco || (t.tipoDestino === 'monedero' ? 'Monedero' : 'Destino')) + ' ···· ' + String(t.numeroDestino).slice(-4);
+            select.appendChild(option);
+        });
     }
 
     /* ---------- CABECERA / ALERTAS ---------- */
@@ -3017,6 +3230,8 @@
                     <div class="detalle">Comisión: ${formatearMoneda(r.comision)} · Neto: ${formatearMoneda(r.neto)}</div>
                     <div class="fecha">📅 ${formatearFecha(r.fecha)}</div>
                     <div class="acciones-botones">
+                        <button class="btn-icono" data-action="share-comprobante" data-id="${r.id}" data-tipo="recibo" title="Compartir comprobante" aria-label="Compartir comprobante">↗️</button>
+                        <button class="btn-icono" data-action="pdf-comprobante" data-id="${r.id}" data-tipo="recibo" title="Descargar comprobante PDF" aria-label="Descargar comprobante PDF">📄</button>
                         <button class="btn-icono btn-editar-icono" data-action="edit-op" data-id="${r.id}" data-tipo="recibo" title="Editar" aria-label="Editar recibo">✏️</button>
                         <button class="btn-icono btn-eliminar-icono" data-action="del-recibo" data-id="${r.id}" title="Eliminar" aria-label="Eliminar recibo">🗑️</button>
                     </div>
@@ -3063,12 +3278,15 @@
                     <div class="detalle">
                         Saldo restante: <span style="${esNegativo ? 'color:var(--saldo-negativo);' : ''}font-weight:600;">${formatearMoneda(saldoRestante)}</span>${esNegativo ? ' ⚠️ (Préstamo)' : ''}
                     </div>
+                    ${Number(t.ajusteSaldo) ? '<div class="detalle">Ajuste previo: ' + formatearMoneda(t.ajusteSaldo) + '</div>' : ''}
                     <div>
                         <span class="badge ${badgeTipo}">${labelTipo}</span>
                         <span class="destino-tarjeta">${esc(destinoMostrado)}${bancoHtml}</span>
                     </div>
                     <div class="fecha">📅 ${formatearFecha(t.fecha)}</div>
                     <div class="acciones-botones">
+                        <button class="btn-icono" data-action="share-comprobante" data-id="${t.id}" data-tipo="transferencia" title="Compartir comprobante" aria-label="Compartir comprobante">↗️</button>
+                        <button class="btn-icono" data-action="pdf-comprobante" data-id="${t.id}" data-tipo="transferencia" title="Descargar comprobante PDF" aria-label="Descargar comprobante PDF">📄</button>
                         <button class="btn-icono btn-editar-icono" data-action="edit-op" data-id="${t.id}" data-tipo="transferencia" title="Editar" aria-label="Editar transferencia">✏️</button>
                         <button class="btn-icono btn-copiar-icono" data-action="copy-transfer" data-id="${t.id}" title="Copiar mensaje BPA" aria-label="Copiar mensaje">📋</button>
                         <button class="btn-icono btn-eliminar-icono" data-action="del-transfer" data-id="${t.id}" title="Eliminar" aria-label="Eliminar transferencia">🗑️</button>
@@ -3092,6 +3310,7 @@
         const fecha = new Date(fechaStr + 'T00:00:00').getTime();
         const numeroOp = obtenerSiguienteNumeroOperacion();
 
+        const iniciales = saldosIniciales();
         state.recibos.push({ id: generarId(), clienteId, monto, comision, neto, fecha, numeroOp });
         cliente.saldo = (cliente.saldo || 0) + neto;
         if (comision > 0) {
@@ -3101,6 +3320,8 @@
                 clienteId, reciboId: state.recibos[state.recibos.length - 1].id, fecha
             });
         }
+        renumerar();
+        recalcularSaldos(iniciales, [clienteId]);
         persist();
         $('recibirMonto').value = '';
         refresh();
@@ -3144,20 +3365,18 @@
         const saldoRestante = saldoActual - monto;
         const fecha = new Date(fechaStr + 'T00:00:00').getTime();
         const numeroOp = obtenerSiguienteNumeroOperacion();
+        if (!confirm('Confirmar transferencia\nCliente: ' + cliente.nombre + '\nMonto: ' + formatearMoneda(monto)
+            + '\nDestino terminado en: ' + numeroLimpio.slice(-4) + '\nFecha: ' + fechaStr)) return;
 
+        const iniciales = saldosIniciales();
         state.transferencias.push({
             id: generarId(), clienteId, monto, saldoAntes: saldoActual, fecha, numeroOp,
-            tipoDestino: tipoDetectado, numeroDestino: numeroLimpio,
+            tipoDestino: tipoDetectado, numeroDestino: numeroLimpio, prestamoAutomatico: true,
             banco: bancoNombre || null, bancoColor: bancoColor || null
         });
         cliente.saldo = saldoActual - monto;
-        if (saldoRestante < 0) {
-            state.finanzas.push({
-                id: generarId(), tipo: 'gasto', monto: Math.abs(saldoRestante),
-                descripcion: 'Préstamo a ' + cliente.nombre,
-                clienteId, reciboId: null, fecha
-            });
-        }
+        renumerar();
+        recalcularSaldos(iniciales, [clienteId]);
         persist();
         $('transferirMonto').value = '';
         inputNumero.value = '';
@@ -3170,9 +3389,10 @@
         $('logoMiniatura').className = 'logo-miniatura';
         inputNumero.style.borderColor = 'var(--border-color)';
         refresh();
+        actualizarDestinosRecientes();
         actualizarSaldoOperacionTransferir();
         actualizarSaldoRestanteTransferir();
-        showToast('Transferencia #' + numeroOp + ' registrada - Nuevo saldo: ' + formatearMoneda(saldoRestante), 'success');
+        showToast('Transferencia registrada - Saldo actual: ' + formatearMoneda(cliente.saldo), 'success');
         setTimeout(() => $('transferirMonto').focus(), 100);
     }
 
@@ -3180,12 +3400,14 @@
         if (!confirm('¿Eliminar este recibo?')) return;
         const index = state.recibos.findIndex(r => r.id === id);
         if (index === -1) return;
+        const iniciales = saldosIniciales();
         const recibo = state.recibos[index];
         const cliente = getCliente(recibo.clienteId);
         if (cliente) cliente.saldo = (cliente.saldo || 0) - (recibo.neto || 0);
         state.finanzas = state.finanzas.filter(f => f.reciboId !== id);
         state.recibos.splice(index, 1);
         renumerar();
+        recalcularSaldos(iniciales, [recibo.clienteId]);
         persist();
         refresh();
         showToast('Recibo eliminado.', 'success');
@@ -3195,12 +3417,14 @@
         if (!confirm('¿Eliminar esta transferencia?')) return;
         const index = state.transferencias.findIndex(t => t.id === id);
         if (index === -1) return;
+        const iniciales = saldosIniciales();
         const t = state.transferencias[index];
         const cliente = getCliente(t.clienteId);
         if (cliente) cliente.saldo = (cliente.saldo || 0) + t.monto;
         state.transferencias.splice(index, 1);
-        // quitar préstamo asociado si ya no corresponde
+        state.finanzas = state.finanzas.filter(f => f.transferenciaId !== id);
         renumerar();
+        recalcularSaldos(iniciales, [t.clienteId]);
         persist();
         refresh();
         showToast('Transferencia eliminada.', 'success');
@@ -3251,6 +3475,7 @@
     function obtenerDatosHistorialFiltrados() {
         const clienteId = val('historialCliente');
         const fechaStr = val('historialFecha');
+        const fechaHasta = val('historialFechaHasta');
         const tipo = val('historialTipo');
         let ops = [];
         state.recibos.forEach(r => ops.push({
@@ -3260,15 +3485,12 @@
         }));
         state.transferencias.forEach(t => ops.push({
             id: t.id, tipo: 'transferencia', clienteId: t.clienteId, monto: t.monto,
-            comision: null, neto: null, fecha: t.fecha, saldoAntes: t.saldoAntes,
+            comision: null, neto: null, fecha: t.fecha, saldoAntes: t.saldoAntes, ajusteSaldo: t.ajusteSaldo,
             numeroOp: t.numeroOp, banco: t.banco || null, bancoColor: t.bancoColor || null
         }));
         if (clienteId && clienteId !== 'todos') ops = ops.filter(op => op.clienteId === clienteId);
-        if (fechaStr) {
-            const fi = new Date(fechaStr + 'T00:00:00');
-            const ff = new Date(fechaStr + 'T23:59:59.999');
-            ops = ops.filter(op => op.fecha >= fi.getTime() && op.fecha <= ff.getTime());
-        }
+        if (fechaStr) ops = ops.filter(op => op.fecha >= new Date(fechaStr + 'T00:00:00').getTime());
+        if (fechaHasta) ops = ops.filter(op => op.fecha <= new Date(fechaHasta + 'T23:59:59.999').getTime());
         if (tipo && tipo !== 'todos') ops = ops.filter(op => op.tipo === tipo);
         ops.sort((a, b) => ordenHistorialAsc ? a.numeroOp - b.numeroOp : b.numeroOp - a.numeroOp);
         return ops;
@@ -3296,9 +3518,10 @@
                 detalle = 'Monto: ' + formatearMoneda(op.monto) + ' · Comisión: ' + formatearMoneda(op.comision) + ' · Neto: ' + formatearMoneda(op.neto);
             } else {
                 detalle = 'Monto: ' + formatearMoneda(op.monto) + ' · Saldo restante: ' + formatearMoneda((op.saldoAntes || 0) - op.monto);
+                if (Number(op.ajusteSaldo)) detalle += ' · Ajuste previo: ' + formatearMoneda(op.ajusteSaldo);
                 if (op.banco) detalle += ' · Banco: <span class="badge-banco ' + esc(op.bancoColor || 'rojo') + '">' + esc(op.banco) + '</span>';
             }
-            let acciones = '<button class="btn-icono btn-editar-icono" data-action="edit-op" data-id="' + op.id + '" data-tipo="' + op.tipo + '" title="Editar" aria-label="Editar">✏️</button>';
+            let acciones = '<button class="btn-icono" data-action="share-comprobante" data-id="' + esc(op.id) + '" data-tipo="' + op.tipo + '" title="Compartir comprobante" aria-label="Compartir comprobante">↗️</button>' + '<button class="btn-icono" data-action="pdf-comprobante" data-id="' + esc(op.id) + '" data-tipo="' + op.tipo + '" title="Descargar comprobante PDF" aria-label="Descargar comprobante PDF">📄</button>' + '<button class="btn-icono btn-editar-icono" data-action="edit-op" data-id="' + op.id + '" data-tipo="' + op.tipo + '" title="Editar" aria-label="Editar">✏️</button>';
             if (op.tipo === 'transferencia') {
                 acciones += '<button class="btn-icono btn-copiar-icono" data-action="copy-transfer" data-id="' + op.id + '" title="Copiar mensaje BPA" aria-label="Copiar">📋</button>';
             }
@@ -3325,10 +3548,24 @@
     /* ============================================================
        SECCIÓN FINANZAS
        ============================================================ */
+    function finanzasDelPeriodo() {
+        const periodo = val('periodoFinanzas');
+        if (periodo === 'todos' || !periodo) return state.finanzas;
+        const hoy = new Date();
+        const inicio = periodo === 'mes'
+            ? new Date(hoy.getFullYear(), hoy.getMonth(), 1)
+            : new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - ((hoy.getDay() + 6) % 7));
+        const fin = periodo === 'mes'
+            ? new Date(hoy.getFullYear(), hoy.getMonth() + 1, 1)
+            : new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate() + 7);
+        return state.finanzas.filter(m => m.fecha >= inicio.getTime() && m.fecha < fin.getTime());
+    }
+
     function renderFinanzas() {
-        const comisiones = state.finanzas.filter(m => m.tipo === 'comision');
-        const ingresos = state.finanzas.filter(m => m.tipo === 'ingreso');
-        const gastos = state.finanzas.filter(m => m.tipo === 'gasto');
+        const periodo = finanzasDelPeriodo();
+        const comisiones = periodo.filter(m => m.tipo === 'comision');
+        const ingresos = periodo.filter(m => m.tipo === 'ingreso');
+        const gastos = periodo.filter(m => m.tipo === 'gasto');
         const totalComisiones = comisiones.reduce((a, m) => a + m.monto, 0);
         const totalIngresos = ingresos.reduce((a, m) => a + m.monto, 0);
         const totalGastos = gastos.reduce((a, m) => a + m.monto, 0);
@@ -3340,7 +3577,7 @@
 
         const tipoFiltro = val('filtroFinanzasTipo');
         const fechaFiltro = val('filtroFinanzasFecha');
-        let movs = [...state.finanzas];
+        let movs = [...periodo];
         if (tipoFiltro && tipoFiltro !== 'todos') movs = movs.filter(m => m.tipo === tipoFiltro);
         if (fechaFiltro) {
             const fi = new Date(fechaFiltro + 'T00:00:00');
@@ -3351,7 +3588,7 @@
 
         const container = $('listaFinanzas');
         const mas = $('finanzasMas');
-        $('contadorFinanzas').textContent = state.finanzas.length;
+        $('contadorFinanzas').textContent = movs.length;
         if (!container) return;
         if (movs.length === 0) {
             container.innerHTML = '<div class="empty-msg"><p>No hay movimientos</p></div>';
@@ -3401,9 +3638,9 @@
     function actualizarGrafico() {
         const canvas = $('graficoFinanzas');
         if (!canvas || typeof Chart === 'undefined') return;
-        const comisiones = state.finanzas.filter(m => m.tipo === 'comision').reduce((a, m) => a + m.monto, 0);
-        const ingresos = state.finanzas.filter(m => m.tipo === 'ingreso').reduce((a, m) => a + m.monto, 0);
-        const gastos = state.finanzas.filter(m => m.tipo === 'gasto').reduce((a, m) => a + m.monto, 0);
+        const comisiones = finanzasDelPeriodo().filter(m => m.tipo === 'comision').reduce((a, m) => a + m.monto, 0);
+        const ingresos = finanzasDelPeriodo().filter(m => m.tipo === 'ingreso').reduce((a, m) => a + m.monto, 0);
+        const gastos = finanzasDelPeriodo().filter(m => m.tipo === 'gasto').reduce((a, m) => a + m.monto, 0);
         if (graficoFinanzas) { graficoFinanzas.destroy(); graficoFinanzas = null; }
         const esModoOscuro = document.body.classList.contains('dark-mode');
         const colorTexto = esModoOscuro ? '#e8e8f0' : '#1a1a2e';
@@ -3482,7 +3719,7 @@
             camposExtra.innerHTML = `
                 <div class="form-group">
                     <label>Comisión (%)</label>
-                    <input type="number" id="modalComisionPorcentaje" step="0.1" min="0" value="${esc(pctActual ? pctActual.comision : 0)}" inputmode="decimal">
+                    <input type="number" id="modalComisionPorcentaje" step="0.1" min="0" value="${esc(operacion.monto ? (Number(operacion.comision) || 0) / operacion.monto * 100 : (pctActual ? pctActual.comision : 0))}" inputmode="decimal">
                 </div>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
                     <div class="form-group">
@@ -3506,31 +3743,36 @@
             conectarRecalc($('modalComisionPorcentaje'), recalc);
             recalc();
         } else {
-            const cliente = getCliente(operacion.clienteId);
-            const saldo = cliente ? (cliente.saldo || 0) : 0;
             camposExtra.innerHTML = `
                 <div class="form-group">
-                    <label>Saldo disponible</label>
-                    <input type="text" id="modalSaldoDisponible" class="readonly-field" readonly value="${formatearMoneda(saldo)}">
+                    <label for="modalSaldoDisponible">Saldo anterior a la transferencia</label>
+                    <input type="number" id="modalSaldoDisponible" step="0.01" inputmode="decimal">
+                    <div class="hint">Si lo corregís, se registra un ajuste antes de esta transferencia; no se modifican las operaciones anteriores.</div>
                 </div>
                 <div class="form-group" style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); text-align:center; font-weight:500;">
-                    <span id="modalSaldoRestante">Saldo restante: ${formatearMoneda(saldo - operacion.monto)}</span>
+                    <span id="modalSaldoRestante"></span>
                 </div>`;
-            const recalc = () => {
-                if (!operacionEditando || operacionEditando.tipo !== 'transferencia') return;
+            const actualizarSaldoAnterior = () => {
                 const cli = getCliente($('modalCliente').value);
-                const saldoActual = cli ? (cli.saldo || 0) : 0;
+                const fecha = new Date(($('modalFecha').value || hoyISO()) + 'T00:00:00').getTime();
+                const base = cli ? saldoAntesProyectado(cli.id, fecha, operacionEditando) : 0;
+                if ($('modalSaldoDisponible').dataset.modificado !== 'true') {
+                    $('modalSaldoDisponible').value = (base + (Number(operacion.ajusteSaldo) || 0)).toFixed(2);
+                }
+                recalc();
+            };
+            const recalc = () => {
+                const saldoActual = Number($('modalSaldoDisponible').value) || 0;
                 const montoNuevo = parseFloat($('modalMonto').value) || 0;
                 const restante = saldoActual - montoNuevo;
-                const span = $('modalSaldoRestante');
-                if (span) {
-                    span.textContent = 'Saldo restante: ' + formatearMoneda(restante);
-                    span.style.color = restante < 0 ? 'var(--saldo-negativo)' : 'var(--text-primary)';
-                }
-                if ($('modalSaldoDisponible')) $('modalSaldoDisponible').value = formatearMoneda(saldoActual);
+                $('modalSaldoRestante').textContent = 'Saldo restante: ' + formatearMoneda(restante);
+                $('modalSaldoRestante').style.color = restante < 0 ? 'var(--saldo-negativo)' : 'var(--text-primary)';
             };
             conectarRecalc($('modalMonto'), recalc);
-            conectarRecalc($('modalCliente'), recalc);
+            conectarRecalc($('modalSaldoDisponible'), () => { $('modalSaldoDisponible').dataset.modificado = 'true'; recalc(); });
+            conectarRecalc($('modalCliente'), actualizarSaldoAnterior);
+            conectarRecalc($('modalFecha'), actualizarSaldoAnterior);
+            actualizarSaldoAnterior();
         }
 
         $('modalEditar').classList.add('open');
@@ -3547,6 +3789,16 @@
         const cliente = getCliente(nuevoClienteId);
         if (!cliente) { showToast('Cliente no encontrado.', 'error'); return; }
         const nuevaFecha = new Date(fechaStr + 'T00:00:00').getTime();
+        let ajusteNuevo = 0;
+        if (operacionEditando.tipo === 'transferencia') {
+            const campoSaldo = val('modalSaldoDisponible').trim();
+            const saldoIndicado = Number(campoSaldo);
+            if (!campoSaldo || !Number.isFinite(saldoIndicado)) { showToast('Ingresa un saldo anterior válido.', 'error'); return; }
+            ajusteNuevo = $('modalSaldoDisponible').dataset.modificado === 'true'
+                ? saldoIndicado - saldoAntesProyectado(nuevoClienteId, nuevaFecha, operacionEditando)
+                : (Number(operacionEditando.ajusteSaldo) || 0);
+        }
+        const iniciales = saldosIniciales();
 
         if (operacionEditando.tipo === 'recibo') {
             const recibo = state.recibos.find(r => r.id === operacionEditando.id);
@@ -3558,7 +3810,7 @@
             const pct = isNaN(porcentaje) ? (cliente.comision || 0) : porcentaje;
             const nuevaComision = nuevoMonto * (pct / 100);
             const nuevoNeto = nuevoMonto - nuevaComision;
-            if (nuevoNeto < 0) {
+            if (pct < 0 || pct > 100 || !Number.isFinite(pct) || nuevoNeto < 0) {
                 if (clienteOriginal) clienteOriginal.saldo = (clienteOriginal.saldo || 0) + (recibo.neto || 0);
                 showToast('La comisión no puede ser mayor al monto.', 'error');
                 return;
@@ -3576,6 +3828,9 @@
                 finanzaAsociada.descripcion = 'Comisión de ' + cliente.nombre;
                 finanzaAsociada.clienteId = nuevoClienteId;
                 finanzaAsociada.fecha = nuevaFecha;
+            } else if (nuevaComision > 0) {
+                state.finanzas.push({ id: generarId(), tipo: 'comision', monto: nuevaComision,
+                    descripcion: 'Comisión de ' + cliente.nombre, clienteId: nuevoClienteId, reciboId: recibo.id, fecha: nuevaFecha });
             }
             showToast('Recibo #' + recibo.numeroOp + ' actualizado.', 'success');
         } else {
@@ -3589,25 +3844,14 @@
             t.clienteId = nuevoClienteId;
             t.monto = nuevoMonto;
             t.saldoAntes = saldoActual;
+            t.ajusteSaldo = ajusteNuevo;
             t.fecha = nuevaFecha;
             cliente.saldo = saldoActual - nuevoMonto;
 
-            if (nuevoSaldoRestante < 0) {
-                const prestamo = Math.abs(nuevoSaldoRestante);
-                const prestamoExistente = state.finanzas.find(f =>
-                    f.clienteId === nuevoClienteId && f.descripcion && f.descripcion.indexOf('Préstamo a') !== -1);
-                if (prestamoExistente) prestamoExistente.monto = prestamo;
-                else {
-                    state.finanzas.push({
-                        id: generarId(), tipo: 'gasto', monto: prestamo,
-                        descripcion: 'Préstamo a ' + cliente.nombre,
-                        clienteId: nuevoClienteId, reciboId: null, fecha: nuevaFecha
-                    });
-                }
-            }
             showToast('Transferencia #' + t.numeroOp + ' actualizada.', 'success');
         }
         renumerar();
+        recalcularSaldos(iniciales, [operacionEditando.clienteId, nuevoClienteId]);
         persist();
         refresh();
         cerrarModal();
@@ -3722,6 +3966,47 @@
         input.dataset.tipoDetectado = resultado.tipo;
         input.dataset.banco = resultado.banco ? resultado.banco.nombre : '';
         input.dataset.bancoColor = resultado.banco ? resultado.banco.color : '';
+    }
+
+    function textoComprobante(id, tipo) {
+        const op = tipo === 'recibo' ? state.recibos.find(r => r.id === id) : state.transferencias.find(t => t.id === id);
+        if (!op) return null;
+        const cliente = getCliente(op.clienteId);
+        const lineas = ['GESTOR DE PAGOS', 'Comprobante interno — no es constancia bancaria',
+            (tipo === 'recibo' ? 'Recibo' : 'Transferencia') + ' #' + op.numeroOp,
+            'Fecha: ' + formatearFecha(op.fecha), 'Cliente: ' + (cliente ? cliente.nombre : 'Cliente eliminado'),
+            'Monto: ' + formatearMoneda(op.monto)];
+        if (tipo === 'recibo') lineas.push('Comisión: ' + formatearMoneda(op.comision), 'Neto: ' + formatearMoneda(op.neto));
+        else {
+            if (op.numeroDestino) lineas.push('Destino: •••• ' + String(op.numeroDestino).slice(-4));
+            lineas.push('Saldo restante: ' + formatearMoneda((op.saldoAntes || 0) - op.monto));
+            if (Number(op.ajusteSaldo)) lineas.push('Ajuste anterior: ' + formatearMoneda(op.ajusteSaldo));
+        }
+        return lineas.join('\n');
+    }
+
+    async function compartirComprobante(id, tipo) {
+        const text = textoComprobante(id, tipo);
+        if (!text) { showToast('Operación no encontrada.', 'error'); return; }
+        if (navigator.share) {
+            try { await navigator.share({ title: 'Comprobante de Gestor de Pagos', text }); return; }
+            catch (error) { if (error.name === 'AbortError') return; }
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            try { await navigator.clipboard.writeText(text); showToast('Comprobante copiado.', 'success'); return; } catch (error) {}
+        }
+        mostrarMensajeManual(text);
+    }
+
+    function pdfComprobante(id, tipo) {
+        const text = textoComprobante(id, tipo);
+        if (!text) { showToast('Operación no encontrada.', 'error'); return; }
+        if (!window.jspdf || !window.jspdf.jsPDF) { showToast('PDF no disponible sin conexión.', 'error'); return; }
+        const doc = new window.jspdf.jsPDF();
+        doc.setFontSize(13);
+        const lines = doc.splitTextToSize ? doc.splitTextToSize(text, 175) : text.split('\n');
+        doc.text(lines, 18, 25);
+        doc.save('comprobante_' + tipo + '_' + String(id).replace(/[^a-zA-Z0-9_-]/g, '') + '.pdf');
     }
 
     const TRANSACCION_OCULTA = 'XXXXXXXXXXXXX';
@@ -3953,6 +4238,24 @@
         showToast('PDF exportado correctamente.', 'success');
     }
 
+    function exportarFinanzasCSV() {
+        const tipo = val('filtroFinanzasTipo'), fecha = val('filtroFinanzasFecha');
+        const datos = finanzasDelPeriodo().filter(f => (!tipo || tipo === 'todos' || f.tipo === tipo)
+            && (!fecha || fechaLocalISO(f.fecha) === fecha));
+        if (!datos.length) { showToast('No hay movimientos para exportar.', 'error'); return; }
+        const celda = valor => {
+            let texto = String(valor == null ? '' : valor);
+            if (/^[=+@\-\t\r]/.test(texto)) texto = "'" + texto;
+            return '"' + texto.replace(/"/g, '""') + '"';
+        };
+        const filas = [['Fecha','Tipo','Descripción','Cliente','Monto']].concat(datos.map(f => {
+            const c = getCliente(f.clienteId);
+            return [fechaLocalISO(f.fecha), f.tipo, f.descripcion || '', c ? c.nombre : '', f.monto];
+        }));
+        descargarBlob(new Blob(['\ufeff' + filas.map(f => f.map(celda).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' }), 'finanzas_' + hoyISO() + '.csv');
+        showToast('Finanzas exportadas.', 'success');
+    }
+
     function exportarJSON() {
         const data = {
             version: 3,
@@ -3973,8 +4276,13 @@
         reader.onload = function (ev) {
             try {
                 const data = JSON.parse(ev.target.result);
-                if (!data.clientes || !data.recibos || !data.transferencias || !data.finanzas) throw new Error('Archivo inválido.');
-                if (!confirm('Esto reemplazará TODOS los datos. ¿Continuar?')) return;
+                if (!['clientes', 'recibos', 'transferencias', 'finanzas'].every(k => Array.isArray(data[k]) && data[k].every(x => x && typeof x === 'object' && !Array.isArray(x)))) throw new Error('Archivo inválido: se esperaban listas de registros.');
+                for (const tipo of ['clientes', 'recibos', 'transferencias', 'finanzas']) {
+                    const ids = data[tipo].map(x => x.id);
+                    if (ids.some(id => typeof id !== 'string' || !id) || new Set(ids).size !== ids.length) throw new Error('IDs ausentes o duplicados en ' + tipo + '.');
+                }
+                if (data.usuario && usuarioActual && data.usuario !== usuarioActual.email && !confirm('Este respaldo pertenece a otra cuenta. ¿Querés continuar?')) return;
+                if (!confirm('Esto reemplazará TODOS los datos locales y después se sincronizará. Descargá antes una copia de seguridad. ¿Continuar?')) return;
                 aplicarPayload(data);
                 renumerar();
                 persist();
@@ -3999,6 +4307,8 @@
                 const missing = required.filter(col => !(col in rows[0]));
                 if (missing.length > 0) { showToast('Faltan columnas: ' + missing.join(', '), 'error'); return; }
 
+                const iniciales = saldosIniciales();
+                const afectados = new Set();
                 let importados = 0;
                 const errores = [];
                 rows.forEach((row, idx) => {
@@ -4032,6 +4342,7 @@
                         if (!cliente) {
                             cliente = { id: generarId(), nombre: nombreCliente, comision: 0, saldo: 0 };
                             state.clientes.push(cliente);
+                            iniciales.set(cliente.id, 0);
                         }
                         const numeroOp = obtenerSiguienteNumeroOperacion();
                         if (tipo === 'recibo') {
@@ -4058,10 +4369,12 @@
                             });
                             cliente.saldo = saldoActual - monto;
                         }
+                        afectados.add(cliente.id);
                         importados++;
                     } catch (err) { errores.push('Fila ' + (idx + 2) + ': ' + err.message); }
                 });
                 renumerar();
+                recalcularSaldos(iniciales, [...afectados]);
                 persist();
                 refresh();
                 let msg = 'Importados ' + importados + ' registros.';
@@ -4210,10 +4523,24 @@
         $('buscadorCliente').addEventListener('input', filtrarClientes);
 
         /* --- Operaciones --- */
+        $('toggleSaldoInicio').addEventListener('click', () => {
+            saldoInicioOculto = !saldoInicioOculto;
+            try { localStorage.setItem('gestor_saldo_inicio_oculto', String(saldoInicioOculto)); } catch (e) {}
+            renderHeader();
+        });
+        $('verHistorialInicio').addEventListener('click', () => cambiarSeccion('historial'));
         $('quickRecibir').addEventListener('click', () => { cambiarPestanaOperaciones('recibir'); cambiarSeccion('operaciones'); });
         $('quickTransferir').addEventListener('click', () => { cambiarPestanaOperaciones('transferir'); cambiarSeccion('operaciones'); });
         $('quickSaldo').addEventListener('click', () => cambiarSeccion('saldo'));
         $('quickHistorial').addEventListener('click', () => cambiarSeccion('historial'));
+        $('buscarClienteRecibir').addEventListener('input', () => filtrarSelectorClientes('buscarClienteRecibir', 'recibirCliente'));
+        $('buscarClienteTransferir').addEventListener('input', () => filtrarSelectorClientes('buscarClienteTransferir', 'transferirCliente'));
+        $('transferirCliente').addEventListener('change', actualizarDestinosRecientes);
+        $('destinosRecientes').addEventListener('change', () => {
+            if (!val('destinosRecientes')) return;
+            $('numeroDestino').value = val('destinosRecientes');
+            actualizarDetectorNumero();
+        });
         $('btnMostrarRecibir').addEventListener('click', () => cambiarPestanaOperaciones('recibir'));
         $('btnMostrarTransferir').addEventListener('click', () => cambiarPestanaOperaciones('transferir'));
 
@@ -4250,6 +4577,7 @@
         /* --- Historial --- */
         $('historialCliente').addEventListener('change', () => { historialVisibles = 50; renderHistorial(); });
         $('historialFecha').addEventListener('change', () => { historialVisibles = 50; renderHistorial(); });
+        $('historialFechaHasta').addEventListener('change', () => { historialVisibles = 50; renderHistorial(); });
         $('historialTipo').addEventListener('change', () => { historialVisibles = 50; renderHistorial(); });
         $('btnInvertirOrden').addEventListener('click', function () {
             ordenHistorialAsc = !ordenHistorialAsc;
@@ -4280,6 +4608,7 @@
                 showToast('📈 Mostrando gráfico', 'info');
             }
         });
+        $('periodoFinanzas').addEventListener('change', () => { finanzasVisibles = 100; renderFinanzas(); });
         $('filtroFinanzasTipo').addEventListener('change', () => { finanzasVisibles = 100; renderFinanzas(); });
         $('filtroFinanzasFecha').addEventListener('change', () => { finanzasVisibles = 100; renderFinanzas(); });
         $('btnInvertirFinanzas').addEventListener('click', function () {
@@ -4307,10 +4636,18 @@
         /* --- Base de datos --- */
         $('btnSyncNow').addEventListener('click', async () => {
             setSync('saving');
-            await pushCloud();
-            showToast(navigator.onLine ? '☁️ Sincronizado con la nube' : '📴 Sin conexión: cambios guardados en el dispositivo', navigator.onLine ? 'success' : 'info');
+            const guardado = await pushCloud();
+            showToast(guardado ? '☁️ Sincronizado con la nube' : (hayConflicto ? '⚠️ Resolvé el conflicto antes de sincronizar.' : '⚠️ No se pudo sincronizar; revisa la conexión y conserva este dispositivo.'), guardado ? 'success' : 'error');
         });
         $('btnExportarJSON').addEventListener('click', exportarJSON);
+        $('conflictoExportar').addEventListener('click', exportarJSON);
+        $('conflictoNube').addEventListener('click', () => resolverConflicto(false));
+        $('conflictoLocal').addEventListener('click', () => resolverConflicto(true));
+        $('conflictoDespues').addEventListener('click', () => $('modalConflicto').classList.remove('open'));
+        $('syncStatus').addEventListener('click', () => { if (hayConflicto) $('modalConflicto').classList.add('open'); });
+        $('syncStatus').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('syncStatus').click(); } });
+        $('btnExportarFinanzas').addEventListener('click', exportarFinanzasCSV);
+        $('btnInstalarApp').addEventListener('click', instalarApp);
         $('btnImportarJSON').addEventListener('click', () => $('inputImportarJSON').click());
         $('inputImportarJSON').addEventListener('change', function (e) {
             if (this.files && this.files[0]) importarJSON(this.files[0]);
@@ -4350,6 +4687,8 @@
                 case 'del-recibo': eliminarRecibo(id); break;
                 case 'del-transfer': eliminarTransferencia(id); break;
                 case 'copy-transfer': copiarMensajeTransferencia(id); break;
+                case 'share-comprobante': compartirComprobante(id, tipo); break;
+                case 'pdf-comprobante': pdfComprobante(id, tipo); break;
                 case 'del-finanza': eliminarFinanza(id); break;
                 case 'historial-mas': historialVisibles += 50; renderHistorial(); break;
                 case 'finanzas-mas': finanzasVisibles += 100; renderFinanzas(); break;
@@ -4385,6 +4724,22 @@
                 showToast('🔀 Navegando a ' + sections[idx].toUpperCase(), 'info');
             }
         });
+    }
+
+    let instalacionPendiente = null;
+    window.addEventListener('beforeinstallprompt', e => {
+        e.preventDefault(); instalacionPendiente = e;
+        if ($('btnInstalarApp')) $('btnInstalarApp').style.display = 'block';
+    });
+    window.addEventListener('appinstalled', () => {
+        instalacionPendiente = null;
+        if ($('btnInstalarApp')) $('btnInstalarApp').style.display = 'none';
+    });
+    async function instalarApp() {
+        if (!instalacionPendiente) return;
+        const evento = instalacionPendiente; instalacionPendiente = null;
+        $('btnInstalarApp').style.display = 'none';
+        await evento.prompt();
     }
 
     /* ============================================================

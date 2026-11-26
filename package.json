@@ -1,0 +1,6 @@
+{
+  "name": "gestor-pagos-tests",
+  "private": true,
+  "scripts": { "test": "node tests/saldos.test.js && node tests/smoke.test.js && node tests/legacy.test.js" },
+  "devDependencies": { "jsdom": "24.1.3" }
+}
