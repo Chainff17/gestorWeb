@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="description" content="Gestor de Pagos - Administración de clientes, comisiones y transferencias con sincronización en la nube">
-    <meta name="theme-color" content="#6c5ce7">
+    <meta name="theme-color" content="#007a53">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Gestor de Pagos</title>
@@ -41,13 +41,13 @@
             --border-color: #e8ecf1;
             --shadow: 0 2px 12px rgba(0,0,0,0.06);
             --shadow-dropdown: 0 12px 40px rgba(0,0,0,0.15);
-            --primary: #6c5ce7;
-            --primary-light: #a29bfe;
-            --primary-dark: #4a3db8;
+            --primary: #007a53;
+            --primary-light: #72d8ad;
+            --primary-dark: #005c3f;
             --success: #00b894;
             --danger: #fd79a8;
             --warning: #fdcb6e;
-            --gradient: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            --gradient: linear-gradient(135deg, #007a53, #72d8ad);
             --badge-bg: #e8ecf1;
             --badge-text: #4a4a6a;
             --recibo-bg: #dbeafe;
@@ -60,7 +60,7 @@
             --ingreso-text: #1e40af;
             --gasto-bg: #fee2e2;
             --gasto-text: #991b1b;
-            --btn-primary-bg: #6c5ce7;
+            --btn-primary-bg: #007a53;
             --btn-primary-text: #ffffff;
             --btn-secondary-bg: #e8ecf1;
             --btn-secondary-text: #4a4a6a;
@@ -101,7 +101,7 @@
             --ingreso-text: #93c5fd;
             --gasto-bg: #7f1d1d;
             --gasto-text: #fca5a5;
-            --btn-primary-bg: #6c5ce7;
+            --btn-primary-bg: #007a53;
             --btn-primary-text: #ffffff;
             --btn-secondary-bg: #2d2d4a;
             --btn-secondary-text: #b0b0c8;
@@ -135,7 +135,7 @@
             min-height: 100vh;
             padding: 20px;
             background:
-                radial-gradient(1200px 500px at 50% -10%, rgba(108,92,231,0.18), transparent 60%),
+                radial-gradient(1200px 500px at 50% -10%, rgba(0,122,83,0.18), transparent 60%),
                 var(--bg-body);
             position: fixed;
             inset: 0;
@@ -191,7 +191,7 @@
         #authScreen .auth-card .form-group input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+            box-shadow: 0 0 0 3px rgba(0, 122, 83, 0.15);
         }
         #authScreen .auth-card .btn-primary { margin-top: 4px; }
         #authScreen .auth-card .auth-error {
@@ -404,7 +404,7 @@
             white-space: nowrap;
         }
         .sync-status.saved { background: rgba(0,184,148,0.15); color: var(--success); }
-        .sync-status.saving { background: rgba(108,92,231,0.15); color: var(--primary); }
+        .sync-status.saving { background: rgba(0,122,83,0.15); color: var(--primary); }
         .sync-status.offline { background: rgba(253,121,168,0.15); color: var(--danger); }
         .sync-status.error { background: var(--gasto-bg); color: var(--gasto-text); }
 
@@ -682,7 +682,7 @@
         .form-group select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+            box-shadow: 0 0 0 3px rgba(0, 122, 83, 0.15);
         }
         .form-group input.readonly-field {
             background: var(--bg-card-alt);
@@ -749,7 +749,7 @@
         .logo-miniatura.monedero {
             border-radius: 50%;
             padding: 4px;
-            background: #6c5ce7;
+            background: #007a53;
             color: white;
         }
         .logo-miniatura.tarjeta-rojo { background: #e63946; color: white; }
@@ -1055,7 +1055,7 @@
         .buscador-cliente:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+            box-shadow: 0 0 0 3px rgba(0, 122, 83, 0.15);
         }
 
         /* ===== BOTONES CLIENTES ===== */
@@ -1117,20 +1117,20 @@
         /* ============================================================
            UI MODERNA v3.1 — rediseño visual
            ============================================================ */
-        :root { --bg-glass: rgba(255,255,255,0.82); --grad-shadow: 0 8px 20px -8px rgba(108,92,231,0.55); }
+        :root { --bg-glass: rgba(255,255,255,0.82); --grad-shadow: 0 8px 20px -8px rgba(0,122,83,0.55); }
         body.dark-mode { --bg-glass: rgba(26,26,46,0.85); }
 
         /* Fondo con profundidad */
         body {
             background:
-                radial-gradient(1000px 420px at 8% -6%, rgba(108,92,231,0.12), transparent 55%),
+                radial-gradient(1000px 420px at 8% -6%, rgba(0,122,83,0.12), transparent 55%),
                 radial-gradient(800px 420px at 98% 8%, rgba(0,184,148,0.10), transparent 50%),
                 var(--bg-body);
             background-attachment: fixed;
         }
         body.dark-mode {
             background:
-                radial-gradient(1000px 420px at 8% -6%, rgba(108,92,231,0.22), transparent 55%),
+                radial-gradient(1000px 420px at 8% -6%, rgba(0,122,83,0.22), transparent 55%),
                 radial-gradient(800px 420px at 98% 8%, rgba(0,184,148,0.12), transparent 50%),
                 var(--bg-body);
             background-attachment: fixed;
@@ -1274,7 +1274,7 @@
         .bottom-menu button.active { background: transparent; color: var(--primary); }
         .bottom-menu button.active .icon {
             transform: translateY(-2px);
-            filter: drop-shadow(0 4px 8px rgba(108,92,231,0.35));
+            filter: drop-shadow(0 4px 8px rgba(0,122,83,0.35));
         }
         .bottom-menu button .icon {
             width: 22px;
@@ -1297,7 +1297,7 @@
             align-items: center;
             justify-content: center;
             font-size: 1.9rem;
-            box-shadow: 0 14px 30px -10px rgba(108,92,231,0.65);
+            box-shadow: 0 14px 30px -10px rgba(0,122,83,0.65);
         }
         #authScreen .auth-card { padding-top: 28px; }
 
@@ -1329,7 +1329,7 @@
             align-items: center;
             justify-content: center;
             margin: 0 auto 12px;
-            box-shadow: 0 12px 26px -8px rgba(108,92,231,0.6);
+            box-shadow: 0 12px 26px -8px rgba(0,122,83,0.6);
         }
         .modal hr { border: none; border-top: 1px solid var(--border-color); margin: 16px 0; }
 
@@ -1357,7 +1357,7 @@
             outline: 2px solid var(--primary);
             outline-offset: 2px;
         }
-        ::selection { background: rgba(108,92,231,0.28); }
+        ::selection { background: rgba(0,122,83,0.28); }
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -1369,6 +1369,68 @@
             .header-title { font-size: 0.9rem; }
             .logo-chip { width: 26px; height: 26px; font-size: 0.85rem; border-radius: 8px; }
         }
+
+        /* Identidad propia inspirada en una billetera digital */
+        :root {
+            --bg-body: #eef5f1; --bg-header: #f8fbf9; --bg-card: #ffffff;
+            --bg-card-alt: #f4f8f5; --bg-input: #edf4ef;
+            --text-primary: #10251b; --text-secondary: #465a4e; --text-muted: #667a6d;
+            --border-color: #dce9df; --primary: #007a53; --primary-light: #6bd8a8;
+            --primary-dark: #005c3f; --gradient: linear-gradient(135deg, #09271e 0%, #006945 70%, #00875b 100%);
+            --btn-primary-bg: #007a53; --btn-secondary-bg: #e3f2e8; --btn-secondary-text: #24543a;
+            --badge-bg: #e3f2e8; --badge-text: #315e43; --btn-hover: #e2f4e9;
+            --radius: 20px; --radius-sm: 14px; --radius-lg: 26px;
+            --bg-glass: rgba(248,251,249,.94); --grad-shadow: 0 8px 22px -10px rgba(0,95,60,.4);
+            --shadow: 0 7px 24px rgba(12,53,31,.08);
+        }
+        body.dark-mode {
+            --bg-body: #080d0a; --bg-header: #101914; --bg-card: #15211a;
+            --bg-card-alt: #1d2e23; --bg-input: #203127; --text-primary: #f1faf4;
+            --text-secondary: #c8ddd0; --text-muted: #9cb4a4; --border-color: #30483a;
+            --primary: #6ee7aa; --primary-light: #a1f2c8; --primary-dark: #46cb8b;
+            --btn-primary-bg: #006945; --btn-secondary-bg: #253e2e; --btn-secondary-text: #d7f6e2;
+            --badge-bg: #253e2e; --badge-text: #cbeed8; --btn-hover: #253e2e;
+            --menu-bg: #15211a; --bg-glass: rgba(16,25,20,.94);
+        }
+        body { background: radial-gradient(700px 380px at 50% 0, #cdeedd 0, transparent 70%), var(--bg-body); padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+        body.dark-mode { background: radial-gradient(700px 380px at 50% 0, #173c28 0, transparent 70%), var(--bg-body); }
+        #authScreen { background: radial-gradient(600px 440px at 50% 0, rgba(0,150,90,.18), transparent 70%), var(--bg-body); }
+        #authScreen .auth-card { box-shadow: 0 20px 65px rgba(12,53,31,.14); border-radius: 28px; padding: 36px 26px; }
+        .auth-logo, .logo-chip { color: #fff; font-weight: 800; letter-spacing: -.06em; }
+        .auth-logo { border-radius: 22px; font-size: 2rem; }
+        header { padding: 15px 18px 11px; }
+        .header-title { letter-spacing: -.03em; }
+        .logo-chip { border-radius: 12px; width: 36px; height: 36px; font-size: 1.05rem !important; color: #fff !important; font-weight: 800 !important; }
+        .header-info { padding-top: 5px; }
+        .section { padding: 22px 16px 24px; }
+        .card { border-radius: 22px; box-shadow: var(--shadow); }
+        .card > h3::before, .card-header h3::before { background: var(--gradient); }
+        .btn-primary { border-radius: 999px; background: #007a53; min-height: 46px; }
+        .form-group input, .form-group select, #authScreen .auth-card .form-group input { border-radius: 14px; }
+        .bottom-menu { padding-bottom: calc(10px + env(safe-area-inset-bottom)); border-radius: 22px 22px 0 0; }
+        body.dark-mode .bottom-menu button.active { color: #84edb6; }
+        body.dark-mode .header-title .usuario-badge,
+        body.dark-mode .header-info .clientes-count .num { background: #007a53; color: #fff; }
+        body.dark-mode .btn-comisiones:hover { background: #007a53; color: #fff; }
+        .home-heading { display:flex; justify-content:space-between; align-items:center; margin: 0 3px 16px; }
+        .home-kicker { color: var(--primary); font-size:.64rem; font-weight:800; letter-spacing:.12em; }
+        .home-heading h1 { font-size:1.35rem; letter-spacing:-.045em; margin-top:5px; }
+        .home-sparkle { font-size:1.5rem; color:var(--primary); }
+        .balance-hero { position:relative; overflow:hidden; padding:24px; min-height:156px; color:white; border-radius:22px; background:var(--gradient); box-shadow:0 14px 30px -14px rgba(0,70,40,.48); }
+        .balance-hero::after { content:''; position:absolute; width:180px; height:180px; border:35px solid rgba(255,255,255,.07); border-radius:50%; right:-60px; bottom:-100px; pointer-events:none; }
+        .balance-top { display:flex; justify-content:space-between; align-items:center; font-size:.78rem; font-weight:600; color:rgba(255,255,255,.83); }
+        .balance-mark { border:1px solid rgba(255,255,255,.35); display:grid; place-items:center; width:30px; height:30px; border-radius:50%; color:white; font-weight:800; }
+        .balance-amount { font-size:clamp(1.9rem, 8vw, 2.55rem); font-weight:800; letter-spacing:-.045em; margin: 8px 0 3px; overflow-wrap:anywhere; }
+        .balance-caption { color:rgba(255,255,255,.72); font-size:.73rem; }
+        .quick-actions { background:var(--bg-card); border:1px solid var(--border-color); border-radius:20px; box-shadow:var(--shadow); display:grid; grid-template-columns:repeat(4, 1fr); gap:4px; padding:16px 6px 13px; margin: -4px 8px 24px; position:relative; }
+        .quick-actions button { border:0; background:transparent; color:var(--text-primary); display:flex; flex-direction:column; align-items:center; gap:7px; font-size:.68rem; font-weight:600; cursor:pointer; min-width:0; }
+        .quick-icon { display:grid; place-items:center; width:43px; height:43px; border-radius:50%; background:#007a53; color:white; font-size:1.35rem; font-weight:600; transition:transform .2s; }
+        .quick-actions button:hover .quick-icon { transform:translateY(-2px); }
+        .home-section-title { display:flex; justify-content:space-between; align-items:end; gap:10px; margin:0 4px 13px; }
+        .home-section-title h2 { font-size:1.1rem; letter-spacing:-.03em; margin-top:4px; }
+        .home-section-title > span { font-size:.68rem; color:var(--text-muted); }
+        @media (max-width:360px) { .home-section-title > span { display:none; } .balance-hero { padding:20px; } .quick-actions button { font-size:.62rem; } }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; } }
     </style>
 </head>
 <body>
@@ -1376,7 +1438,7 @@
     <!-- ===== ACCESO (LOGIN / REGISTRO / RECUPERACIÓN) ===== -->
     <div id="authScreen">
         <div class="auth-card">
-            <div class="auth-logo">💳</div>
+            <div class="auth-logo" aria-hidden="true">G</div>
             <h2 id="authTitle">Gestor de Pagos</h2>
             <p class="subtitle" id="authSubtitle">Inicia sesión para acceder a tus datos</p>
 
@@ -1564,7 +1626,7 @@
         <header>
             <div class="header-top">
                 <div class="header-title">
-                    <span class="logo-chip">💳</span> Gestor de Pagos <span>v3.1</span>
+                    <span class="logo-chip" aria-hidden="true">G</span> Gestor de Pagos
                     <span class="usuario-badge" id="usuarioBadge" role="button" tabindex="0" title="Mi cuenta">👤 USUARIO</span>
                 </div>
                 <div class="header-actions">
@@ -1621,6 +1683,19 @@
 
         <!-- ===== SECCIÓN CLIENTES ===== -->
         <div id="section-clientes" class="section visible">
+            <div class="home-heading"><div><span class="home-kicker">TU ESPACIO</span><h1>Tu gestión, más simple.</h1></div><span class="home-sparkle" aria-hidden="true">✦</span></div>
+            <div class="balance-hero">
+                <div class="balance-top"><span>Saldo total de clientes</span><span class="balance-mark" aria-hidden="true">G</span></div>
+                <div class="balance-amount" id="saldoInicio">$0.00</div>
+                <div class="balance-caption">Un vistazo a tus saldos</div>
+            </div>
+            <div class="quick-actions" aria-label="Accesos rápidos">
+                <button type="button" id="quickRecibir"><span class="quick-icon" aria-hidden="true">↓</span><span>Recibir</span></button>
+                <button type="button" id="quickTransferir"><span class="quick-icon" aria-hidden="true">↑</span><span>Transferir</span></button>
+                <button type="button" id="quickSaldo"><span class="quick-icon" aria-hidden="true">$</span><span>Saldo</span></button>
+                <button type="button" id="quickHistorial"><span class="quick-icon" aria-hidden="true">↻</span><span>Historial</span></button>
+            </div>
+            <div class="home-section-title"><div><span class="home-kicker">ADMINISTRACIÓN</span><h2>Mis clientes</h2></div><span>Gestioná tu actividad</span></div>
             <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
                 <button class="btn-cliente-opcion active" id="btnMostrarAgregarCliente" style="flex:1;">➕ Agregar</button>
                 <button class="btn-cliente-opcion" id="btnMostrarListaClientes" style="flex:1;">📋 Ver Clientes</button>
@@ -2652,6 +2727,7 @@
 
     function renderHeader() {
         $('clientesCountHeader').textContent = state.clientes.length;
+        $('saldoInicio').textContent = formatearMoneda(state.clientes.reduce((acc, c) => acc + (c.saldo || 0), 0));
         if (usuarioActual) {
             $('usuarioBadge').textContent = '👤 ' + usuarioActual.username;
         }
@@ -3335,7 +3411,7 @@
             type: 'doughnut',
             data: {
                 labels: ['Comisiones', 'Ingresos', 'Gastos'],
-                datasets: [{ data: [comisiones, ingresos, gastos], backgroundColor: ['#6c5ce7', '#00b894', '#fd79a8'], borderWidth: 0 }]
+                datasets: [{ data: [comisiones, ingresos, gastos], backgroundColor: ['#007a53', '#60b988', '#e9728b'], borderWidth: 0 }]
             },
             options: {
                 responsive: true,
@@ -3851,7 +3927,7 @@
             body: rows,
             startY: 28,
             styles: { fontSize: 7, cellPadding: 2, textColor: '#1a1a2e' },
-            headStyles: { fillColor: '#6c5ce7', textColor: '#ffffff', fontSize: 8, halign: 'center' },
+            headStyles: { fillColor: '#007a53', textColor: '#ffffff', fontSize: 8, halign: 'center' },
             alternateRowStyles: { fillColor: '#f8f9fc' },
             columnStyles: {
                 0: { halign: 'center', cellWidth: 10 },
@@ -4134,6 +4210,10 @@
         $('buscadorCliente').addEventListener('input', filtrarClientes);
 
         /* --- Operaciones --- */
+        $('quickRecibir').addEventListener('click', () => { cambiarPestanaOperaciones('recibir'); cambiarSeccion('operaciones'); });
+        $('quickTransferir').addEventListener('click', () => { cambiarPestanaOperaciones('transferir'); cambiarSeccion('operaciones'); });
+        $('quickSaldo').addEventListener('click', () => cambiarSeccion('saldo'));
+        $('quickHistorial').addEventListener('click', () => cambiarSeccion('historial'));
         $('btnMostrarRecibir').addEventListener('click', () => cambiarPestanaOperaciones('recibir'));
         $('btnMostrarTransferir').addEventListener('click', () => cambiarPestanaOperaciones('transferir'));
 
