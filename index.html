@@ -1113,6 +1113,262 @@
             text-align: center;
         }
         .acciones-fila { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+
+        /* ============================================================
+           UI MODERNA v3.1 — rediseño visual
+           ============================================================ */
+        :root { --bg-glass: rgba(255,255,255,0.82); --grad-shadow: 0 8px 20px -8px rgba(108,92,231,0.55); }
+        body.dark-mode { --bg-glass: rgba(26,26,46,0.85); }
+
+        /* Fondo con profundidad */
+        body {
+            background:
+                radial-gradient(1000px 420px at 8% -6%, rgba(108,92,231,0.12), transparent 55%),
+                radial-gradient(800px 420px at 98% 8%, rgba(0,184,148,0.10), transparent 50%),
+                var(--bg-body);
+            background-attachment: fixed;
+        }
+        body.dark-mode {
+            background:
+                radial-gradient(1000px 420px at 8% -6%, rgba(108,92,231,0.22), transparent 55%),
+                radial-gradient(800px 420px at 98% 8%, rgba(0,184,148,0.12), transparent 50%),
+                var(--bg-body);
+            background-attachment: fixed;
+        }
+
+        /* Header cristal */
+        header {
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px) saturate(1.5);
+            -webkit-backdrop-filter: blur(16px) saturate(1.5);
+        }
+
+        /* Chip de logo */
+        .logo-chip {
+            width: 30px;
+            height: 30px;
+            border-radius: 10px;
+            background: var(--gradient);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            box-shadow: var(--grad-shadow);
+            flex-shrink: 0;
+        }
+        .header-title { gap: 8px; }
+
+        /* Badge de usuario: clicable → Mi cuenta */
+        .usuario-badge {
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.25);
+            transition: var(--transition);
+        }
+        .usuario-badge:hover { filter: brightness(1.12); transform: translateY(-1px); }
+        .usuario-badge:active { transform: scale(0.96); }
+
+        /* Chip de sync con pulso al guardar */
+        .sync-status.saving { animation: pulseSync 1.2s ease infinite; }
+        @keyframes pulseSync { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+        /* Tarjetas */
+        .card {
+            border-radius: 20px;
+            box-shadow: 0 1px 2px rgba(16,24,40,0.04), 0 10px 28px -16px rgba(16,24,40,0.14);
+        }
+        @media (hover: hover) {
+            .card:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(16,24,40,0.05), 0 16px 32px -16px rgba(16,24,40,0.2);
+            }
+            .cliente-card:hover, .operacion-card:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 8px 18px -10px rgba(16,24,40,0.22);
+            }
+        }
+        .cliente-card, .operacion-card { border-radius: 14px; }
+
+        /* Títulos de tarjeta con acento */
+        .card > h3,
+        .card-header h3 { position: relative; padding-left: 12px; }
+        .card > h3::before,
+        .card-header h3::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 13px;
+            border-radius: 4px;
+            background: var(--gradient);
+        }
+
+        /* Botones */
+        .btn-primary {
+            background: var(--gradient);
+            border-radius: 12px;
+            box-shadow: var(--grad-shadow);
+        }
+        .btn-primary:hover { filter: brightness(1.06); }
+        .btn-primary:active { filter: brightness(0.96); }
+        .btn-small { border-radius: 999px; font-weight: 600; }
+
+        /* Pestañas tipo píldora segmentada */
+        .tab-btn, .btn-cliente-opcion {
+            border-radius: 999px;
+            border-width: 1.5px;
+        }
+        .tab-btn.active, .btn-cliente-opcion.active {
+            background: var(--gradient);
+            border-color: transparent;
+            color: #ffffff;
+            box-shadow: var(--grad-shadow);
+        }
+
+        /* Tarjetas de estadísticas */
+        .stat-card {
+            border-radius: 16px;
+            border-left-width: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 14%;
+            bottom: 14%;
+            width: 3px;
+            border-radius: 3px;
+            background: var(--gradient);
+        }
+        .stat-card.total { background: var(--gradient); }
+        .stat-card.total::before { display: none; }
+        .stat-card .monto { font-size: 1.25rem; }
+
+        /* Menú inferior: indicador superior + iconos SVG */
+        .bottom-menu {
+            background: var(--bg-glass);
+            border-radius: 22px 22px 0 0;
+            padding-top: 10px;
+        }
+        .bottom-menu button {
+            border-radius: 14px;
+            padding: 6px 8px 4px;
+            gap: 2px;
+        }
+        .bottom-menu button::after {
+            content: '';
+            position: absolute;
+            top: -7px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 26px;
+            height: 3px;
+            border-radius: 0 0 4px 4px;
+            background: var(--gradient);
+            transition: var(--transition);
+        }
+        .bottom-menu button.active::after { transform: translateX(-50%) scaleX(1); }
+        .bottom-menu button.active { background: transparent; color: var(--primary); }
+        .bottom-menu button.active .icon {
+            transform: translateY(-2px);
+            filter: drop-shadow(0 4px 8px rgba(108,92,231,0.35));
+        }
+        .bottom-menu button .icon {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .bottom-menu button .icon svg { width: 100%; height: 100%; }
+
+        /* Auth: logo */
+        .auth-logo {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 14px;
+            border-radius: 20px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.9rem;
+            box-shadow: 0 14px 30px -10px rgba(108,92,231,0.65);
+        }
+        #authScreen .auth-card { padding-top: 28px; }
+
+        /* Modales: hoja inferior en móvil */
+        @media (max-width: 540px) {
+            .modal-overlay { align-items: flex-end; padding: 0; }
+            .modal {
+                border-radius: 26px 26px 0 0;
+                max-height: 90vh;
+                padding: 22px 20px 28px;
+                animation: sheetIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            }
+        }
+        @keyframes sheetIn {
+            from { transform: translateY(48px); opacity: 0.5; }
+            to { transform: none; opacity: 1; }
+        }
+
+        /* Cuenta */
+        .cuenta-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            box-shadow: 0 12px 26px -8px rgba(108,92,231,0.6);
+        }
+        .modal hr { border: none; border-top: 1px solid var(--border-color); margin: 16px 0; }
+
+        /* Toast píldora */
+        .toast {
+            border-radius: 999px;
+            padding: 10px 22px;
+            font-size: 0.82rem;
+            box-shadow: 0 12px 32px -8px rgba(0,0,0,0.28);
+        }
+
+        /* Campos más suaves */
+        .form-group input, .form-group select { border-radius: 12px; border-width: 1.5px; }
+        .buscador-cliente { border-radius: 999px; padding-left: 16px; }
+
+        /* Dropdown */
+        .dropdown-menu { border-radius: 16px; padding: 6px; }
+        .dropdown-menu button { border-radius: 10px; margin: 1px 4px; width: calc(100% - 8px); }
+
+        /* Saldo hero */
+        #saldoTotal { font-size: 2.3rem; }
+
+        /* Accesibilidad */
+        button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        ::selection { background: rgba(108,92,231,0.28); }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+
+        /* Responsive reforzado (va después de las reglas base) */
+        @media (max-width: 400px) {
+            .bottom-menu button { font-size: 0.45rem; padding: 4px 4px 2px; min-width: 32px; }
+            .bottom-menu button .icon { width: 18px; height: 18px; }
+            .header-title { font-size: 0.9rem; }
+            .logo-chip { width: 26px; height: 26px; font-size: 0.85rem; border-radius: 8px; }
+        }
     </style>
 </head>
 <body>
@@ -1120,7 +1376,8 @@
     <!-- ===== ACCESO (LOGIN / REGISTRO / RECUPERACIÓN) ===== -->
     <div id="authScreen">
         <div class="auth-card">
-            <h2 id="authTitle">🔐 Gestor de Pagos</h2>
+            <div class="auth-logo">💳</div>
+            <h2 id="authTitle">Gestor de Pagos</h2>
             <p class="subtitle" id="authSubtitle">Inicia sesión para acceder a tus datos</p>
 
             <!-- Login -->
@@ -1181,7 +1438,7 @@
                 </div>
             </div>
 
-            <div class="auth-cloud-note">☁️ Tus datos se guardan de forma segura en la nube</div>
+            <div class="auth-cloud-note">☁️ Una cuenta, todos tus dispositivos — tus datos viven en la nube</div>
         </div>
     </div>
 
@@ -1250,6 +1507,38 @@
         </div>
     </div>
 
+    <!-- ===== MODAL MI CUENTA ===== -->
+    <div class="modal-overlay" id="modalCuenta">
+        <div class="modal">
+            <div class="cuenta-avatar" id="cuentaAvatar">?</div>
+            <h3 style="text-align:center; margin-bottom:4px;">👤 Mi Cuenta</h3>
+            <p style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-bottom:16px;">Entra con tu email y contraseña desde cualquier dispositivo</p>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="cuentaEmail" readonly class="readonly-field">
+            </div>
+            <div class="form-group">
+                <label>Nombre visible</label>
+                <input type="text" id="cuentaNombre" placeholder="Tu nombre">
+            </div>
+            <button class="btn-primary" id="btnGuardarCuenta">💾 Guardar nombre</button>
+            <hr>
+            <div class="form-group">
+                <label>Nueva contraseña</label>
+                <input type="password" id="cuentaPassword" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+            </div>
+            <div class="form-group">
+                <label>Confirmar contraseña</label>
+                <input type="password" id="cuentaPassword2" placeholder="Repite la contraseña" autocomplete="new-password">
+            </div>
+            <button class="btn-primary" id="btnCambiarPassword" style="background:var(--btn-secondary-bg); color:var(--btn-secondary-text); box-shadow:none;">🔑 Cambiar contraseña</button>
+            <div class="modal-actions">
+                <button class="btn-modal-cancel" id="cuentaCerrar">Cerrar</button>
+                <button class="btn-modal-save" id="cuentaSalir" style="background:var(--btn-danger-bg);">🚪 Cerrar sesión</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== APP ===== -->
     <div id="appContent">
 
@@ -1257,8 +1546,8 @@
         <header>
             <div class="header-top">
                 <div class="header-title">
-                    💳 Gestor de Pagos <span>v3.0</span>
-                    <span class="usuario-badge" id="usuarioBadge">👤 USUARIO</span>
+                    <span class="logo-chip">💳</span> Gestor de Pagos <span>v3.1</span>
+                    <span class="usuario-badge" id="usuarioBadge" role="button" tabindex="0" title="Mi cuenta">👤 USUARIO</span>
                 </div>
                 <div class="header-actions">
                     <button class="btn-settings" id="btnSettings" title="Configuración" aria-label="Configuración">⚙️</button>
@@ -1268,6 +1557,7 @@
                 </div>
             </div>
             <div class="dropdown-menu" id="dropdownMenu">
+                <button id="btnMiCuenta">👤 Mi Cuenta</button>
                 <button data-section="clientes">👥 Clientes</button>
                 <button data-section="operaciones">🔄 Operaciones</button>
                 <button data-section="saldo">💰 Saldo</button>
@@ -1289,25 +1579,25 @@
         <!-- MENÚ INFERIOR -->
         <nav class="bottom-menu" id="bottomMenu">
             <button data-section="clientes" class="active">
-                <span class="icon">👥</span> Clientes
+                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Clientes
                 <span class="badge-menu" id="notifClientes" style="display:none;">0</span>
             </button>
             <button data-section="operaciones">
-                <span class="icon">🔄</span> Operaciones
+                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span> Operaciones
                 <span class="badge-menu" id="notifOperaciones" style="display:none;">0</span>
             </button>
             <button data-section="saldo">
-                <span class="icon">💰</span> Saldo
+                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v12"/><path d="M15 9a3 3 0 0 0-3-2c-1.7 0-3 1-3 2.5S10.3 12 12 12s3 1 3 2.5S13.7 17 12 17a3 3 0 0 1-3-2"/></svg></span> Saldo
             </button>
             <button data-section="historial">
-                <span class="icon">📜</span> Historial
+                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span> Historial
             </button>
             <button data-section="finanzas">
-                <span class="icon">💹</span> Finanzas
+                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span> Finanzas
                 <span class="badge-menu" id="notifFinanzas" style="display:none;">0</span>
             </button>
             <button data-section="bd">
-                <span class="icon">🗄️</span> BD
+                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.7-4 3-9 3s-9-1.3-9-3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/></svg></span> BD
             </button>
         </nav>
 
@@ -1956,7 +2246,7 @@
         $('loginForm').style.display = 'block';
         $('registerForm').style.display = 'none';
         $('recoveryForm').style.display = 'none';
-        $('authTitle').textContent = '🔐 Gestor de Pagos';
+        $('authTitle').textContent = 'Gestor de Pagos';
         $('authSubtitle').textContent = 'Inicia sesión para acceder a tus datos';
         $('loginError').classList.remove('show');
         setTimeout(() => $('loginUsuario').focus(), 50);
@@ -1966,7 +2256,7 @@
         $('loginForm').style.display = 'none';
         $('registerForm').style.display = 'block';
         $('recoveryForm').style.display = 'none';
-        $('authTitle').textContent = '📝 Crear Cuenta';
+        $('authTitle').textContent = 'Crear Cuenta';
         $('authSubtitle').textContent = 'Crea tu cuenta para sincronizar tus datos';
         $('registerError').classList.remove('show');
         setTimeout(() => $('registerNombre').focus(), 50);
@@ -1976,7 +2266,7 @@
         $('loginForm').style.display = 'none';
         $('registerForm').style.display = 'none';
         $('recoveryForm').style.display = 'block';
-        $('authTitle').textContent = '🔑 Recuperar contraseña';
+        $('authTitle').textContent = 'Recuperar contraseña';
         $('authSubtitle').textContent = 'Te enviaremos un enlace a tu email';
         $('recoveryError').classList.remove('show');
         setTimeout(() => $('recoveryEmail').focus(), 50);
@@ -2109,6 +2399,49 @@
         clearTimeout(saveTimer);
         if (usuarioActual) { saveLocal(); await pushCloud(); }
         if (sb) await sb.auth.signOut(); // dispara SIGNED_OUT → salirDeApp
+    }
+
+    /* ============================================================
+       MI CUENTA (perfil, contraseña — igual en todos los dispositivos)
+       ============================================================ */
+    function abrirModalCuenta() {
+        if (!usuarioActual) return;
+        $('cuentaEmail').value = usuarioActual.email || '—';
+        $('cuentaNombre').value = usuarioActual.username || '';
+        $('cuentaPassword').value = '';
+        $('cuentaPassword2').value = '';
+        $('cuentaAvatar').textContent = (usuarioActual.username || '?').trim().charAt(0).toUpperCase() || '?';
+        $('modalCuenta').classList.add('open');
+        setTimeout(() => $('cuentaNombre').focus(), 80);
+    }
+
+    function cerrarModalCuenta() {
+        $('modalCuenta').classList.remove('open');
+    }
+
+    async function guardarCuentaPerfil() {
+        const nombre = $('cuentaNombre').value.trim();
+        if (nombre.length < 2) { showToast('El nombre debe tener al menos 2 caracteres.', 'error'); return; }
+        if (!sb || !usuarioActual) return;
+        const { error } = await sb.auth.updateUser({ data: { username: nombre } });
+        if (error) { showToast(mapearErrorAuth(error), 'error'); return; }
+        usuarioActual.username = nombre;
+        renderHeader();
+        $('cuentaAvatar').textContent = nombre.charAt(0).toUpperCase();
+        showToast('✅ Nombre actualizado en tu cuenta', 'success');
+    }
+
+    async function cambiarPasswordCuenta() {
+        const p1 = $('cuentaPassword').value;
+        const p2 = $('cuentaPassword2').value;
+        if (p1.length < 6) { showToast('La contraseña debe tener al menos 6 caracteres.', 'error'); return; }
+        if (p1 !== p2) { showToast('Las contraseñas no coinciden.', 'error'); return; }
+        if (!sb) return;
+        const { error } = await sb.auth.updateUser({ password: p1 });
+        if (error) { showToast(mapearErrorAuth(error), 'error'); return; }
+        $('cuentaPassword').value = '';
+        $('cuentaPassword2').value = '';
+        showToast('✅ Contraseña actualizada. Úsala en tus demás dispositivos.', 'success');
     }
 
     /* ============================================================
@@ -3648,6 +3981,25 @@
             cambiarPestanaClientes('comisiones');
             showToast('⚙️ Configuración de comisiones', 'info');
         });
+
+        /* --- Mi cuenta --- */
+        $('usuarioBadge').addEventListener('click', abrirModalCuenta);
+        $('usuarioBadge').addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrirModalCuenta(); }
+        });
+        $('btnMiCuenta').addEventListener('click', () => {
+            $('dropdownMenu').classList.remove('open');
+            abrirModalCuenta();
+        });
+        $('cuentaCerrar').addEventListener('click', cerrarModalCuenta);
+        $('modalCuenta').addEventListener('click', e => { if (e.target === $('modalCuenta')) cerrarModalCuenta(); });
+        $('btnGuardarCuenta').addEventListener('click', guardarCuentaPerfil);
+        $('btnCambiarPassword').addEventListener('click', cambiarPasswordCuenta);
+        $('cuentaSalir').addEventListener('click', async () => {
+            cerrarModalCuenta();
+            await cerrarSesion();
+        });
+        $('cuentaPassword2').addEventListener('keydown', e => { if (e.key === 'Enter') cambiarPasswordCuenta(); });
         $('menuHamburguesa').addEventListener('click', e => {
             e.stopPropagation();
             $('dropdownMenu').classList.toggle('open');
@@ -3829,6 +4181,7 @@
                 cerrarModal();
                 $('modalEditarCliente').classList.remove('open');
                 $('modalPassword').classList.remove('open');
+                cerrarModalCuenta();
                 $('dropdownMenu').classList.remove('open');
                 const manual = document.querySelector('.modal-mensaje-manual');
                 if (manual) manual.remove();
