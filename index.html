@@ -1461,6 +1461,8 @@
         .profile-menu-heading { display:flex; flex-direction:column; gap:5px; padding:10px 12px 12px; }
         .profile-menu-heading > span:first-child { font-size:.6rem; letter-spacing:.13em; font-weight:800; color:var(--text-muted); }
         .profile-menu-heading .usuario-badge { color:var(--text-primary); font-size:.8rem; font-weight:700; overflow-wrap:anywhere; border:0; }
+        .profile-config summary { cursor:pointer; padding:10px 16px; font-size:.85rem; border-radius:10px; }
+        .profile-config button { padding-left:28px !important; }
         .profile-menu-divider { border-top:1px solid var(--border-color); margin:5px 8px; }
         .dropdown-menu button { margin:1px 0; width:100%; min-height:38px; }
         .dropdown-menu .btn-logout, .dropdown-menu .btn-dark-mode, .dropdown-menu .btn-settings { padding:10px 16px; font-size:.85rem; font-weight:500; color:var(--text-primary); border-radius:10px; }
@@ -1568,8 +1570,21 @@
         .rates-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin:14px 0; }
         .rates-options label { display:flex; align-items:center; gap:8px; padding:10px; background:var(--bg-card-alt); border:1px solid var(--border-color); border-radius:12px; font-size:.8rem; }
         .rates-options input { accent-color:#087f5b; }
+        #modalImportacion button:disabled { opacity:.45; cursor:not-allowed; }
         .preview-box { margin:12px 0; padding:12px; border:1px solid var(--border-color); border-radius:14px; background:var(--bg-card-alt); color:var(--text-primary); font-size:.78rem; line-height:1.55; white-space:pre-line; }
         .backup-reminder { display:flex; gap:10px; align-items:center; justify-content:space-between; margin:0 0 20px; padding:12px; border:1px solid var(--border-color); border-radius:16px; background:var(--bg-card); font-size:.76rem; line-height:1.4; }
+        #listaClientesResumen .cliente-card { display:block; }
+        #listaClientesResumen .cliente-cabecera { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+        #listaClientesResumen .cliente-cabecera .info { min-width:0; overflow-wrap:anywhere; }
+        #listaClientesResumen .cliente-card .saldo { flex-shrink:0; }
+        #listaClientesResumen .cliente-card .acciones { margin-top:9px; flex-wrap:wrap; }
+        #listaClientesResumen .cliente-card .acciones button { background:var(--btn-secondary-bg); color:var(--btn-secondary-text); padding:8px 10px; font-size:.7rem; font-weight:700; min-height:34px; }
+        #listaClientesResumen .cliente-card .acciones .btn-eliminar { color:var(--gasto-text); background:var(--gasto-bg); }
+        .resumen-diario { padding:17px; margin-bottom:20px; }
+        .resumen-diario .home-activity-header h2 { font-size:1rem; }
+        .resumen-diario-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:14px 0 7px; font-size:.68rem; color:var(--text-secondary); }
+        .resumen-diario-grid strong { display:block; margin-top:4px; color:var(--text-primary); font-size:.78rem; overflow-wrap:anywhere; }
+        .resumen-diario small { color:var(--text-muted); font-size:.65rem; }
         .backup-reminder[hidden] { display:none; }
         .backup-reminder button { flex:none; border:0; border-radius:10px; background:var(--btn-secondary-bg); color:var(--btn-secondary-text); padding:9px; cursor:pointer; font-weight:700; }
 
@@ -1754,6 +1769,20 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="modalFicha" role="dialog" aria-modal="true" aria-labelledby="fichaTitulo"><div class="modal">
+        <h3 id="fichaTitulo">Cliente</h3><div id="fichaContenido" class="preview-box"></div>
+        <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="cerrarFicha">Cerrar</button><button type="button" class="btn-modal-save" id="fichaHistorial">Ver historial</button></div>
+        <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="fichaRecibir">Recibir</button><button type="button" class="btn-modal-save" id="fichaTransferir">Transferir</button></div>
+    </div></div>
+    <div class="modal-overlay" id="modalEstadoSync" role="dialog" aria-modal="true" aria-labelledby="tituloEstadoSync"><div class="modal">
+        <h3 id="tituloEstadoSync">Estado de sincronización</h3><p id="detalleEstadoSync" class="preview-box"></p>
+        <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="cerrarEstadoSync">Cerrar</button><button type="button" class="btn-modal-save" id="accionEstadoSync">Ir a respaldo y datos</button></div>
+    </div></div>
+    <div class="modal-overlay" id="modalImportacion" role="dialog" aria-modal="true" aria-labelledby="tituloImportacion"><div class="modal">
+        <h3 id="tituloImportacion">Revisar importación</h3><p id="detalleImportacion" class="preview-box"></p>
+        <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="cancelarImportacion">Cancelar</button><button type="button" class="btn-modal-save" id="confirmarImportacion">Importar</button></div>
+    </div></div>
+
     <!-- ===== MODAL MI CUENTA ===== -->
     <div class="modal-overlay" id="modalCuenta">
         <div class="modal">
@@ -1808,17 +1837,14 @@
             <div class="dropdown-menu" id="dropdownMenu">
                 <div class="profile-menu-heading"><span>MI ESPACIO</span><span class="usuario-badge" id="usuarioBadge" role="button" tabindex="0" title="Mi cuenta">👤 USUARIO</span></div>
                 <button id="btnMiCuenta">👤 Mi cuenta</button>
-                <button data-section="inicio">⌂ Inicio</button>
-                <button data-section="clientes">👥 Clientes</button>
-                <button data-section="operaciones">🔄 Operaciones</button>
                 <button data-section="saldo">💰 Saldo por cliente</button>
-                <button data-section="historial">📜 Historial</button>
-                <button data-section="finanzas">💹 Finanzas</button>
                 <div class="profile-menu-divider"></div>
-                <button id="btnSettings">⚙️ Comisiones</button>
+                <details class="profile-config"><summary>⚙️ Configuración</summary>
+                <button id="btnSettings">📊 Comisiones</button>
                 <button id="btnMonedas" type="button">💱 Monedas del anuncio</button>
                 <p id="estadoPreferencias" role="status" style="padding:4px 16px;font-size:.68rem;color:var(--text-muted)"></p>
                 <button id="btnDarkMode">🌙 Cambiar tema</button>
+                </details>
                 <button data-section="bd">🗄️ Respaldo y datos</button>
                 <button id="btnLogout">🚪 Cerrar sesión</button>
             </div>
@@ -1860,11 +1886,12 @@
         <div id="section-inicio" class="section visible">
             <div class="home-heading"><div><span class="home-kicker">TODO EN UN LUGAR <span aria-hidden="true">✳</span></span><h1 id="homeGreeting">Tu día, en orden.</h1><p>Tu gestión, más simple.</p></div><span class="home-sparkle" aria-hidden="true">✳</span></div>
             <div id="avisoRespaldo" class="backup-reminder" hidden><span id="textoRespaldo"></span><button type="button" id="irRespaldo">Respaldo</button></div>
+            <div class="card resumen-diario"><div class="home-activity-header"><div><span class="home-kicker">HOY</span><h2>Resumen diario</h2></div><button type="button" id="verMovimientosHoy">Ver movimientos →</button></div><div class="resumen-diario-grid"><div>Recibido bruto<strong id="hoyRecibido">$0.00</strong></div><div>Transferido<strong id="hoyTransferido">$0.00</strong></div><div>Comisiones<strong id="hoyComisiones">$0.00</strong></div></div><small>Según la fecha registrada; comisiones de recibos del día.</small></div>
             <div class="dashboard-grid"><div class="dashboard-primary">
             <div class="balance-hero">
-                <div class="balance-top"><span>Saldo total de clientes</span><button type="button" id="toggleSaldoInicio" class="balance-toggle" aria-pressed="false" aria-label="Ocultar saldo de portada">Ocultar</button></div>
+                <div class="balance-top"><span>Saldo de clientes</span><button type="button" title="Oculta saldos en pantalla, no importes de operaciones ni archivos exportados" id="toggleSaldoInicio" class="balance-toggle" aria-pressed="false" aria-label="Ocultar saldos en pantalla">Ocultar</button></div>
                 <div class="balance-amount" id="saldoInicio">$0.00</div>
-                <div class="balance-caption"><span class="balance-dot"></span> Disponible en tus clientes</div><span class="balance-orbit" aria-hidden="true"></span>
+                <div class="balance-caption"><span class="balance-dot"></span> Saldo de clientes activos y archivados</div><span class="balance-orbit" aria-hidden="true"></span>
             </div>
             <div class="quick-actions" aria-label="Accesos rápidos">
                 <button type="button" id="quickRecibir"><span class="quick-icon" aria-hidden="true">↓</span><span>Recibir</span></button>
@@ -1910,6 +1937,7 @@
                     <span class="badge-count" id="totalClientes">0</span>
                 </div>
                 <input type="text" id="buscadorCliente" class="buscador-cliente" placeholder="🔍 Buscar cliente...">
+                <button type="button" id="verArchivados" class="btn-small btn-secondary" aria-pressed="false" style="margin-bottom:10px">Ver archivados</button>
                 <div id="listaClientesResumen"></div>
             </div>
 
@@ -1959,6 +1987,7 @@
                 <div style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); margin:6px 0; text-align:center; font-weight:500; font-size:0.9rem;">
                     <span id="recibirSaldoActualizado">Saldo actual: $0.00</span>
                 </div>
+                <p id="avisoDuplicadoRecibo" class="hint" role="status" hidden></p>
                 <div style="display:flex; gap:6px; margin-top:4px;">
                     <button class="btn-primary" id="btnRegistrarRecibo" style="flex:1;">Registrar Recibo</button>
                     <button class="btn-small btn-secondary" id="btnDictarMontoRecibo" title="Dictar monto" style="font-size:1.2rem; padding:8px 12px;">🎤</button>
@@ -2003,6 +2032,7 @@
                     <span id="transferirSaldoRestante">Saldo restante: $0.00</span>
                 </div>
                 <div class="aviso-negativo" id="avisoSaldoNegativo">⚠️ Saldo negativo. Se usará dinero propio.</div>
+                <p id="avisoDuplicadoTransferencia" class="hint" role="status" hidden></p>
                 <div style="display:flex; gap:6px; margin-top:4px;">
                     <button class="btn-primary" id="btnRegistrarTransferencia" style="flex:1;">Registrar Transferencia</button>
                     <button class="btn-small btn-secondary" id="btnDictarMontoTransferir" title="Dictar monto" style="font-size:1.2rem; padding:8px 12px;">🎤</button>
@@ -2037,7 +2067,7 @@
             <div class="page-heading"><div><span class="section-kicker">TU CARTERA</span><h1>Saldos</h1><p>Consultá el detalle por cliente.</p></div><span class="page-heading-icon" aria-hidden="true">✳</span></div>
             <div class="card" style="background:var(--gradient); border:none; color:white;">
                 <div class="saldo-total" style="-webkit-text-fill-color:white; color:white;" id="saldoTotal">$0.00</div>
-                <div class="saldo-label" style="color:rgba(255,255,255,0.7);">Saldo total de todos los clientes</div>
+                <div class="saldo-label" style="color:rgba(255,255,255,0.7);">Saldo total de clientes activos y archivados</div>
             </div>
             <div class="card">
                 <h3 style="margin-bottom:10px;">Saldo por Cliente</h3>
@@ -2114,7 +2144,7 @@
                         <div class="monto" id="totalGastos">$0.00</div>
                     </div>
                     <div class="stat-card total">
-                        <div class="label">Saldo Total</div>
+                        <div class="label">Resultado financiero</div>
                         <div class="monto" id="saldoFinanzas">$0.00</div>
                     </div>
                 </div>
@@ -2200,7 +2230,7 @@
                 <input type="file" id="inputImportarJSON" accept=".json" style="display:none;">
 
                 <div style="margin-top:6px;">
-                    <label style="font-size:0.75rem; font-weight:500;">Importar Excel/CSV</label>
+                    <label style="font-size:0.75rem; font-weight:500;">Importar Excel/CSV (CSV en UTF-8)</label>
                     <div class="bd-import-row">
                         <input type="file" id="inputImportarExcel" accept=".xlsx,.xls,.csv" style="flex:1;">
                         <button class="btn-small btn-success" id="btnImportarExcel" style="white-space:nowrap;">📥 Importar</button>
@@ -2339,6 +2369,14 @@
         saldoInicioOculto = preferenciasActuales.saldoOculto;
         aplicarModoOscuro(preferenciasActuales.oscuro);
         renderHeader(); renderTasas(); estadoPreferencias();
+        if (saldoInicioOculto && $('modalEditar').classList.contains('open')) cerrarModal();
+        if ($('modalFicha').classList.contains('open') && fichaClienteId) abrirFicha(fichaClienteId);
+        actualizarSaldoOperacionRecibir(); actualizarSaldoOperacionTransferir(); actualizarSaldoRestanteTransferir();
+        if (currentSection === 'operaciones') { renderRecibosOperaciones(); renderTransferenciasOperaciones(); }
+        if (currentSection === 'clientes') renderResumenClientes();
+        if (currentSection === 'saldo') renderSaldo();
+        if (currentSection === 'historial') renderHistorial();
+        if (currentSection === 'finanzas') renderFinanzas();
     }
     async function enviarPreferencias() {
         if (!usuarioActual || !preferenciasPendientes || !sb || !navigator.onLine) { estadoPreferencias(); return; }
@@ -2436,6 +2474,7 @@
     function getSaldoCliente(id) { const c = getCliente(id); return c ? (c.saldo || 0) : 0; }
 
     function formatearMoneda(valor) { return '$' + Number(valor || 0).toFixed(2); }
+    function mostrarSaldo(valor) { return saldoInicioOculto ? '••••••' : formatearMoneda(valor); }
 
     function formatearFecha(ts) {
         return new Date(ts).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -2488,7 +2527,9 @@
     /* ============================================================
        ESTADO DE SINCRONIZACIÓN (UI)
        ============================================================ */
+    let modoSyncActual = 'local';
     function setSync(mode) {
+        modoSyncActual = mode;
         const el = $('syncStatus');
         if (!el) return;
         const map = {
@@ -2799,6 +2840,8 @@
         if (usuarioActual) { if (preferenciasPendientes) enviarPreferencias(); else cargarPreferencias(false); actualizarTasas(); }
         if (usuarioActual && !revisionConocida) await cargarDatosUsuario();
         else if (usuarioActual && pendingPush && !hayConflicto) { setSync('saving'); pushCloud(); }
+        else if (usuarioActual && hayConflicto) setSync('conflict');
+        else if (usuarioActual && revisionConocida) setSync('saved');
     });
     window.addEventListener('offline', () => { actualizarEstadoConexion(); setSync('offline'); });
     document.addEventListener('visibilitychange', () => {
@@ -2898,7 +2941,7 @@
     }
 
     async function salirDeApp() {
-        cerrarRespaldo();
+        cerrarRespaldo(); cerrarFicha(); cerrarImportacion(); $('modalEstadoSync').classList.remove('open'); mostrandoArchivados = false;
         preferenciasActuales = null; preferenciasPendientes = false; versionPreferencias++;
         clearInterval(tasasTimer); tasasTimer = null; tasasActuales = null; solicitudTasas++;
         if (realtimeChannel && sb) { sb.removeChannel(realtimeChannel); realtimeChannel = null; }
@@ -3257,10 +3300,15 @@
         $('saldoInicio').textContent = saldoInicioOculto ? '••••••' : formatearMoneda(state.clientes.reduce((acc, c) => acc + (c.saldo || 0), 0));
         $('toggleSaldoInicio').textContent = saldoInicioOculto ? 'Mostrar' : 'Ocultar';
         $('toggleSaldoInicio').setAttribute('aria-pressed', String(saldoInicioOculto));
-        $('toggleSaldoInicio').setAttribute('aria-label', saldoInicioOculto ? 'Mostrar saldo de portada' : 'Ocultar saldo de portada');
+        $('toggleSaldoInicio').setAttribute('aria-label', saldoInicioOculto ? 'Mostrar saldos en pantalla' : 'Ocultar saldos en pantalla');
         const operaciones = operacionesCronologicas().reverse();
         const hoy = rangoHoy();
         const cantidadHoy = operaciones.filter(({op}) => op.fecha >= hoy.inicio && op.fecha <= hoy.fin).length;
+        const recibosHoy = state.recibos.filter(op => op.fecha >= hoy.inicio && op.fecha <= hoy.fin);
+        const transferenciasHoy = state.transferencias.filter(op => op.fecha >= hoy.inicio && op.fecha <= hoy.fin);
+        $('hoyRecibido').textContent = mostrarSaldo(recibosHoy.reduce((a, op) => a + (Number(op.monto) || 0), 0));
+        $('hoyTransferido').textContent = mostrarSaldo(transferenciasHoy.reduce((a, op) => a + (Number(op.monto) || 0), 0));
+        $('hoyComisiones').textContent = mostrarSaldo(recibosHoy.reduce((a, op) => a + (Number(op.comision) || 0), 0));
         $('resumenHoy').textContent = cantidadHoy + (cantidadHoy === 1 ? ' movimiento hoy' : ' movimientos hoy');
         $('ultimosMovimientos').innerHTML = operaciones.length ? operaciones.slice(0, 3).map(({tipo, op}) => {
             const c = getCliente(op.clienteId);
@@ -3277,7 +3325,7 @@
     }
 
     function actualizarSelectores() {
-        const firma = state.clientes.map(c => c.id + '|' + c.nombre).join('¦');
+        const firma = state.clientes.map(c => c.id + '|' + c.nombre + '|' + !!c.archivado).join('¦');
         const selects = ['recibirCliente', 'transferirCliente', 'historialCliente'];
         if (firma !== selectFirma) {
             selectFirma = firma;
@@ -3286,14 +3334,15 @@
                 if (!sel) return;
                 const prev = sel.value;
                 sel.innerHTML = id === 'historialCliente' ? '<option value="todos">Todos</option>' : '';
-                state.clientes.forEach(c => {
+                const disponibles = id === 'historialCliente' ? state.clientes : state.clientes.filter(c => !c.archivado);
+                disponibles.forEach(c => {
                     const opt = document.createElement('option');
                     opt.value = c.id;
                     opt.textContent = c.nombre;
                     sel.appendChild(opt);
                 });
-                if (state.clientes.some(c => c.id === prev)) sel.value = prev;
-                else if (state.clientes.length > 0 && id !== 'historialCliente') sel.value = state.clientes[0].id;
+                if (disponibles.some(c => c.id === prev)) sel.value = prev;
+                else if (disponibles.length > 0 && id !== 'historialCliente') sel.value = disponibles[0].id;
             });
             if (val('buscarClienteRecibir')) filtrarSelectorClientes('buscarClienteRecibir', 'recibirCliente');
             if (val('buscarClienteTransferir')) filtrarSelectorClientes('buscarClienteTransferir', 'transferirCliente');
@@ -3309,7 +3358,7 @@
         const texto = val(campo).trim().toLocaleLowerCase();
         const select = $(selectId), previo = select.value;
         select.innerHTML = '';
-        state.clientes.filter(c => String(c.nombre).toLocaleLowerCase().includes(texto)).forEach(c => {
+        state.clientes.filter(c => !c.archivado && String(c.nombre).toLocaleLowerCase().includes(texto)).forEach(c => {
             const option = document.createElement('option'); option.value = c.id; option.textContent = c.nombre; select.appendChild(option);
         });
         if ([...select.options].some(o => o.value === previo)) select.value = previo;
@@ -3365,49 +3414,65 @@
         showToast('✅ Cliente "' + nombre + '" agregado con éxito.', 'success');
     }
 
+    let mostrandoArchivados = false, fichaClienteId = null, focoFicha = null;
     function renderResumenClientes() {
         const container = $('listaClientesResumen');
-        if (!container) return;
-        $('totalClientes').textContent = state.clientes.length;
-        if (state.clientes.length === 0) {
-            container.innerHTML = '<div class="empty-msg"><p>No hay clientes registrados</p></div>';
-            return;
-        }
-        let html = '';
-        state.clientes.forEach(c => {
-            const recibosCliente = state.recibos.filter(r => r.clienteId === c.id).length;
-            const transferenciasCliente = state.transferencias.filter(t => t.clienteId === c.id).length;
-            const saldo = c.saldo || 0;
-            const esNegativo = saldo < 0;
-            html += `
-                <div class="cliente-card">
-                    <div class="info">
-                        <div class="nombre">${esc(c.nombre)}</div>
-                        <div class="comision">Comisión: ${esc(c.comision)}% · Recibos: ${recibosCliente} · Transf: ${transferenciasCliente}</div>
-                    </div>
-                    <div style="display:flex; gap:4px; align-items:center;">
-                        <span class="saldo ${esNegativo ? 'negativo' : ''}">${formatearMoneda(saldo)}</span>
-                        <div class="acciones">
-                            <button class="btn-editar" data-action="edit-cliente" data-id="${c.id}" title="Editar cliente" aria-label="Editar cliente">✏️</button>
-                            <button class="btn-eliminar" data-action="del-cliente" data-id="${c.id}" title="Eliminar cliente" aria-label="Eliminar cliente">✕</button>
-                        </div>
-                    </div>
-                </div>`;
-        });
-        container.innerHTML = html;
+        const lista = state.clientes.filter(c => !!c.archivado === mostrandoArchivados);
+        $('totalClientes').textContent = lista.length;
+        $('verArchivados').textContent = mostrandoArchivados ? 'Ver clientes activos' : 'Ver archivados';
+        $('verArchivados').setAttribute('aria-pressed', String(mostrandoArchivados));
+        if (!lista.length) { container.innerHTML = '<div class="empty-msg"><p>' + (mostrandoArchivados ? 'No hay clientes archivados' : 'No hay clientes activos') + '</p></div>'; return; }
+        container.innerHTML = lista.map(c => {
+            const recibos = state.recibos.filter(r => r.clienteId === c.id).length;
+            const transfers = state.transferencias.filter(t => t.clienteId === c.id).length;
+            return `<div class="cliente-card"><div class="cliente-cabecera"><div class="info"><div class="nombre">${esc(c.nombre)}</div><div class="comision">Comisión: ${esc(c.comision)}% · Recibos: ${recibos} · Transf: ${transfers}</div></div><span class="saldo ${c.saldo < 0 ? 'negativo' : ''}">${mostrarSaldo(c.saldo)}</span></div><div class="acciones">
+              <button class="btn-editar" data-action="ficha-cliente" data-id="${esc(c.id)}" aria-label="Ficha del cliente">Ficha</button>
+              <button class="btn-editar" data-action="edit-cliente" data-id="${esc(c.id)}" aria-label="Editar cliente">Editar</button>
+              <button class="btn-editar" data-action="archivar-cliente" data-id="${esc(c.id)}" aria-label="${c.archivado ? 'Reactivar' : 'Archivar'} cliente">${c.archivado ? 'Reactivar' : 'Archivar'}</button>
+              ${c.archivado ? `<button class="btn-eliminar" data-action="del-cliente" data-id="${esc(c.id)}" aria-label="Eliminar definitivamente">Eliminar</button>` : ''}</div></div>`;
+        }).join('');
         if ($('buscadorCliente').value) filtrarClientes();
+    }
+    function archivarCliente(id) {
+        const c = getCliente(id); if (!c) return;
+        c.archivado = !c.archivado;
+        persist(); refresh();
+        showToast(c.archivado ? 'Cliente archivado; conserva su saldo e historial.' : 'Cliente reactivado.', 'success');
+    }
+    function abrirFicha(id) {
+        const c = getCliente(id); if (!c) return;
+        if (!$('modalFicha').classList.contains('open')) focoFicha = document.activeElement;
+        fichaClienteId = id;
+        const recientes = operacionesCronologicas().filter(x => x.op.clienteId === id).reverse();
+        const destinos = []; const vistos = new Set();
+        recientes.filter(x => x.tipo === 'transferencia' && x.op.numeroDestino).forEach(x => {
+            if (vistos.has(x.op.numeroDestino) || destinos.length >= 5) return;
+            vistos.add(x.op.numeroDestino); destinos.push((x.op.banco || 'Destino') + ' ···· ' + String(x.op.numeroDestino).slice(-4));
+        });
+        $('fichaTitulo').textContent = c.nombre + (c.archivado ? ' · Archivado' : '');
+        $('fichaContenido').textContent = 'Saldo: ' + mostrarSaldo(c.saldo) + '\nComisión: ' + c.comision + '%\nDestinos recientes: ' + (destinos.join(', ') || 'ninguno') + '\nÚltimos movimientos:\n' + (recientes.slice(0,5).map(x => '#' + x.op.numeroOp + ' · ' + (x.tipo === 'recibo' ? 'Recibo' : 'Transferencia') + ' · ' + formatearFecha(x.op.fecha) + ' · ' + (saldoInicioOculto ? '••••••' : formatearMoneda(x.op.monto))).join('\n') || 'Sin movimientos');
+        $('fichaRecibir').disabled = $('fichaTransferir').disabled = !!c.archivado;
+        $('modalFicha').classList.add('open'); $('cerrarFicha').focus();
+    }
+    function cerrarFicha() { const abierto = $('modalFicha').classList.contains('open'); fichaClienteId = null; $('modalFicha').classList.remove('open'); if (abierto && focoFicha && focoFicha.isConnected) focoFicha.focus(); focoFicha = null; }
+    function operarDesdeFicha(tipo) {
+        const c = getCliente(fichaClienteId); if (!c || c.archivado) return;
+        const id = c.id; cerrarFicha(); cambiarPestanaOperaciones(tipo); cambiarSeccion('operaciones');
+        const campo = tipo === 'recibir' ? 'buscarClienteRecibir' : 'buscarClienteTransferir';
+        const select = tipo === 'recibir' ? 'recibirCliente' : 'transferirCliente';
+        $(campo).value = ''; filtrarSelectorClientes(campo, select); $(select).value = id; $(select).dispatchEvent(new Event('change'));
     }
 
     function renderComisiones() {
         const container = $('listaComisiones');
         if (!container) return;
-        $('totalComisionesClientes').textContent = state.clientes.length;
-        if (state.clientes.length === 0) {
-            container.innerHTML = '<div class="empty-msg"><p>No hay clientes</p></div>';
+        $('totalComisionesClientes').textContent = state.clientes.filter(c => !c.archivado).length;
+        if (!state.clientes.some(c => !c.archivado)) {
+            container.innerHTML = '<div class="empty-msg"><p>No hay clientes activos</p></div>';
             return;
         }
         let html = '';
-        state.clientes.forEach(c => {
+        state.clientes.filter(c => !c.archivado).forEach(c => {
             html += `
                 <div class="cliente-card">
                     <div class="info">
@@ -3429,7 +3494,7 @@
         const nuevoValor = parseFloat(input.value);
         if (isNaN(nuevoValor) || nuevoValor < 0) { showToast('Ingresa una comisión válida.', 'error'); return; }
         const cliente = getCliente(id);
-        if (!cliente) { showToast('Cliente no encontrado.', 'error'); return; }
+        if (!cliente || cliente.archivado) { showToast('Seleccioná un cliente activo.', 'error'); return; }
         cliente.comision = nuevoValor;
         persist();
         refresh();
@@ -3527,12 +3592,12 @@
 
     function actualizarSaldoOperacionRecibir() {
         const cliente = getCliente(val('recibirCliente'));
-        $('recibirSaldoActualizado').textContent = 'Saldo actual: ' + (cliente ? formatearMoneda(cliente.saldo || 0) : '$0.00');
+        $('recibirSaldoActualizado').textContent = 'Saldo actual: ' + mostrarSaldo(cliente ? cliente.saldo : 0);
     }
 
     function actualizarSaldoOperacionTransferir() {
         const cliente = getCliente(val('transferirCliente'));
-        $('transferirSaldoDisponible').value = cliente ? formatearMoneda(cliente.saldo || 0) : '$0.00';
+        $('transferirSaldoDisponible').value = mostrarSaldo(cliente ? cliente.saldo : 0);
     }
 
     function actualizarSaldoRestanteTransferir() {
@@ -3546,10 +3611,26 @@
         const elemento = $('transferirSaldoRestante');
         const aviso = $('avisoSaldoNegativo');
         if (elemento) {
-            elemento.innerHTML = 'Saldo restante: <strong>' + formatearMoneda(saldoRestante) + '</strong>';
+            elemento.innerHTML = 'Saldo restante: <strong>' + mostrarSaldo(saldoRestante) + '</strong>';
             elemento.style.color = esNegativo ? 'var(--saldo-negativo)' : 'var(--text-primary)';
             aviso.style.display = esNegativo ? 'block' : 'none';
         }
+    }
+
+    function actualizarAvisosDuplicados() {
+        const comprobar = (tipo) => {
+            const recibo = tipo === 'recibo';
+            const id = val(recibo ? 'recibirCliente' : 'transferirCliente');
+            const monto = Number(val(recibo ? 'recibirMonto' : 'transferirMonto'));
+            const fecha = val(recibo ? 'recibirFecha' : 'transferirFecha') || hoyISO();
+            const destino = $('numeroDestino').dataset.numeroLimpio || '';
+            const lista = recibo ? state.recibos : state.transferencias;
+            const coincide = id && monto > 0 && (recibo || destino) && lista.some(op => op.clienteId === id && Number(op.monto) === monto && fechaLocalISO(op.fecha) === fecha && (recibo || op.numeroDestino === destino));
+            const aviso = $(recibo ? 'avisoDuplicadoRecibo' : 'avisoDuplicadoTransferencia');
+            aviso.hidden = !coincide;
+            aviso.textContent = coincide ? '⚠️ Ya existe una operación similar para este cliente en esa fecha. Podés registrarla igualmente.' : '';
+        };
+        comprobar('recibo'); comprobar('transferencia');
     }
 
     function rangoHoy() {
@@ -3634,7 +3715,7 @@
                     </div>
                     <div class="monto">${formatearMoneda(t.monto)}</div>
                     <div class="detalle">
-                        Saldo restante: <span style="${esNegativo ? 'color:var(--saldo-negativo);' : ''}font-weight:600;">${formatearMoneda(saldoRestante)}</span>${esNegativo ? ' ⚠️ (Préstamo)' : ''}
+                        Saldo restante: <span style="${esNegativo ? 'color:var(--saldo-negativo);' : ''}font-weight:600;">${mostrarSaldo(saldoRestante)}</span>${esNegativo ? ' ⚠️ (Préstamo)' : ''}
                     </div>
                     ${Number(t.ajusteSaldo) ? '<div class="detalle">Ajuste previo: ' + formatearMoneda(t.ajusteSaldo) + '</div>' : ''}
                     <div>
@@ -3661,7 +3742,7 @@
         if (!clienteId) { showToast('Selecciona un cliente.', 'error'); return; }
         if (isNaN(monto) || monto <= 0) { showToast('Ingresa un monto válido.', 'error'); return; }
         const cliente = getCliente(clienteId);
-        if (!cliente) { showToast('Cliente no encontrado.', 'error'); return; }
+        if (!cliente || cliente.archivado) { showToast('Seleccioná un cliente activo.', 'error'); return; }
         const comision = monto * ((cliente.comision || 0) / 100);
         const neto = monto - comision;
         if (neto < 0) { showToast('La comisión no puede ser mayor al monto.', 'error'); return; }
@@ -3682,6 +3763,7 @@
         recalcularSaldos(iniciales, [clienteId]);
         persist();
         $('recibirMonto').value = '';
+        actualizarAvisosDuplicados();
         refresh();
         actualizarCamposRecibo();
         actualizarSaldoOperacionRecibir();
@@ -3717,7 +3799,7 @@
             return;
         }
         const cliente = getCliente(clienteId);
-        if (!cliente) { showToast('Cliente no encontrado.', 'error'); return; }
+        if (!cliente || cliente.archivado) { showToast('Seleccioná un cliente activo.', 'error'); return; }
 
         const saldoActual = cliente.saldo || 0;
         const fecha = new Date(fechaStr + 'T00:00:00').getTime();
@@ -3740,6 +3822,7 @@
         inputNumero.dataset.banco = '';
         inputNumero.dataset.bancoColor = '';
         $('tipoDetectado').style.display = 'none';
+        actualizarAvisosDuplicados();
         $('hintNumeroDestino').textContent = 'Ingresa el número de tarjeta o monedero';
         $('logoMiniatura').className = 'logo-miniatura';
         inputNumero.style.borderColor = 'var(--border-color)';
@@ -3747,7 +3830,7 @@
         actualizarDestinosRecientes();
         actualizarSaldoOperacionTransferir();
         actualizarSaldoRestanteTransferir();
-        showToast('Transferencia registrada - Saldo actual: ' + formatearMoneda(cliente.saldo), 'success');
+        showToast('Transferencia registrada - Saldo actual: ' + mostrarSaldo(cliente.saldo), 'success');
         setTimeout(() => $('transferirMonto').focus(), 100);
     }
 
@@ -3790,7 +3873,7 @@
        ============================================================ */
     function renderSaldo() {
         const total = state.clientes.reduce((acc, c) => acc + (c.saldo || 0), 0);
-        $('saldoTotal').textContent = formatearMoneda(total);
+        $('saldoTotal').textContent = mostrarSaldo(total);
         const container = $('saldosPorCliente');
         if (!container) return;
         if (state.clientes.length === 0) {
@@ -3803,8 +3886,8 @@
             const saldo = c.saldo || 0;
             html += `
                 <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border-color); font-size:0.9rem;">
-                    <span>${esc(c.nombre)}</span>
-                    <span style="${saldo < 0 ? 'color:var(--saldo-negativo);' : ''} font-weight:600;">${formatearMoneda(saldo)}</span>
+                    <span>${esc(c.nombre)}${c.archivado ? ' · Archivado' : ''}</span>
+                    <span style="${saldo < 0 ? 'color:var(--saldo-negativo);' : ''} font-weight:600;">${mostrarSaldo(saldo)}</span>
                 </div>`;
         });
         container.innerHTML = html;
@@ -3883,7 +3966,7 @@
                 detalle = 'Monto: ' + formatearMoneda(op.monto) + ' · Comisión: ' + formatearMoneda(op.comision) + ' · Neto: ' + formatearMoneda(op.neto);
                 if (Number(op.ajusteSaldo)) detalle += ' · Ajuste previo: ' + formatearMoneda(op.ajusteSaldo);
             } else {
-                detalle = 'Monto: ' + formatearMoneda(op.monto) + ' · Saldo restante: ' + formatearMoneda((op.saldoAntes || 0) - op.monto);
+                detalle = 'Monto: ' + formatearMoneda(op.monto) + ' · Saldo restante: ' + mostrarSaldo((op.saldoAntes || 0) - op.monto);
                 if (Number(op.ajusteSaldo)) detalle += ' · Ajuste previo: ' + formatearMoneda(op.ajusteSaldo);
                 if (op.banco) detalle += ' · Banco: <span class="badge-banco ' + esc(op.bancoColor || 'rojo') + '">' + esc(op.banco) + '</span>';
             }
@@ -3939,7 +4022,7 @@
         $('totalComisiones').textContent = formatearMoneda(totalComisiones);
         $('totalIngresos').textContent = formatearMoneda(totalIngresos);
         $('totalGastos').textContent = formatearMoneda(totalGastos);
-        $('saldoFinanzas').textContent = formatearMoneda(saldo);
+        $('saldoFinanzas').textContent = mostrarSaldo(saldo);
 
         const tipoFiltro = val('filtroFinanzasTipo');
         const fechaFiltro = val('filtroFinanzasFecha');
@@ -4048,6 +4131,7 @@
        MODAL EDITAR OPERACIÓN
        ============================================================ */
     function abrirModalEdicion(id, tipo) {
+        if (saldoInicioOculto) { showToast('Mostrá los saldos en Inicio para editar.', 'info'); return; }
         const operacion = tipo === 'recibo'
             ? state.recibos.find(r => r.id === id)
             : state.transferencias.find(t => t.id === id);
@@ -4297,7 +4381,7 @@
         const t = state.transferencias.find(x => x.id === id);
         if (!t) { showToast('Transferencia no encontrada.', 'error'); return; }
         const cliente = getCliente(t.clienteId);
-        if (!cliente) { showToast('Cliente no encontrado.', 'error'); return; }
+        if (!cliente || cliente.archivado) { showToast('Seleccioná un cliente activo.', 'error'); return; }
 
         const fecha = new Date(t.fecha);
         const fechaFormateada = fecha.getDate() + '/' + (fecha.getMonth() + 1) + '/' + fecha.getFullYear();
@@ -4588,96 +4672,107 @@
         showToast('Respaldo restaurado; se sincronizará con la nube.', 'success');
     }
 
+    let importacionPendiente = null, versionImportacion = 0;
+    function cerrarImportacion() { const abierto = $('modalImportacion').classList.contains('open'); versionImportacion++; importacionPendiente = null; $('modalImportacion').classList.remove('open'); if (abierto) $('btnImportarExcel').focus(); }
+    function fechaImportada(valor) {
+        if (typeof valor === 'number' && Number.isFinite(valor)) {
+            const utc = new Date(Date.UTC(1899,11,30) + valor * 86400000);
+            if (!Number.isFinite(utc.getTime())) return null;
+            return new Date(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate()).getTime();
+        }
+        const texto = String(valor == null ? '' : valor).trim();
+        let m = texto.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+        let y, mes, dia;
+        if (m) { y=+m[1]; mes=+m[2]; dia=+m[3]; }
+        else { m=texto.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/); if (!m) return null; dia=+m[1]; mes=+m[2]; y=+m[3]; }
+        const fecha = new Date(y, mes-1, dia);
+        return fecha.getFullYear() === y && fecha.getMonth() === mes-1 && fecha.getDate() === dia ? fecha.getTime() : null;
+    }
     function importarExcel(file) {
         if (typeof XLSX === 'undefined') { showToast('Librería Excel no disponible.', 'error'); return; }
+        const usuario = usuarioActual && usuarioActual.id, version = serializeState(), solicitud = ++versionImportacion;
         const reader = new FileReader();
         reader.onload = function (e) {
+            if (!usuarioActual || usuarioActual.id !== usuario || solicitud !== versionImportacion) return;
             try {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                const rows = XLSX.utils.sheet_to_json(firstSheet);
-                if (!rows || rows.length === 0) { showToast('Archivo vacío o sin encabezados.', 'error'); return; }
-                const required = ['tipo', 'cliente', 'monto', 'fecha'];
-                const missing = required.filter(col => !(col in rows[0]));
-                if (missing.length > 0) { showToast('Faltan columnas: ' + missing.join(', '), 'error'); return; }
-
-                const iniciales = saldosIniciales();
-                const afectados = new Set();
-                let importados = 0;
-                const errores = [];
-                rows.forEach((row, idx) => {
+                const bytes = new Uint8Array(e.target.result);
+                let libro;
+                if (/\.csv$/i.test(file.name || '')) {
+                    let texto;
+                    try { texto = new TextDecoder('utf-8', {fatal:true}).decode(bytes); }
+                    catch (_) { throw new Error('El CSV debe estar codificado en UTF-8.'); }
+                    libro = XLSX.read(texto, {type:'string'});
+                } else libro = XLSX.read(bytes, {type:'array'});
+                const filas = XLSX.utils.sheet_to_json(libro.Sheets[libro.SheetNames[0]]);
+                if (!filas.length) throw new Error('Archivo vacío o sin encabezados.');
+                const normalizar = row => Object.fromEntries(Object.entries(row).map(([k,v]) => [k.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''), v]));
+                const registros = filas.map(normalizar);
+                const faltan = ['tipo','cliente','monto','fecha'].filter(c => !(c in registros[0]));
+                if (faltan.length) throw new Error('Faltan columnas: ' + faltan.join(', ') + '.');
+                const nuevos = new Map(), items = [], errores = [], avisos = [], claves = new Set();
+                registros.forEach((row, i) => {
                     try {
-                        const tipo = String(row.tipo).toLowerCase().trim();
-                        const nombreCliente = String(row.cliente).trim();
-                        const monto = parseFloat(row.monto);
-                        let fecha = null;
-                        const fechaRaw = row.fecha;
-                        if (typeof fechaRaw === 'number') {
-                            // fecha serial de Excel → fecha local (evita desfase de zona horaria)
-                            const utc = new Date(Date.UTC(1899, 11, 30) + fechaRaw * 86400000);
-                            fecha = new Date(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate()).getTime();
-                        } else if (typeof fechaRaw === 'string') {
-                            const parsed = new Date(fechaRaw);
-                            if (!isNaN(parsed.getTime())) fecha = parsed.getTime();
-                            else {
-                                const parts = fechaRaw.split('-');
-                                if (parts.length === 3) {
-                                    const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-                                    if (!isNaN(d.getTime())) fecha = d.getTime();
-                                }
-                            }
-                        }
-                        if (!fecha) throw new Error('Fecha inválida.');
-                        if (isNaN(monto) || monto <= 0) throw new Error('Monto inválido.');
-                        if (['recibo', 'transferencia'].indexOf(tipo) === -1) throw new Error('Tipo debe ser recibo o transferencia.');
-                        if (!nombreCliente) throw new Error('Cliente vacío.');
-
-                        let cliente = getClientePorNombre(nombreCliente);
-                        if (!cliente) {
-                            cliente = { id: generarId(), nombre: nombreCliente, comision: 0, saldo: 0 };
-                            state.clientes.push(cliente);
-                            iniciales.set(cliente.id, 0);
-                        }
-                        const numeroOp = obtenerSiguienteNumeroOperacion();
+                        const tipo = String(row.tipo || '').trim().toLowerCase();
+                        const nombre = String(row.cliente || '').trim();
+                        const monto = Number(row.monto);
+                        const fecha = fechaImportada(row.fecha);
+                        if (!['recibo','transferencia'].includes(tipo)) throw new Error('tipo debe ser recibo o transferencia');
+                        if (!nombre) throw new Error('cliente vacío');
+                        if (!Number.isFinite(monto) || monto <= 0) throw new Error('monto inválido');
+                        if (fecha === null) throw new Error('fecha inválida; usá AAAA-MM-DD o DD/MM/AAAA');
+                        const key = nombre.toLocaleLowerCase();
+                        let cliente = state.clientes.find(c => String(c.nombre).toLocaleLowerCase() === key) || nuevos.get(key);
+                        if (cliente && cliente.archivado) throw new Error('cliente archivado; reactivalo antes de importar');
+                        if (!cliente) { cliente = {id:generarId(),nombre,comision:0,saldo:0}; nuevos.set(key,cliente); }
+                        let comision = 0, neto = 0;
                         if (tipo === 'recibo') {
-                            let comision = row.comision !== undefined ? parseFloat(row.comision) : NaN;
-                            let neto = row.neto !== undefined ? parseFloat(row.neto) : NaN;
-                            if (isNaN(comision)) comision = monto * ((cliente.comision || 0) / 100);
-                            if (isNaN(neto)) neto = monto - comision;
-                            if (neto < 0) throw new Error('Neto negativo.');
-                            const recibo = { id: generarId(), clienteId: cliente.id, monto, comision, neto, fecha, numeroOp };
-                            state.recibos.push(recibo);
-                            cliente.saldo = (cliente.saldo || 0) + neto;
-                            if (comision > 0) {
-                                state.finanzas.push({
-                                    id: generarId(), tipo: 'comision', monto: comision,
-                                    descripcion: 'Comisión de ' + cliente.nombre,
-                                    clienteId: cliente.id, reciboId: recibo.id, fecha
-                                });
-                            }
-                        } else {
-                            const saldoActual = cliente.saldo || 0;
-                            state.transferencias.push({
-                                id: generarId(), clienteId: cliente.id, monto,
-                                saldoAntes: saldoActual, fecha, numeroOp
-                            });
-                            cliente.saldo = saldoActual - monto;
+                            comision = row.comision == null || row.comision === '' ? monto * ((Number(cliente.comision)||0)/100) : Number(row.comision);
+                            neto = row.neto == null || row.neto === '' ? monto - comision : Number(row.neto);
+                            if (!Number.isFinite(comision) || comision < 0 || comision > monto || !Number.isFinite(neto) || neto < 0 || neto > monto) throw new Error('comisión o neto inválidos');
                         }
-                        afectados.add(cliente.id);
-                        importados++;
-                    } catch (err) { errores.push('Fila ' + (idx + 2) + ': ' + err.message); }
+                        const firma = tipo + '|' + key + '|' + monto + '|' + fechaLocalISO(fecha);
+                        const existentes = tipo === 'recibo' ? state.recibos : state.transferencias;
+                        if (claves.has(firma) || existentes.some(op => op.clienteId === cliente.id && Number(op.monto) === monto && fechaLocalISO(op.fecha) === fechaLocalISO(fecha))) avisos.push('Fila ' + (i+2) + ': posible duplicado de ' + nombre);
+                        claves.add(firma); items.push({tipo,clienteId:cliente.id,nombre,monto,fecha,comision,neto});
+                    } catch (err) { errores.push('Fila ' + (i+2) + ': ' + err.message); }
                 });
-                renumerar();
-                recalcularSaldos(iniciales, [...afectados]);
-                persist();
-                refresh();
-                let msg = 'Importados ' + importados + ' registros.';
-                if (errores.length > 0) msg += ' Errores: ' + errores.join('; ');
-                showToast(msg, errores.length > 0 ? 'error' : 'success');
+                importacionPendiente = {usuario,version,items,nuevos:[...nuevos.values()],errores,avisos};
+                const resumen = filas.length + ' fila(s), ' + items.length + ' válida(s), ' + errores.length + ' con errores y ' + avisos.length + ' posible(s) duplicado(s).\nSe agregarán operaciones nuevas al final; no es una restauración completa (usá JSON para restaurar).';
+                const detalle = items.slice(0,15).map(x => x.tipo + ' · ' + x.nombre + ' · ' + formatearMoneda(x.monto) + ' · ' + formatearFecha(x.fecha));
+                $('detalleImportacion').textContent = resumen + (detalle.length ? '\n\nVista previa:\n' + detalle.join('\n') : '') + (items.length > 15 ? '\n…y ' + (items.length-15) + ' filas más.' : '') + (errores.length ? '\n\nErrores (corregí el archivo antes de importar):\n' + errores.slice(0,20).join('\n') : '') + (avisos.length ? '\n\nAvisos (revisá si son duplicados):\n' + avisos.slice(0,20).join('\n') : '');
+                $('confirmarImportacion').disabled = !!errores.length || !items.length;
+                $('modalImportacion').classList.add('open'); $('cancelarImportacion').focus();
             } catch (err) { showToast('Error al leer el archivo: ' + err.message, 'error'); }
         };
+        reader.onerror = () => showToast('No se pudo leer el archivo.', 'error');
         reader.readAsArrayBuffer(file);
+    }
+    function confirmarImportacion() {
+        const plan = importacionPendiente;
+        if (!plan || !usuarioActual || usuarioActual.id !== plan.usuario || plan.errores.length) return;
+        if (serializeState() !== plan.version) { cerrarImportacion(); showToast('Los datos cambiaron; revisá el archivo nuevamente.', 'error'); return; }
+        try {
+            // Preparar toda la importación en una copia; no tocar el estado hasta completarla.
+            const copia = JSON.parse(serializeState());
+            plan.nuevos.forEach(c => copia.clientes.push(Object.assign({}, c)));
+            let numero = obtenerSiguienteNumeroOperacion();
+            for (const item of plan.items) {
+                const cliente = copia.clientes.find(c => c.id === item.clienteId);
+                if (!cliente) throw new Error('Cliente no encontrado');
+                if (item.tipo === 'recibo') {
+                    const op = {id:generarId(),clienteId:cliente.id,monto:item.monto,comision:item.comision,neto:item.neto,fecha:item.fecha,numeroOp:numero++};
+                    copia.recibos.push(op); cliente.saldo = (Number(cliente.saldo) || 0) + item.neto;
+                    if (item.comision > 0) copia.finanzas.push({id:generarId(),tipo:'comision',monto:item.comision,descripcion:'Comisión de ' + cliente.nombre,clienteId:cliente.id,reciboId:op.id,fecha:item.fecha});
+                } else {
+                    const saldo = Number(cliente.saldo) || 0;
+                    copia.transferencias.push({id:generarId(),clienteId:cliente.id,monto:item.monto,saldoAntes:saldo,fecha:item.fecha,numeroOp:numero++});
+                    cliente.saldo = saldo - item.monto;
+                }
+            }
+            const total = plan.items.length;
+            aplicarPayload(copia); persist(); refresh(); cerrarImportacion();
+            showToast('Importadas ' + total + ' operaciones.', 'success');
+        } catch (_) { showToast('No se pudo preparar la importación; no se cambiaron los datos.', 'error'); }
     }
 
     function borrarTodo() {
@@ -4844,15 +4939,22 @@
         $('btnMostrarComisiones').addEventListener('click', () => cambiarPestanaClientes('comisiones'));
         $('btnAgregarCliente').addEventListener('click', agregarCliente);
         $('buscadorCliente').addEventListener('input', filtrarClientes);
+        $('verArchivados').addEventListener('click', () => { mostrandoArchivados = !mostrandoArchivados; $('buscadorCliente').value = ''; renderResumenClientes(); });
+        $('cerrarFicha').addEventListener('click', cerrarFicha);
+        $('modalFicha').addEventListener('click', e => { if (e.target === $('modalFicha')) cerrarFicha(); });
+        $('fichaRecibir').addEventListener('click', () => operarDesdeFicha('recibir'));
+        $('fichaTransferir').addEventListener('click', () => operarDesdeFicha('transferir'));
+        $('fichaHistorial').addEventListener('click', () => { const id = fichaClienteId; cerrarFicha(); cambiarSeccion('historial'); $('historialCliente').value = id; $('historialFecha').value = ''; $('historialFechaHasta').value = ''; $('historialTipo').value = 'todos'; $('historialBusqueda').value = ''; historialVisibles = 50; renderHistorial(); });
 
         /* --- Operaciones --- */
         $('toggleSaldoInicio').addEventListener('click', () => {
             saldoInicioOculto = !saldoInicioOculto;
             try { localStorage.setItem('gestor_saldo_inicio_oculto', String(saldoInicioOculto)); } catch (e) {}
             guardarPreferencias({ saldoOculto:saldoInicioOculto });
-            renderHeader();
+            refresh(); actualizarSaldoOperacionRecibir(); actualizarSaldoOperacionTransferir(); actualizarSaldoRestanteTransferir();
         });
         $('verHistorialInicio').addEventListener('click', () => cambiarSeccion('historial'));
+        $('verMovimientosHoy').addEventListener('click', () => { cambiarSeccion('historial'); $('historialCliente').value = 'todos'; $('historialTipo').value = 'todos'; $('historialBusqueda').value = ''; $('historialFecha').value = hoyISO(); $('historialFechaHasta').value = hoyISO(); historialVisibles = 50; renderHistorial(); });
         $('quickRecibir').addEventListener('click', () => { cambiarPestanaOperaciones('recibir'); cambiarSeccion('operaciones'); });
         $('quickTransferir').addEventListener('click', () => { cambiarPestanaOperaciones('transferir'); cambiarSeccion('operaciones'); });
         $('quickSaldo').addEventListener('click', () => cambiarSeccion('saldo'));
@@ -4882,6 +4984,7 @@
         $('transferirMonto').addEventListener('input', actualizarSaldoRestanteTransferir);
         $('numeroDestino').addEventListener('input', actualizarDetectorNumero);
 
+        ['recibirMonto','transferirMonto','numeroDestino','recibirFecha','transferirFecha','recibirCliente','transferirCliente','destinosRecientes'].forEach(id => { $(id).addEventListener('input', actualizarAvisosDuplicados); $(id).addEventListener('change', actualizarAvisosDuplicados); });
         $('btnRegistrarRecibo').addEventListener('click', registrarRecibo);
         $('btnRegistrarTransferencia').addEventListener('click', registrarTransferencia);
         $('btnDictarMontoRecibo').addEventListener('click', () => iniciarDictado('recibirMonto'));
@@ -4978,7 +5081,15 @@
         $('conflictoNube').addEventListener('click', () => resolverConflicto(false));
         $('conflictoLocal').addEventListener('click', () => resolverConflicto(true));
         $('conflictoDespues').addEventListener('click', () => $('modalConflicto').classList.remove('open'));
-        $('syncStatus').addEventListener('click', () => { if (hayConflicto) $('modalConflicto').classList.add('open'); });
+        $('syncStatus').addEventListener('click', () => {
+            const mensajes = {saved:'Los cambios financieros están sincronizados con la nube.', saving:'Hay cambios guardándose. Esperá antes de cerrar sesión.', pending:'Hay cambios locales pendientes. Conectate y sincronizá antes de salir.', offline:'Sin conexión. Los cambios locales esperan sincronización.', error:'No se pudo sincronizar. Revisá la conexión y conservá este dispositivo.', conflict:'Hay versiones distintas. Exportá una copia local y resolvé el conflicto.', local:'Los datos están en este dispositivo; revisá la conexión.'};
+            $('detalleEstadoSync').textContent = mensajes[modoSyncActual] || mensajes.local;
+            $('accionEstadoSync').textContent = hayConflicto ? 'Resolver conflicto' : 'Ir a respaldo y datos';
+            $('modalEstadoSync').classList.add('open'); $('cerrarEstadoSync').focus();
+        });
+        $('cerrarEstadoSync').addEventListener('click', () => { $('modalEstadoSync').classList.remove('open'); $('syncStatus').focus(); });
+        $('accionEstadoSync').addEventListener('click', () => { $('modalEstadoSync').classList.remove('open'); if (hayConflicto) $('modalConflicto').classList.add('open'); else cambiarSeccion('bd'); });
+        $('modalEstadoSync').addEventListener('click', e => { if (e.target === $('modalEstadoSync')) $('modalEstadoSync').classList.remove('open'); });
         $('syncStatus').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('syncStatus').click(); } });
         $('btnExportarFinanzas').addEventListener('click', exportarFinanzasCSV);
         $('btnInstalarApp').addEventListener('click', instalarApp);
@@ -4987,6 +5098,16 @@
             if (this.files && this.files[0]) importarJSON(this.files[0]);
             this.value = '';
         });
+        ['modalFicha','modalEstadoSync','modalImportacion'].forEach(id => $(id).addEventListener('keydown', e => {
+            if (e.key !== 'Tab') return;
+            const controls = [...$(id).querySelectorAll('button:not(:disabled)')];
+            if (!controls.length) return;
+            if (e.shiftKey && document.activeElement === controls[0]) { e.preventDefault(); controls[controls.length-1].focus(); }
+            else if (!e.shiftKey && document.activeElement === controls[controls.length-1]) { e.preventDefault(); controls[0].focus(); }
+        }));
+        $('cancelarImportacion').addEventListener('click', cerrarImportacion);
+        $('confirmarImportacion').addEventListener('click', confirmarImportacion);
+        $('modalImportacion').addEventListener('click', e => { if (e.target === $('modalImportacion')) cerrarImportacion(); });
         $('btnImportarExcel').addEventListener('click', () => {
             const input = $('inputImportarExcel');
             if (!input.files || !input.files[0]) { showToast('Selecciona un archivo.', 'error'); return; }
@@ -5014,6 +5135,8 @@
             const id = el.dataset.id;
             const tipo = el.dataset.tipo;
             switch (action) {
+                case 'ficha-cliente': abrirFicha(id); break;
+                case 'archivar-cliente': archivarCliente(id); break;
                 case 'edit-cliente': abrirModalCliente(id); break;
                 case 'del-cliente': eliminarCliente(id); break;
                 case 'save-comision': guardarComision(id); break;
@@ -5040,6 +5163,9 @@
         /* --- Atajos de teclado --- */
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
+                if ($('modalFicha').classList.contains('open')) cerrarFicha();
+                $('modalEstadoSync').classList.remove('open');
+                if ($('modalImportacion').classList.contains('open')) cerrarImportacion();
                 if ($('modalRespaldo').classList.contains('open')) cerrarRespaldo();
                 if ($('modalMonedas').classList.contains('open')) cerrarMonedas();
                 cerrarModal();
