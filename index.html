@@ -1545,6 +1545,30 @@
             .action-sheet { border-radius:28px; max-width:440px; }
         }
         @media (max-width:360px) { .brand-eyebrow { font-size:.5rem; }.header-info { gap:7px; }.bottom-menu button { font-size:.56rem; } .section { padding-left:15px; padding-right:15px; } }
+
+        /* Paleta grafito, esmeralda y lima. */
+        :root { --bg-body:#f4f8f5; --bg-header:#f4f8f5; --bg-card:#fff; --bg-card-alt:#f4f8f5; --text-primary:#14281d; --primary:#087f5b; --btn-primary-bg:#087f5b; --ui-accent:#c8f77a; }
+        body.dark-mode { --bg-body:#101815; --bg-header:#101815; --bg-card:#1c2b23; --bg-card-alt:#24362c; --bg-input:#293b30; --menu-bg:#1c2b23; --bg-glass:rgba(16,24,21,.96); }
+        body { background:radial-gradient(700px 380px at 50% 0,#dfefe4,transparent 70%),var(--bg-body); }
+        body.dark-mode { background:radial-gradient(700px 380px at 50% 0,#203a2b,transparent 70%),var(--bg-body); }
+        .btn-primary { background:#087f5b; }
+        #profileInitial, .nav-plus, .home-client-icon, .sheet-icon { background:#c8f77a; }
+        .rates-bar { margin:12px 20px 0; border:1px solid var(--border-color); border-radius:16px; background:var(--bg-card); overflow:hidden; box-shadow:var(--shadow); }
+        .rates-head { display:flex; align-items:center; gap:8px; padding:10px 12px 4px; font-size:.68rem; color:var(--text-secondary); }
+        .rates-head strong { color:var(--primary); font-size:.7rem; }
+        .rates-head button { margin-left:auto; border:0; background:var(--bg-input); color:var(--text-primary); border-radius:8px; padding:6px 8px; cursor:pointer; font-size:.7rem; }
+        .rates-viewport { overflow-x:auto; padding:6px 12px 10px; }
+        .rates-track { display:flex; width:max-content; gap:24px; align-items:center; animation:ratesSlide 24s linear infinite alternate; }
+        .rates-bar.paused .rates-track, .rates-viewport:hover .rates-track, .rates-viewport:active .rates-track, .rates-viewport:focus-within .rates-track { animation-play-state:paused; }
+        .rates-item { white-space:nowrap; font-size:.8rem; font-weight:700; }
+        .rates-item small { color:var(--text-muted); font-size:.65rem; font-weight:500; }
+        .rates-note { padding:0 12px 9px; color:var(--text-muted); font-size:.64rem; line-height:1.4; }
+        .rates-note a { color:var(--primary); }
+        @keyframes ratesSlide { from { transform:translateX(0); } to { transform:translateX(min(0px, calc(280px - 100%))); } }
+        .rates-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin:14px 0; }
+        .rates-options label { display:flex; align-items:center; gap:8px; padding:10px; background:var(--bg-card-alt); border:1px solid var(--border-color); border-radius:12px; font-size:.8rem; }
+        .rates-options input { accent-color:#087f5b; }
+        @media (prefers-reduced-motion:reduce) { .rates-track { animation:none !important; } }
     </style>
 </head>
 <body>
@@ -1747,6 +1771,15 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="modalMonedas" role="dialog" aria-modal="true" aria-labelledby="tituloMonedas">
+        <div class="modal">
+            <h3 id="tituloMonedas">Monedas del anuncio</h3>
+            <p style="color:var(--text-secondary);font-size:.8rem;margin-top:8px">Elegí las referencias que querés ver. La selección se guarda en este dispositivo para tu cuenta.</p>
+            <div class="rates-options" id="opcionesMonedas"></div>
+            <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="cerrarMonedas">Cancelar</button><button type="button" class="btn-modal-save" id="guardarMonedas">Guardar</button></div>
+        </div>
+    </div>
+
     <!-- ===== APP ===== -->
     <div id="appContent">
         <div id="cargandoDatos" role="status" style="display:none;position:fixed;inset:0;z-index:900;place-items:center;background:var(--bg-body);color:var(--text-primary);font-weight:700;">Preparando tus datos…</div>
@@ -1768,6 +1801,7 @@
                 <button data-section="finanzas">💹 Finanzas</button>
                 <div class="profile-menu-divider"></div>
                 <button id="btnSettings">⚙️ Comisiones</button>
+                <button id="btnMonedas" type="button">💱 Monedas del anuncio</button>
                 <button id="btnDarkMode">🌙 Cambiar tema</button>
                 <button data-section="bd">🗄️ Respaldo y datos</button>
                 <button id="btnLogout">🚪 Cerrar sesión</button>
@@ -1782,6 +1816,13 @@
                 </span>
             </div>
         </header>
+
+
+        <aside class="rates-bar" id="anuncioTasas" aria-label="Tasas de referencia del mercado informal">
+            <div class="rates-head"><strong>TASAS DE REFERENCIA</strong><span>Mercado informal · CUP</span><button type="button" id="pausarTasas" aria-pressed="false">Pausar</button></div>
+            <div class="rates-viewport" tabindex="0" aria-label="Deslizá para ver las tasas"><div class="rates-track" id="tasasContenido">Cargando tasas…</div></div>
+            <div class="rates-note" id="tasasNota">Fuente: <a href="https://eltoque.com/tasas-de-cambio-cuba" target="_blank" rel="noopener noreferrer">elTOQUE</a>, a través de Cuba USD Rate API. Valores orientativos, no oficiales; pueden ser anteriores a la consulta.</div>
+        </aside>
 
         <!-- Navegación principal -->
         <nav class="bottom-menu" id="bottomMenu" aria-label="Navegación principal">
@@ -2197,6 +2238,64 @@
     let graficoFinanzas = null;
     let saldoInicioOculto = localStorage.getItem('gestor_saldo_inicio_oculto') === 'true';
     let selectFirma = '';           // firma de clientes para no reconstruir selects sin cambios
+
+
+    /* Las tasas no intervienen en cálculos ni modifican datos financieros. */
+    const MONEDAS_TASAS = { USD:'Dólar', EUR:'Euro', MLC:'MLC', CAD:'Dólar canadiense', MXN:'Peso mexicano', ZELLE:'Zelle', CLA:'Tarjeta clásica' };
+    let tasasActuales = null, tasasTimer = null, solicitudTasas = 0;
+    function seleccionMonedas() {
+        try {
+            const v = JSON.parse(localStorage.getItem('gestor_monedas_' + usuarioActual.id));
+            return Array.isArray(v) ? v.filter(c => Object.prototype.hasOwnProperty.call(MONEDAS_TASAS, c)) : ['USD','EUR','MLC'];
+        } catch (_) { return ['USD','EUR','MLC']; }
+    }
+    function abrirMonedas() {
+        cerrarMenuPerfil();
+        const elegidas = seleccionMonedas();
+        $('opcionesMonedas').innerHTML = Object.entries(MONEDAS_TASAS).map(([codigo,nombre]) => '<label><input type="checkbox" value="' + codigo + '"' + (elegidas.includes(codigo) ? ' checked' : '') + '> ' + esc(codigo + ' · ' + nombre) + '</label>').join('');
+        $('modalMonedas').classList.add('open');
+        $('opcionesMonedas').querySelector('input').focus();
+    }
+    function cerrarMonedas() { $('modalMonedas').classList.remove('open'); $('menuHamburguesa').focus(); }
+    function guardarMonedas() {
+        const elegidas = Array.from($('opcionesMonedas').querySelectorAll('input:checked'), el => el.value);
+        try { localStorage.setItem('gestor_monedas_' + usuarioActual.id, JSON.stringify(elegidas)); }
+        catch (_) { showToast('No se pudo guardar la selección en este dispositivo.', 'error'); return; }
+        cerrarMonedas(); renderTasas();
+    }
+    function renderTasas() {
+        if (!usuarioActual) return;
+        const seleccion = seleccionMonedas();
+        const contenido = $('tasasContenido');
+        if (!seleccion.length) { contenido.textContent = 'No seleccionaste monedas. Podés elegirlas en el perfil.'; return; }
+        if (!tasasActuales) { contenido.textContent = 'Tasas no disponibles. Intentaremos actualizar más tarde.'; return; }
+        contenido.innerHTML = seleccion.map(c => {
+            const tasa = tasasActuales.rates.find(r => r.code === c && typeof r.cup === 'number' && Number.isFinite(r.cup) && r.cup > 0);
+            return '<span class="rates-item">' + esc(c) + ' <small>' + (tasa ? '= ' + esc(tasa.cup.toLocaleString('es-ES', {maximumFractionDigits:2})) + ' CUP' : 'no disponible') + '</small></span>';
+        }).join('');
+        const fecha = new Date(tasasActuales.generated_at);
+        const antiguedad = Date.now() - fecha.getTime();
+        const info = Number.isFinite(fecha.getTime()) ? ' · Consulta del proveedor: ' + fecha.toLocaleString('es-ES') + (antiguedad > 86400000 ? ' (datos posiblemente desactualizados)' : '') : ' · Fecha de consulta desconocida';
+        $('tasasNota').innerHTML = 'Fuente: <a href="https://eltoque.com/tasas-de-cambio-cuba" target="_blank" rel="noopener noreferrer">elTOQUE</a>, a través de Cuba USD Rate API. Valores orientativos, no oficiales; pueden ser anteriores a la consulta.' + esc(info);
+    }
+    async function actualizarTasas() {
+        if (!usuarioActual || !sb || !sb.functions) { renderTasas(); return; }
+        const usuario = usuarioActual.id, solicitud = ++solicitudTasas;
+        try {
+            const { data, error } = await sb.functions.invoke('tasas-eltoque', { method:'GET' });
+            if (error || !data || !Array.isArray(data.rates) || !data.rates.length) throw new Error('Tasas no disponibles');
+            if (!usuarioActual || usuarioActual.id !== usuario || solicitud !== solicitudTasas) return;
+            tasasActuales = data;
+            try { localStorage.setItem('gestor_tasas_cache', JSON.stringify(data)); } catch (_) {}
+        } catch (_) { /* Conservar la última consulta y mostrar su fecha. */ }
+        if (usuarioActual && usuarioActual.id === usuario && solicitud === solicitudTasas) renderTasas();
+    }
+    function iniciarTasas() {
+        clearInterval(tasasTimer);
+        try { const cache = JSON.parse(localStorage.getItem('gestor_tasas_cache')); tasasActuales = cache && Array.isArray(cache.rates) ? cache : null; } catch (_) { tasasActuales = null; }
+        renderTasas(); actualizarTasas();
+        tasasTimer = setInterval(actualizarTasas, 30 * 60 * 1000);
+    }
 
     /* ---------- SINCRONIZACIÓN ---------- */
     let saveTimer = null;
@@ -2689,11 +2788,13 @@
         if (!$('transferirFecha').value) $('transferirFecha').value = h;
         if (!$('finanzaFecha').value) $('finanzaFecha').value = h;
         try { await cargarDatosUsuario(); } finally { $('cargandoDatos').style.display = 'none'; }
+        iniciarTasas();
         cambiarSeccion('inicio');
         showToast('👋 Bienvenido ' + usuarioActual.username, 'success');
     }
 
     async function salirDeApp() {
+        clearInterval(tasasTimer); tasasTimer = null; tasasActuales = null; solicitudTasas++;
         if (realtimeChannel && sb) { sb.removeChannel(realtimeChannel); realtimeChannel = null; }
         clearTimeout(saveTimer);
         saveTimer = null;
@@ -4514,6 +4615,17 @@
         $('recoveryEmail').addEventListener('keydown', e => { if (e.key === 'Enter') enviarRecuperacion(); });
 
         /* --- Header --- */
+        $('btnMonedas').addEventListener('click', abrirMonedas);
+        $('cerrarMonedas').addEventListener('click', cerrarMonedas);
+        $('guardarMonedas').addEventListener('click', guardarMonedas);
+        $('modalMonedas').addEventListener('click', e => { if (e.target === $('modalMonedas')) cerrarMonedas(); });
+        $('modalMonedas').addEventListener('keydown', e => {
+            if (e.key !== 'Tab') return;
+            const controles = Array.from($('modalMonedas').querySelectorAll('input, button'));
+            if (e.shiftKey && document.activeElement === controles[0]) { e.preventDefault(); controles[controles.length - 1].focus(); }
+            else if (!e.shiftKey && document.activeElement === controles[controles.length - 1]) { e.preventDefault(); controles[0].focus(); }
+        });
+        $('pausarTasas').addEventListener('click', () => { const pausado = $('anuncioTasas').classList.toggle('paused'); $('pausarTasas').setAttribute('aria-pressed', String(pausado)); $('pausarTasas').textContent = pausado ? 'Reanudar' : 'Pausar'; });
         $('btnDarkMode').addEventListener('click', () => { toggleDarkMode(); cerrarMenuPerfil(); });
         $('btnLogout').addEventListener('click', () => { cerrarMenuPerfil(); cerrarSesion(); });
         $('btnSettings').addEventListener('click', () => {
@@ -4763,6 +4875,7 @@
         /* --- Atajos de teclado --- */
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
+                if ($('modalMonedas').classList.contains('open')) cerrarMonedas();
                 cerrarModal();
                 $('modalEditarCliente').classList.remove('open');
                 $('modalPassword').classList.remove('open');
