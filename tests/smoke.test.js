@@ -60,6 +60,7 @@ let remoteSnapshot = null;
 let authCallback = null;
 let signOutCalls = 0;
 let tasasError = false;
+let remotePreferencias = null, prefsError = false;
 
 window.supabase = {
   createClient: (url, key) => {
@@ -87,6 +88,11 @@ window.supabase = {
         signOut: () => { signOutCalls++; if (authCallback) authCallback('SIGNED_OUT', null); return Promise.resolve({ error: null }); }
       },
       from: table => {
+        if (table === 'gestor_preferencias') return {
+          select: () => ({ eq: () => ({ maybeSingle: async () => prefsError ? {data:null,error:{message:'offline'}} : {data:remotePreferencias,error:null} }) }),
+          insert: async row => { if (prefsError) return {error:{message:'offline'}}; if (remotePreferencias) return {error:{code:'23505'}}; remotePreferencias = {preferencias:JSON.parse(JSON.stringify(row.preferencias))}; return {error:null}; },
+          upsert: async row => { if (prefsError) return {error:{message:'offline'}}; remotePreferencias = { preferencias:JSON.parse(JSON.stringify(row.preferencias)) }; return {error:null}; }
+        };
         if (table !== 'gestor_snapshots') throw new Error('tabla inesperada: ' + table);
         return qb({ data: remoteSnapshot, error: null });
       },
@@ -551,13 +557,112 @@ function run(label, fn) {
     opts.querySelectorAll('input').forEach(el => el.checked = el.value === 'CAD');
     document.getElementById('guardarMonedas').click();
     if (bar.textContent.includes('USD') || !bar.textContent.includes('CAD') || !bar.textContent.includes('80')) throw new Error('selección no aplicada');
-    if (JSON.parse(window.localStorage.getItem('gestor_monedas_uid-test-123'))[0] !== 'CAD') throw new Error('selección no guardada por cuenta');
+    await new Promise(r => setTimeout(r, 10));
+    if (JSON.parse(window.localStorage.getItem('gestor_preferencias_uid-test-123')).preferencias.monedas[0] !== 'CAD' || remotePreferencias.preferencias.monedas[0] !== 'CAD') throw new Error('selección no sincronizada');
     document.getElementById('pausarTasas').click();
     if (document.getElementById('pausarTasas').getAttribute('aria-pressed') !== 'true') throw new Error('pausa');
     document.getElementById('menuHamburguesa').click(); document.getElementById('btnMonedas').click();
     opts.querySelectorAll('input').forEach(el => el.checked = false);
     document.getElementById('guardarMonedas').click();
     if (!bar.textContent.includes('No seleccionaste')) throw new Error('sin selección');
+  });
+
+  run('Búsqueda combinada y vista previa sin modificar operaciones', () => {
+    irSeccion('historial');
+    const q = document.getElementById('historialBusqueda');
+    const tipo = document.getElementById('historialTipo');
+    tipo.value='transferencia'; tipo.dispatchEvent(new window.Event('change'));
+    q.value='9212-1299'; q.dispatchEvent(new window.Event('input'));
+    if (document.querySelectorAll('#listaHistorial .operacion-card').length !== 2) throw new Error('búsqueda de destino');
+    q.value='ninguno'; q.dispatchEvent(new window.Event('input'));
+    if (document.querySelectorAll('#listaHistorial .operacion-card').length) throw new Error('búsqueda sin resultados');
+    q.value=''; q.dispatchEvent(new window.Event('input')); tipo.value='todos'; tipo.dispatchEvent(new window.Event('change'));
+    const antes=window.localStorage.getItem('gestor_cloud_uid-test-123');
+    document.querySelector('#listaHistorial [data-action="edit-op"][data-tipo="recibo"]').click();
+    const saldo=document.getElementById('modalSaldoDisponible');
+    saldo.value=String(Number(saldo.value)+25); saldo.dispatchEvent(new window.Event('input'));
+    const vista=document.getElementById('vistaAjuste').textContent;
+    if (!vista.includes('$25.00') || !vista.includes('Saldo final') || !vista.includes('Transferencia #')) throw new Error('falta proyección: '+vista);
+    document.getElementById('modalCancelar').click();
+    if (window.localStorage.getItem('gestor_cloud_uid-test-123') !== antes) throw new Error('vista previa alteró datos');
+  });
+
+  run('Recordatorio se actualiza cuando se inicia una descarga', () => {
+    irSeccion('inicio');
+    if (document.getElementById('avisoRespaldo').hidden) throw new Error('no hay recordatorio inicial');
+    const create=window.URL.createObjectURL, revoke=window.URL.revokeObjectURL, click=window.HTMLAnchorElement.prototype.click;
+    window.URL.createObjectURL=()=> 'blob:fake'; window.URL.revokeObjectURL=()=>{}; window.HTMLAnchorElement.prototype.click=function(){};
+    try { document.getElementById('btnExportarJSON').click(); } finally { window.URL.createObjectURL=create; window.HTMLAnchorElement.prototype.click=click; }
+    if (!window.localStorage.getItem('gestor_respaldo_uid-test-123') || !document.getElementById('avisoRespaldo').hidden || !document.getElementById('estadoRespaldo').textContent.includes('Verificá')) throw new Error('no se registró el inicio de descarga');
+    // Mantener el stub hasta que expire el revokeObjectURL programado.
+    window.URL.revokeObjectURL=()=>{};
+  });
+
+  run('Respaldo se revisa, cancela y restaura solo con confirmación', async () => {
+    irSeccion('bd');
+    const antes=window.localStorage.getItem('gestor_cloud_uid-test-123');
+    const respaldo=JSON.parse(antes); respaldo.usuario='otra@cuenta.com'; respaldo.exportado='2026-01-01T00:00:00Z';
+    const file = new window.File([JSON.stringify(respaldo)], 'respaldo.json', {type:'application/json'});
+    const input=document.getElementById('inputImportarJSON');
+    Object.defineProperty(input,'files',{configurable:true,value:[file]});
+    input.dispatchEvent(new window.Event('change')); await new Promise(r=>setTimeout(r,30));
+    if (!document.getElementById('modalRespaldo').classList.contains('open') || !document.getElementById('detalleRespaldo').textContent.includes('distinta')) throw new Error('sin vista previa o advertencia de cuenta');
+    document.getElementById('cancelarRespaldo').click();
+    if (window.localStorage.getItem('gestor_cloud_uid-test-123') !== antes) throw new Error('cancelar alteró datos');
+    input.dispatchEvent(new window.Event('change')); await new Promise(r=>setTimeout(r,30));
+    window.confirm=()=>false; document.getElementById('confirmarRespaldo').click();
+    if (window.localStorage.getItem('gestor_cloud_uid-test-123') !== antes) throw new Error('confirmación cancelada alteró datos');
+    window.confirm=()=>true; document.getElementById('confirmarRespaldo').click();
+    if (document.getElementById('modalRespaldo').classList.contains('open') || window.localStorage.getItem('gestor_cloud_uid-test-123') !== antes) throw new Error('restauración incorrecta');
+  });
+
+  run('Respaldo inválido y cambios durante la revisión no reemplazan datos', async () => {
+    irSeccion('bd');
+    const input=document.getElementById('inputImportarJSON');
+    const data=JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123'));
+    const invalid=JSON.parse(JSON.stringify(data)); invalid.clientes[0].saldo='no es un número';
+    Object.defineProperty(input,'files',{configurable:true,value:[new window.File([JSON.stringify(invalid)],'invalid.json')]});
+    input.dispatchEvent(new window.Event('change')); await new Promise(r=>setTimeout(r,30));
+    if (document.getElementById('modalRespaldo').classList.contains('open')) throw new Error('aceptó saldo inválido');
+    Object.defineProperty(input,'files',{configurable:true,value:[new window.File([JSON.stringify(data)],'copia.json')]});
+    input.dispatchEvent(new window.Event('change')); await new Promise(r=>setTimeout(r,30));
+    if (!document.getElementById('modalRespaldo').classList.contains('open')) throw new Error('no abrió respaldo válido');
+    irSeccion('clientes'); document.getElementById('btnMostrarAgregarCliente').click();
+    document.getElementById('clienteNombre').value='Cliente posterior'; document.getElementById('clienteComision').value='1'; document.getElementById('btnAgregarCliente').click();
+    const actual=window.localStorage.getItem('gestor_cloud_uid-test-123');
+    window.confirm=()=>true; document.getElementById('confirmarRespaldo').click();
+    if (window.localStorage.getItem('gestor_cloud_uid-test-123') !== actual || !actual.includes('Cliente posterior')) throw new Error('restauró sobre cambios recientes');
+  });
+
+  run('Tasas informan fallo y conservan última consulta', async () => {
+    document.getElementById('menuHamburguesa').click(); document.getElementById('btnMonedas').click();
+    document.querySelector('#opcionesMonedas input[value="USD"]').checked=true;
+    document.getElementById('guardarMonedas').click();
+    tasasError=true; document.getElementById('consultarTasas').click(); await new Promise(r=>setTimeout(r,20));
+    if (!document.getElementById('tasasContenido').textContent.includes('100') || !document.getElementById('tasasNota').textContent.includes('No se pudo actualizar')) throw new Error('no muestra cache y aviso');
+    tasasError=false; document.getElementById('consultarTasas').click(); await new Promise(r=>setTimeout(r,20));
+    if (document.getElementById('tasasNota').textContent.includes('No se pudo actualizar')) throw new Error('error no se limpió');
+  });
+
+  run('Preferencias pendientes se reintentan sin tocar saldos', async () => {
+    const antes=window.localStorage.getItem('gestor_cloud_uid-test-123');
+    prefsError=true;
+    document.getElementById('menuHamburguesa').click(); document.getElementById('btnDarkMode').click();
+    await new Promise(r=>setTimeout(r,20));
+    if (!JSON.parse(window.localStorage.getItem('gestor_preferencias_uid-test-123')).pendiente) throw new Error('no conservó cambio pendiente');
+    if (window.localStorage.getItem('gestor_cloud_uid-test-123') !== antes) throw new Error('preferencia alteró snapshot financiero');
+    prefsError=false; window.dispatchEvent(new window.Event('online')); await new Promise(r=>setTimeout(r,30));
+    if (JSON.parse(window.localStorage.getItem('gestor_preferencias_uid-test-123')).pendiente || remotePreferencias.preferencias.oscuro !== document.body.classList.contains('dark-mode')) throw new Error('no se sincronizó al volver');
+  });
+
+  run('Preferencias cargan en otro dispositivo al iniciar sesión', async () => {
+    await new Promise(r=>setTimeout(r,20));
+    remotePreferencias = {preferencias:{monedas:['EUR'],oscuro:true,saldoOculto:true}};
+    window.localStorage.removeItem('gestor_preferencias_uid-test-123');
+    document.getElementById('btnLogout').click(); await new Promise(r=>setTimeout(r,40));
+    document.getElementById('loginUsuario').value='test@x.com'; document.getElementById('loginPassword').value='123456';
+    document.getElementById('btnLogin').click(); await new Promise(r=>setTimeout(r,80));
+    if (!document.body.classList.contains('dark-mode') || !document.getElementById('saldoInicio').textContent.includes('••') || !document.getElementById('tasasContenido').textContent.includes('EUR')) throw new Error('preferencias remotas no aplicadas');
   });
 
   // 21) RECUPERACIÓN CON CÓDIGO DE VERIFICACIÓN
