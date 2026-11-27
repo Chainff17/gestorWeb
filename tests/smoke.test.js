@@ -20,7 +20,9 @@ const dom = new JSDOM(html, {
 
 const { window } = dom;
 const { document } = window;
+window.TextDecoder = global.TextDecoder;
 function irSeccion(sec) {
+  if (sec === 'operaciones') { document.getElementById('abrirAcciones').click(); document.getElementById('accionRecibir').click(); return; }
   const destino = document.querySelector('#bottomMenu button[data-section="' + sec + '"]') || document.querySelector('#dropdownMenu button[data-section="' + sec + '"]');
   if (!destino) throw new Error('Falta navegación: ' + sec);
   destino.click();
@@ -548,6 +550,85 @@ function run(label, fn) {
     if (!document.getElementById('section-bd').classList.contains('visible')) throw new Error('respaldo no abrió');
   });
 
+  run('Archivar conserva operaciones y saldo; ficha, historial y reactivación', () => {
+    irSeccion('clientes'); document.getElementById('btnMostrarListaClientes').click();
+    document.getElementById('buscadorCliente').value=''; document.getElementById('buscadorCliente').dispatchEvent(new window.Event('input'));
+    const antes=JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123')); const c=antes.clientes[0];
+    document.querySelector('#listaClientesResumen [data-action="ficha-cliente"]').click();
+    if (!document.getElementById('fichaContenido').textContent.includes('5427')) throw new Error('ficha sin destino enmascarado');
+    document.getElementById('fichaHistorial').click();
+    if (document.getElementById('historialCliente').value !== c.id) throw new Error('ficha no filtra historial');
+    irSeccion('clientes'); document.querySelector('#listaClientesResumen [data-action="archivar-cliente"]').click();
+    const archivado=JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123'));
+    if (!archivado.clientes[0].archivado || archivado.clientes[0].saldo !== c.saldo || JSON.stringify(archivado.recibos)!==JSON.stringify(antes.recibos) || JSON.stringify(archivado.transferencias)!==JSON.stringify(antes.transferencias) || JSON.stringify(archivado.finanzas)!==JSON.stringify(antes.finanzas)) throw new Error('archivado alteró operaciones');
+    if ([...document.getElementById('transferirCliente').options].some(o=>o.value===c.id)) throw new Error('archivado aparece para operar');
+    if (![...document.getElementById('historialCliente').options].some(o=>o.value===c.id)) throw new Error('archivado no aparece en historial');
+    document.getElementById('verArchivados').click(); document.querySelector('#listaClientesResumen [data-action="ficha-cliente"]').click();
+    if (!document.getElementById('fichaRecibir').disabled) throw new Error('permitió operar archivado');
+    document.getElementById('cerrarFicha').click(); document.querySelector('#listaClientesResumen [data-action="archivar-cliente"]').click();
+    document.getElementById('verArchivados').click();
+    if (![...document.getElementById('transferirCliente').options].some(o=>o.value===c.id)) throw new Error('reactivación no restaura selector');
+  });
+
+  run('Saldos ocultos, resumen diario y detalle de sincronización', () => {
+    irSeccion('inicio');
+    if (!document.getElementById('hoyRecibido').textContent.includes('$')) throw new Error('sin resumen diario');
+    document.getElementById('toggleSaldoInicio').click();
+    irSeccion('saldo'); if (!document.getElementById('saldoTotal').textContent.includes('••')) throw new Error('saldo total visible');
+    irSeccion('clientes'); if (!document.querySelector('#listaClientesResumen .saldo').textContent.includes('••')) throw new Error('saldo cliente visible');
+    irSeccion('operaciones'); document.getElementById('btnMostrarTransferir').click();
+    if (!document.getElementById('transferirSaldoDisponible').value.includes('••') || !document.getElementById('transferirSaldoRestante').textContent.includes('••')) throw new Error('saldo de transferencia visible');
+    irSeccion('historial'); if (!document.getElementById('listaHistorial').textContent.includes('••')) throw new Error('saldo en historial visible');
+    document.querySelector('#listaHistorial [data-action="edit-op"]').click();
+    if (document.getElementById('modalEditar').classList.contains('open')) throw new Error('edición expuso saldo oculto');
+    irSeccion('finanzas'); if (!document.getElementById('saldoFinanzas').textContent.includes('••')) throw new Error('resultado visible');
+    irSeccion('inicio'); document.getElementById('toggleSaldoInicio').click();
+    document.getElementById('verMovimientosHoy').click(); if (!document.getElementById('historialFecha').value || document.getElementById('historialFechaHasta').value !== document.getElementById('historialFecha').value) throw new Error('resumen sin filtro hoy');
+    document.getElementById('historialFecha').value=''; document.getElementById('historialFechaHasta').value=''; document.getElementById('historialCliente').value='todos';
+    document.getElementById('syncStatus').click(); if (!document.getElementById('modalEstadoSync').classList.contains('open') || !document.getElementById('detalleEstadoSync').textContent) throw new Error('sin detalle sync');
+    document.getElementById('cerrarEstadoSync').click();
+  });
+
+  run('Aviso de posible duplicado no bloquea transferencia', () => {
+    irSeccion('operaciones'); document.getElementById('btnMostrarTransferir').click();
+    const data=JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123')); const t=data.transferencias[0];
+    document.getElementById('transferirCliente').value=t.clienteId; document.getElementById('transferirCliente').dispatchEvent(new window.Event('change'));
+    const dest=document.getElementById('numeroDestino'); dest.value=t.numeroDestino; dest.dispatchEvent(new window.Event('input'));
+    const m=document.getElementById('transferirMonto'); m.value=t.monto; m.dispatchEvent(new window.Event('input'));
+    if (document.getElementById('avisoDuplicadoTransferencia').hidden) throw new Error('no avisa duplicado');
+    let calls=0; const previous=window.confirm; window.confirm=()=>{calls++; return false};
+    try {document.getElementById('btnRegistrarTransferencia').click()} finally {window.confirm=previous}
+    if (calls || JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123')).transferencias.length!==data.transferencias.length+1) throw new Error('bloqueó o confirmó transferencia');
+  });
+
+  run('Importar Excel revisa todo y conserva operaciones existentes', async () => {
+    irSeccion('bd'); const inp=document.getElementById('inputImportarExcel');
+    const inicial=JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123')); const cliente=inicial.clientes[0];
+    const fecha=document.getElementById('recibirFecha').value;
+    let filas=[]; const oldRead=window.XLSX.read, oldSheet=window.XLSX.utils.sheet_to_json;
+    window.XLSX.read=()=>({Sheets:{Sheet:{}},SheetNames:['Sheet']}); window.XLSX.utils.sheet_to_json=()=>filas;
+    const cargar=async () => {Object.defineProperty(inp,'files',{configurable:true,value:[new window.File(['csv'],'datos.csv')]}); document.getElementById('btnImportarExcel').click(); await new Promise(r=>setTimeout(r,30));};
+    try {
+      filas=[{tipo:'recibo',cliente:cliente.nombre,monto:100,fecha},{tipo:'recibo',cliente:'Prueba',monto:-1,fecha}];
+      await cargar();
+      if (!document.getElementById('confirmarImportacion').disabled || !document.getElementById('detalleImportacion').textContent.includes('errores') || JSON.stringify(JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123'))) !== JSON.stringify(inicial)) throw new Error('importación inválida alteró datos');
+      document.getElementById('cancelarImportacion').click();
+      filas=[{Tipo:'Recibo',Cliente:cliente.nombre,Monto:100,Fecha:fecha,Comisión:2},{Tipo:'Transferencia',Cliente:'Cliente nuevo',Monto:5,Fecha:fecha}];
+      await cargar();
+      if (document.getElementById('confirmarImportacion').disabled || !document.getElementById('detalleImportacion').textContent.includes('duplicado')) throw new Error('no hay vista previa/duplicados');
+      document.getElementById('confirmarImportacion').click();
+      const result=JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123'));
+      if (JSON.stringify(result.recibos.slice(0,inicial.recibos.length)) !== JSON.stringify(inicial.recibos) || JSON.stringify(result.transferencias.slice(0,inicial.transferencias.length)) !== JSON.stringify(inicial.transferencias)) throw new Error('importación alteró históricos');
+      if (result.recibos.length!==inicial.recibos.length+1 || result.transferencias.length!==inicial.transferencias.length+1 || result.clientes.find(c=>c.nombre==='Cliente nuevo').saldo!==-5) throw new Error('importación incorrecta');
+      filas=[{tipo:'recibo',cliente:'No debe crearse',monto:30,fecha}]; await cargar();
+      irSeccion('clientes'); document.getElementById('btnMostrarAgregarCliente').click();
+      document.getElementById('clienteNombre').value='Cambio durante revisión'; document.getElementById('clienteComision').value='0'; document.getElementById('btnAgregarCliente').click();
+      const conCambio=window.localStorage.getItem('gestor_cloud_uid-test-123');
+      document.getElementById('confirmarImportacion').click();
+      if (window.localStorage.getItem('gestor_cloud_uid-test-123') !== conCambio || conCambio.includes('No debe crearse')) throw new Error('importó tras cambio de datos');
+    } finally {window.XLSX.read=oldRead; window.XLSX.utils.sheet_to_json=oldSheet;}
+  });
+
   run('Tasas: selección, persistencia, pausa y fecha sin alterar saldos', async () => {
     await new Promise(r => setTimeout(r, 20));
     const bar = document.getElementById('tasasContenido');
@@ -573,12 +654,13 @@ function run(label, fn) {
     const tipo = document.getElementById('historialTipo');
     tipo.value='transferencia'; tipo.dispatchEvent(new window.Event('change'));
     q.value='9212-1299'; q.dispatchEvent(new window.Event('input'));
-    if (document.querySelectorAll('#listaHistorial .operacion-card').length !== 2) throw new Error('búsqueda de destino');
+    if (document.querySelectorAll('#listaHistorial .operacion-card').length !== JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123')).transferencias.filter(t => t.numeroDestino && t.numeroDestino.startsWith('92121299')).length) throw new Error('búsqueda de destino');
     q.value='ninguno'; q.dispatchEvent(new window.Event('input'));
     if (document.querySelectorAll('#listaHistorial .operacion-card').length) throw new Error('búsqueda sin resultados');
     q.value=''; q.dispatchEvent(new window.Event('input')); tipo.value='todos'; tipo.dispatchEvent(new window.Event('change'));
     const antes=window.localStorage.getItem('gestor_cloud_uid-test-123');
-    document.querySelector('#listaHistorial [data-action="edit-op"][data-tipo="recibo"]').click();
+    const primerRecibo = JSON.parse(antes).recibos[0].id;
+    document.querySelector('#listaHistorial [data-action="edit-op"][data-id="' + primerRecibo + '"]').click();
     const saldo=document.getElementById('modalSaldoDisponible');
     saldo.value=String(Number(saldo.value)+25); saldo.dispatchEvent(new window.Event('input'));
     const vista=document.getElementById('vistaAjuste').textContent;
