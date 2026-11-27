@@ -209,15 +209,27 @@ function run(label, fn) {
   });
 
   // 6) Transferencia con número de tarjeta
-  run('Detectar tarjeta y transferir', () => {
+  run('Validar y registrar transferencia sin confirmación', () => {
     const input = document.getElementById('numeroDestino');
+    const antes = JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123'));
+    input.value = '123'; input.dispatchEvent(new window.Event('input'));
+    document.getElementById('transferirMonto').value = '50';
+    document.getElementById('btnRegistrarTransferencia').click();
+    if (JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123')).transferencias.length !== antes.transferencias.length) throw new Error('aceptó destino inválido');
     input.value = '9212129938675427';
     input.dispatchEvent(new window.Event('input'));
     if (input.dataset.tipoDetectado !== 'tarjeta') throw new Error('no detectó tarjeta: ' + input.dataset.tipoDetectado);
     if (input.dataset.banco !== 'BPA') throw new Error('banco: ' + input.dataset.banco);
     if (input.value !== '9212-1299-3867-5427') throw new Error('formato: ' + input.value);
-    document.getElementById('transferirMonto').value = '50';
+    document.getElementById('transferirMonto').value = '0';
     document.getElementById('btnRegistrarTransferencia').click();
+    if (JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123')).transferencias.length !== antes.transferencias.length) throw new Error('aceptó monto inválido');
+    document.getElementById('transferirMonto').value = '50';
+    let confirmaciones = 0;
+    const confirmar = window.confirm;
+    window.confirm = () => { confirmaciones++; return false; };
+    try { document.getElementById('btnRegistrarTransferencia').click(); } finally { window.confirm = confirmar; }
+    if (confirmaciones !== 0) throw new Error('se pidió confirmación');
     const cache = JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123') || '{}');
     if (!cache.transferencias || cache.transferencias.length !== 1) throw new Error('transferencia no guardada');
     if (Math.abs(cache.clientes[0].saldo - 48) > 0.001) throw new Error('saldo post-transfer: ' + cache.clientes[0].saldo);

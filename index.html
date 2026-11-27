@@ -3380,11 +3380,8 @@
         if (!cliente) { showToast('Cliente no encontrado.', 'error'); return; }
 
         const saldoActual = cliente.saldo || 0;
-        const saldoRestante = saldoActual - monto;
         const fecha = new Date(fechaStr + 'T00:00:00').getTime();
         const numeroOp = obtenerSiguienteNumeroOperacion();
-        if (!confirm('Confirmar transferencia\nCliente: ' + cliente.nombre + '\nMonto: ' + formatearMoneda(monto)
-            + '\nDestino terminado en: ' + numeroLimpio.slice(-4) + '\nFecha: ' + fechaStr)) return;
 
         const iniciales = saldosIniciales();
         state.transferencias.push({
