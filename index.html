@@ -1441,6 +1441,110 @@
         .home-movement { display:flex; justify-content:space-between; gap:10px; padding:10px 0; border-top:1px solid var(--border-color); font-size:.78rem; }
         .home-movement strong { display:block; overflow-wrap:anywhere; }
         .home-movement small { color:var(--text-muted); }
+
+        /* Interfaz dinámica: fondos oscuros, verde vivo y superficies limpias. */
+        :root { --ui-accent:#c4f779; --ui-ink:#10271a; --ui-line:rgba(28,85,50,.12); }
+        body { max-width:560px; padding-bottom:calc(105px + env(safe-area-inset-bottom)); }
+        header { padding:16px 20px 12px; border-bottom:0; }
+        .header-top { margin:0 0 11px; }
+        .brand-lockup { display:flex; align-items:center; gap:10px; min-width:0; }
+        .brand-lockup > div { display:flex; flex-direction:column; gap:2px; }
+        .brand-lockup strong { font-size:.9rem; letter-spacing:-.035em; line-height:1.1; }
+        .brand-eyebrow, .section-kicker { display:block; font-size:.57rem; letter-spacing:.15em; font-weight:800; color:var(--primary); }
+        .logo-chip { width:38px; height:38px; background:#0b3020; box-shadow:none; color:#c4f779 !important; }
+        .profile-trigger { display:flex; align-items:center; gap:7px; padding:5px 8px 5px 5px; border-radius:999px; background:var(--bg-card); border:1px solid var(--border-color); box-shadow:var(--shadow); }
+        #profileInitial { display:grid; place-items:center; width:31px; height:31px; border-radius:50%; background:#c4f779; color:#16331e; font-size:.8rem; font-weight:800; text-transform:uppercase; }
+        .profile-chevron { font-size:.9rem; color:var(--text-secondary); margin:0 3px; }
+        .header-info { justify-content:flex-start; gap:8px 14px; font-size:.68rem; padding:0; }
+        .header-info .datetime { margin-right:auto; }
+        .dropdown-menu { right:16px; min-width:220px; max-height:min(75vh, 620px); overflow-y:auto; border-radius:20px; padding:9px; }
+        .profile-menu-heading { display:flex; flex-direction:column; gap:5px; padding:10px 12px 12px; }
+        .profile-menu-heading > span:first-child { font-size:.6rem; letter-spacing:.13em; font-weight:800; color:var(--text-muted); }
+        .profile-menu-heading .usuario-badge { color:var(--text-primary); font-size:.8rem; font-weight:700; overflow-wrap:anywhere; border:0; }
+        .profile-menu-divider { border-top:1px solid var(--border-color); margin:5px 8px; }
+        .dropdown-menu button { margin:1px 0; width:100%; min-height:38px; }
+        .dropdown-menu .btn-logout, .dropdown-menu .btn-dark-mode, .dropdown-menu .btn-settings { padding:10px 16px; font-size:.85rem; font-weight:500; color:var(--text-primary); border-radius:10px; }
+        .section { padding:25px 20px 28px; }
+        .section.visible { animation: viewEnter .35s cubic-bezier(.22,.8,.25,1); }
+        @keyframes viewEnter { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .home-heading, .page-heading { display:flex; justify-content:space-between; align-items:center; margin:0 0 21px; }
+        .home-heading h1, .page-heading h1 { margin:7px 0 5px; font-size:clamp(1.5rem,5vw,1.95rem); letter-spacing:-.055em; line-height:1.1; }
+        .home-heading p, .page-heading p { color:var(--text-secondary); font-size:.79rem; line-height:1.45; }
+        .home-heading .home-kicker { font-size:.62rem; letter-spacing:.15em; }
+        .home-sparkle, .page-heading-icon { display:grid; place-items:center; width:43px; height:43px; border-radius:15px; background:var(--bg-card); color:var(--primary); font-size:1.35rem; border:1px solid var(--border-color); }
+        .balance-hero { min-height:206px; border-radius:27px; padding:24px; background:linear-gradient(135deg,#071a12 0%,#0c3e26 54%,#007447 100%); box-shadow:0 20px 40px -20px rgba(0,55,30,.6); isolation:isolate; }
+        .balance-hero::before { content:''; position:absolute; width:240px; height:240px; border-radius:50%; right:-105px; top:-100px; border:1px solid rgba(196,247,121,.22); box-shadow:0 0 0 34px rgba(196,247,121,.04),0 0 0 68px rgba(196,247,121,.035); z-index:-1; }
+        .balance-hero::after { width:105px; height:105px; right:-22px; bottom:-66px; border-width:25px; }
+        .balance-top { text-transform:uppercase; font-size:.64rem; letter-spacing:.1em; font-weight:700; }
+        .balance-toggle { text-transform:none; letter-spacing:0; border-color:rgba(255,255,255,.25); background:rgba(255,255,255,.08); }
+        .balance-amount { margin:28px 0 9px; font-size:clamp(2.1rem,8vw,2.9rem); letter-spacing:-.055em; }
+        .balance-caption { display:flex; align-items:center; gap:7px; font-size:.72rem; }
+        .balance-dot { width:6px; height:6px; border-radius:50%; background:var(--ui-accent); }
+        .balance-orbit { position:absolute; right:30px; bottom:27px; width:25px; height:25px; border-radius:50%; border:1px solid rgba(196,247,121,.6); }
+        .balance-orbit::after { content:'✳'; color:var(--ui-accent); position:absolute; right:-8px; top:-12px; font-size:.8rem; }
+        .quick-actions { margin:-15px 12px 24px; padding:17px 8px; border-radius:22px; box-shadow:0 14px 30px -20px rgba(12,53,31,.4); }
+        .quick-actions button { min-height:62px; font-size:.7rem; gap:8px; }
+        .quick-icon { width:43px; height:43px; background:#e8f5dd; color:#164f2b; border:1px solid rgba(22,79,43,.07); }
+        body.dark-mode .quick-icon { background:#2e4932; color:#c4f779; }
+        .quick-actions button:active .quick-icon { transform:scale(.92); }
+        .home-activity { padding:21px; margin-bottom:15px; }
+        .home-activity-header h2 { font-size:1.13rem; letter-spacing:-.04em; }
+        .home-activity-summary { margin:13px 0 8px; }
+        .home-movement { align-items:center; padding:13px 0; }
+        .home-movement > div { min-width:0; }
+        .home-movement > strong { flex-shrink:0; white-space:nowrap; }
+        .home-movement strong { font-size:.8rem; }
+        .home-movement small { display:block; margin-top:4px; font-size:.68rem; }
+        .home-client-link { width:100%; display:flex; align-items:center; gap:13px; text-align:left; padding:17px; border:1px solid var(--border-color); border-radius:20px; background:var(--bg-card); color:var(--text-primary); box-shadow:var(--shadow); cursor:pointer; }
+        .home-client-link > span:nth-child(2) { flex:1; display:flex; flex-direction:column; gap:3px; }
+        .home-client-link small { color:var(--primary); font-size:.57rem; font-weight:800; letter-spacing:.11em; }
+        .home-client-link strong { font-size:.84rem; }
+        .home-client-link span span { font-size:.68rem; color:var(--text-secondary); }
+        .home-client-icon { display:grid; place-items:center; width:42px; height:42px; flex:none; border-radius:14px; background:#c4f779; color:#153d21; font-size:1.2rem; }
+        .home-client-arrow { font-size:1.1rem; color:var(--primary); }
+        .card { border-radius:23px; }
+        .card > h3::before, .card-header h3::before { width:3px; background:#6bcf83; }
+        .btn-primary { background:#006b46; box-shadow:0 9px 20px -10px rgba(0,107,70,.5); }
+        .tab-btn, .btn-cliente-opcion { min-height:42px; }
+        .bottom-menu { max-width:560px; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); align-items:end; padding:7px 10px calc(8px + env(safe-area-inset-bottom)); border-radius:24px 24px 0 0; }
+        .bottom-menu button { width:100%; min-width:0; min-height:52px; font-size:.63rem; font-weight:600; gap:4px; padding:4px 2px; }
+        .bottom-menu button::after { display:none; }
+        .bottom-menu button.active .icon { transform:none; filter:none; }
+        .bottom-menu button.active { color:#006b46; }
+        .bottom-menu button.active .icon { background:rgba(120,205,119,.18); border-radius:10px; }
+        .bottom-menu button .icon { width:31px; height:26px; padding:3px; }
+        .bottom-menu .nav-action { overflow:visible; color:var(--text-secondary); }
+        .nav-plus { display:grid; place-items:center; width:47px; height:47px; margin-top:-20px; border-radius:17px; background:#c4f779; color:#092819; font-size:1.65rem; line-height:1; box-shadow:0 9px 22px -8px rgba(16,71,31,.5); transition:transform .2s ease; }
+        .nav-action:active .nav-plus { transform:scale(.92); }
+        .bottom-menu .nav-action.active .nav-plus { background:#a8ee62; }
+        .bottom-menu .nav-action .badge-menu { right:15%; top:-16px; }
+        .action-backdrop { display:none; position:fixed; inset:0; background:rgba(5,20,12,.58); z-index:450; align-items:flex-end; justify-content:center; padding:0; }
+        .action-backdrop.open { display:flex; }
+        .action-sheet { width:100%; max-width:560px; padding:26px 22px calc(28px + env(safe-area-inset-bottom)); border-radius:28px 28px 0 0; background:var(--bg-card); color:var(--text-primary); box-shadow:0 -20px 70px rgba(0,0,0,.15); animation:sheetIn .3s cubic-bezier(.2,.8,.2,1); }
+        .action-sheet-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+        .action-sheet-top h2 { margin-top:6px; font-size:1.25rem; letter-spacing:-.04em; }
+        .sheet-close { display:grid; place-items:center; width:40px; height:40px; border:0; border-radius:50%; background:var(--bg-input); color:var(--text-primary); cursor:pointer; }
+        .sheet-action { width:100%; display:flex; align-items:center; gap:14px; margin-top:10px; padding:15px; border:1px solid var(--border-color); border-radius:18px; text-align:left; background:var(--bg-card-alt); color:var(--text-primary); cursor:pointer; }
+        .sheet-action > span:nth-child(2) { display:flex; flex:1; flex-direction:column; gap:4px; }
+        .sheet-action strong { font-size:.87rem; }.sheet-action small { font-size:.71rem; color:var(--text-secondary); }
+        .sheet-action > span:last-child { color:var(--primary); font-size:1.2rem; }
+        .sheet-icon { display:grid; place-items:center; width:44px; height:44px; flex:none; background:#c4f779; color:#143b20; border-radius:15px; font-size:1.4rem; }
+        .sheet-action:active { transform:scale(.98); }
+        .empty-msg { padding:24px 12px; border:1px dashed var(--border-color); border-radius:18px; color:var(--text-secondary); }
+        .empty-msg::before { content:'✳'; display:block; color:var(--primary); font-size:1.4rem; margin-bottom:8px; }
+        .toast.show { animation:toastArrive .28s ease; }
+        @keyframes toastArrive { from { opacity:0; transform:translateX(-50%) translateY(8px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+        @media (min-width:760px) {
+            body { max-width:960px; }
+            header { padding-left:30px; padding-right:30px; }
+            .section { padding-left:30px; padding-right:30px; }
+            .dashboard-grid { display:grid; grid-template-columns:1.1fr .9fr; align-items:start; gap:24px; }
+            .balance-hero { min-height:230px; }
+            .bottom-menu { max-width:620px; border-radius:24px 24px 0 0; }
+            .action-backdrop { align-items:center; padding:20px; }
+            .action-sheet { border-radius:28px; max-width:440px; }
+        }
+        @media (max-width:360px) { .brand-eyebrow { font-size:.5rem; }.header-info { gap:7px; }.bottom-menu button { font-size:.56rem; } .section { padding-left:15px; padding-right:15px; } }
     </style>
 </head>
 <body>
@@ -1650,25 +1754,23 @@
         <!-- HEADER -->
         <header>
             <div class="header-top">
-                <div class="header-title">
-                    <span class="logo-chip" aria-hidden="true">G</span> Gestor de Pagos
-                    <span class="usuario-badge" id="usuarioBadge" role="button" tabindex="0" title="Mi cuenta">👤 USUARIO</span>
-                </div>
-                <div class="header-actions">
-                    <button class="btn-settings" id="btnSettings" title="Configuración" aria-label="Configuración">⚙️</button>
-                    <button class="btn-dark-mode" id="btnDarkMode" title="Alternar modo oscuro" aria-label="Modo oscuro">🌙</button>
-                    <button class="btn-logout" id="btnLogout" title="Cerrar sesión" aria-label="Cerrar sesión">🚪</button>
-                    <button class="menu-hamburguesa" id="menuHamburguesa" title="Menú" aria-label="Menú">☰</button>
-                </div>
+                <div class="brand-lockup"><span class="logo-chip" aria-hidden="true">G</span><div><span class="brand-eyebrow">TU ESPACIO FINANCIERO</span><strong>Gestor de Pagos</strong></div></div>
+                <button class="menu-hamburguesa profile-trigger" id="menuHamburguesa" type="button" aria-label="Abrir perfil y opciones" aria-controls="dropdownMenu" aria-expanded="false"><span id="profileInitial" aria-hidden="true">G</span><span class="profile-chevron" aria-hidden="true">⌄</span></button>
             </div>
             <div class="dropdown-menu" id="dropdownMenu">
-                <button id="btnMiCuenta">👤 Mi Cuenta</button>
+                <div class="profile-menu-heading"><span>MI ESPACIO</span><span class="usuario-badge" id="usuarioBadge" role="button" tabindex="0" title="Mi cuenta">👤 USUARIO</span></div>
+                <button id="btnMiCuenta">👤 Mi cuenta</button>
+                <button data-section="inicio">⌂ Inicio</button>
                 <button data-section="clientes">👥 Clientes</button>
                 <button data-section="operaciones">🔄 Operaciones</button>
-                <button data-section="saldo">💰 Saldo</button>
+                <button data-section="saldo">💰 Saldo por cliente</button>
                 <button data-section="historial">📜 Historial</button>
                 <button data-section="finanzas">💹 Finanzas</button>
-                <button data-section="bd">🗄️ Base de Datos</button>
+                <div class="profile-menu-divider"></div>
+                <button id="btnSettings">⚙️ Comisiones</button>
+                <button id="btnDarkMode">🌙 Cambiar tema</button>
+                <button data-section="bd">🗄️ Respaldo y datos</button>
+                <button id="btnLogout">🚪 Cerrar sesión</button>
             </div>
             <div class="header-info">
                 <span class="datetime" id="fechaHora">--/--/---- --:--</span>
@@ -1681,38 +1783,30 @@
             </div>
         </header>
 
-        <!-- MENÚ INFERIOR -->
-        <nav class="bottom-menu" id="bottomMenu">
-            <button data-section="clientes" class="active">
-                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Clientes
-                <span class="badge-menu" id="notifClientes" style="display:none;">0</span>
-            </button>
-            <button data-section="operaciones">
-                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span> Operaciones
-                <span class="badge-menu" id="notifOperaciones" style="display:none;">0</span>
-            </button>
-            <button data-section="saldo">
-                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v12"/><path d="M15 9a3 3 0 0 0-3-2c-1.7 0-3 1-3 2.5S10.3 12 12 12s3 1 3 2.5S13.7 17 12 17a3 3 0 0 1-3-2"/></svg></span> Saldo
-            </button>
-            <button data-section="historial">
-                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span> Historial
-            </button>
-            <button data-section="finanzas">
-                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span> Finanzas
-                <span class="badge-menu" id="notifFinanzas" style="display:none;">0</span>
-            </button>
-            <button data-section="bd">
-                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.7-4 3-9 3s-9-1.3-9-3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/></svg></span> BD
-            </button>
+        <!-- Navegación principal -->
+        <nav class="bottom-menu" id="bottomMenu" aria-label="Navegación principal">
+            <button type="button" data-section="inicio" class="active" aria-current="page"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span><span>Inicio</span></button>
+            <button type="button" data-section="clientes"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2 21v-2a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v2M17 5a3.5 3.5 0 0 1 0 6.8M18 14a5 5 0 0 1 4 5v2"/></svg></span><span>Clientes</span><span class="badge-menu" id="notifClientes" style="display:none;">0</span></button>
+            <button type="button" class="nav-action" id="abrirAcciones" aria-label="Nueva operación" aria-haspopup="dialog" aria-controls="menuAcciones" aria-expanded="false"><span class="nav-plus" aria-hidden="true">+</span><span>Nueva</span><span class="badge-menu" id="notifOperaciones" style="display:none;">0</span></button>
+            <button type="button" data-section="historial"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span><span>Historial</span></button>
+            <button type="button" data-section="finanzas"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19h18M5 15l4-4 3 3 6-7M15 7h3v3"/></svg></span><span>Finanzas</span><span class="badge-menu" id="notifFinanzas" style="display:none;">0</span></button>
         </nav>
+        <div class="action-backdrop" id="menuAcciones" role="dialog" aria-modal="true" aria-labelledby="tituloAcciones" aria-hidden="true">
+            <div class="action-sheet">
+                <div class="action-sheet-top"><div><span class="section-kicker">TU PRÓXIMO MOVIMIENTO</span><h2 id="tituloAcciones">¿Qué querés hacer?</h2></div><button type="button" id="cerrarAcciones" class="sheet-close" aria-label="Cerrar">✕</button></div>
+                <button type="button" class="sheet-action" id="accionRecibir"><span class="sheet-icon">↓</span><span><strong>Recibir</strong><small>Registrar un nuevo recibo</small></span><span aria-hidden="true">↗</span></button>
+                <button type="button" class="sheet-action" id="accionTransferir"><span class="sheet-icon">↑</span><span><strong>Transferir</strong><small>Registrar una transferencia</small></span><span aria-hidden="true">↗</span></button>
+            </div>
+        </div>
 
-        <!-- ===== SECCIÓN CLIENTES ===== -->
-        <div id="section-clientes" class="section visible">
-            <div class="home-heading"><div><span class="home-kicker">TU ESPACIO</span><h1>Tu gestión, más simple.</h1></div><span class="home-sparkle" aria-hidden="true">✦</span></div>
+        <!-- ===== INICIO ===== -->
+        <div id="section-inicio" class="section visible">
+            <div class="home-heading"><div><span class="home-kicker">TODO EN UN LUGAR <span aria-hidden="true">✳</span></span><h1 id="homeGreeting">Tu día, en orden.</h1><p>Tu gestión, más simple.</p></div><span class="home-sparkle" aria-hidden="true">✳</span></div>
+            <div class="dashboard-grid"><div class="dashboard-primary">
             <div class="balance-hero">
                 <div class="balance-top"><span>Saldo total de clientes</span><button type="button" id="toggleSaldoInicio" class="balance-toggle" aria-pressed="false" aria-label="Ocultar saldo de portada">Ocultar</button></div>
                 <div class="balance-amount" id="saldoInicio">$0.00</div>
-                <div class="balance-caption">Un vistazo a tus saldos</div>
+                <div class="balance-caption"><span class="balance-dot"></span> Disponible en tus clientes</div><span class="balance-orbit" aria-hidden="true"></span>
             </div>
             <div class="quick-actions" aria-label="Accesos rápidos">
                 <button type="button" id="quickRecibir"><span class="quick-icon" aria-hidden="true">↓</span><span>Recibir</span></button>
@@ -1720,19 +1814,26 @@
                 <button type="button" id="quickSaldo"><span class="quick-icon" aria-hidden="true">$</span><span>Saldo</span></button>
                 <button type="button" id="quickHistorial"><span class="quick-icon" aria-hidden="true">↻</span><span>Historial</span></button>
             </div>
+            </div><div class="dashboard-secondary">
             <div class="card home-activity">
                 <div class="home-activity-header"><div><span class="home-kicker">ACTIVIDAD</span><h2>Últimos movimientos</h2></div><button type="button" id="verHistorialInicio">Ver historial →</button></div>
                 <p id="resumenHoy" class="home-activity-summary"></p>
                 <div id="ultimosMovimientos"></div>
             </div>
-            <div class="home-section-title"><div><span class="home-kicker">ADMINISTRACIÓN</span><h2>Mis clientes</h2></div><span>Gestioná tu actividad</span></div>
+            <button type="button" class="home-client-link" id="irClientesInicio"><span class="home-client-icon" aria-hidden="true">↗</span><span><small>TU CARTERA</small><strong>Gestionar clientes</strong><span>Consultá saldos y comisiones</span></span><span class="home-client-arrow" aria-hidden="true">→</span></button>
+            </div></div>
+        </div>
+
+        <!-- ===== CLIENTES ===== -->
+        <div id="section-clientes" class="section">
+            <div class="page-heading"><div><span class="section-kicker">TU CARTERA</span><h1>Clientes</h1><p>Todo lo que necesitás para gestionarlos.</p></div><span class="page-heading-icon" aria-hidden="true">✳</span></div>
             <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
-                <button class="btn-cliente-opcion active" id="btnMostrarAgregarCliente" style="flex:1;">➕ Agregar</button>
-                <button class="btn-cliente-opcion" id="btnMostrarListaClientes" style="flex:1;">📋 Ver Clientes</button>
+                <button class="btn-cliente-opcion" id="btnMostrarAgregarCliente" style="flex:1;">➕ Agregar</button>
+                <button class="btn-cliente-opcion active" id="btnMostrarListaClientes" style="flex:1;">📋 Ver Clientes</button>
                 <button class="btn-cliente-opcion" id="btnMostrarComisiones" style="flex:1;">📊 Comisiones</button>
             </div>
 
-            <div id="sub-agregar-cliente" class="card" style="display:block;">
+            <div id="sub-agregar-cliente" class="card" style="display:none;">
                 <h3 style="margin-bottom:10px;">Agregar Cliente</h3>
                 <div class="form-group">
                     <label>Nombre del cliente</label>
@@ -1745,7 +1846,7 @@
                 <button class="btn-primary" id="btnAgregarCliente">Agregar</button>
             </div>
 
-            <div id="sub-ver-clientes" class="card" style="display:none;">
+            <div id="sub-ver-clientes" class="card" style="display:block;">
                 <div class="card-header">
                     <h3>Clientes</h3>
                     <span class="badge-count" id="totalClientes">0</span>
@@ -1766,6 +1867,7 @@
 
         <!-- ===== SECCIÓN OPERACIONES ===== -->
         <div id="section-operaciones" class="section">
+            <div class="page-heading"><div><span class="section-kicker">MOVIMIENTOS</span><h1>Nueva operación</h1><p>Registrá un recibo o una transferencia.</p></div><span class="page-heading-icon" aria-hidden="true">✳</span></div>
             <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
                 <button class="tab-btn active" id="btnMostrarRecibir">📥 Recibir</button>
                 <button class="tab-btn" id="btnMostrarTransferir">📤 Transferir</button>
@@ -1874,6 +1976,7 @@
 
         <!-- ===== SECCIÓN SALDO ===== -->
         <div id="section-saldo" class="section">
+            <div class="page-heading"><div><span class="section-kicker">TU CARTERA</span><h1>Saldos</h1><p>Consultá el detalle por cliente.</p></div><span class="page-heading-icon" aria-hidden="true">✳</span></div>
             <div class="card" style="background:var(--gradient); border:none; color:white;">
                 <div class="saldo-total" style="-webkit-text-fill-color:white; color:white;" id="saldoTotal">$0.00</div>
                 <div class="saldo-label" style="color:rgba(255,255,255,0.7);">Saldo total de todos los clientes</div>
@@ -1889,6 +1992,7 @@
 
         <!-- ===== SECCIÓN HISTORIAL ===== -->
         <div id="section-historial" class="section">
+            <div class="page-heading"><div><span class="section-kicker">TU ACTIVIDAD</span><h1>Historial</h1><p>Todos tus movimientos en un solo lugar.</p></div><span class="page-heading-icon" aria-hidden="true">✳</span></div>
             <div class="card">
                 <h3 style="margin-bottom:10px;">Historial Completo</h3>
                 <div class="filtros-row">
@@ -1926,6 +2030,7 @@
 
         <!-- ===== SECCIÓN FINANZAS ===== -->
         <div id="section-finanzas" class="section">
+            <div class="page-heading"><div><span class="section-kicker">TU RESUMEN</span><h1>Finanzas</h1><p>Seguí la evolución de tu actividad.</p></div><span class="page-heading-icon" aria-hidden="true">✳</span></div>
             <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
                 <button class="btn-small btn-primary" id="btnMostrarResumenFinanzas" style="flex:1;">📊 Resumen</button>
                 <button class="btn-small btn-secondary" id="btnMostrarRegistrarFinanza" style="flex:1;">➕ Registrar</button>
@@ -2018,6 +2123,7 @@
 
         <!-- ===== SECCIÓN BASE DE DATOS ===== -->
         <div id="section-bd" class="section">
+            <div class="page-heading"><div><span class="section-kicker">TU INFORMACIÓN</span><h1>Respaldo y datos</h1><p>Tu información, siempre a mano.</p></div><span class="page-heading-icon" aria-hidden="true">✳</span></div>
             <div class="card">
                 <h3 style="margin-bottom:10px;">🗄️ Base de Datos</h3>
                 <div class="cuenta-linea" id="bdCuenta">👤 —</div>
@@ -2075,8 +2181,8 @@
     /* ---------- ESTADO ---------- */
     const state = { clientes: [], recibos: [], transferencias: [], finanzas: [] };
     let usuarioActual = null;       // { id, email, username }
-    let currentSection = 'clientes';
-    let clienteTab = 'agregar';
+    let currentSection = 'inicio';
+    let clienteTab = 'lista';
     let opTab = 'recibir';
     let finTab = 'resumen';
     let ordenHistorialAsc = false;
@@ -2583,7 +2689,7 @@
         if (!$('transferirFecha').value) $('transferirFecha').value = h;
         if (!$('finanzaFecha').value) $('finanzaFecha').value = h;
         try { await cargarDatosUsuario(); } finally { $('cargandoDatos').style.display = 'none'; }
-        cambiarSeccion('clientes');
+        cambiarSeccion('inicio');
         showToast('👋 Bienvenido ' + usuarioActual.username, 'success');
     }
 
@@ -2810,27 +2916,50 @@
     /* ============================================================
        CAMBIO DE SECCIÓN / PESTAÑAS
        ============================================================ */
+    function cerrarMenuPerfil() {
+        $('dropdownMenu').classList.remove('open');
+        $('menuHamburguesa').setAttribute('aria-expanded', 'false');
+    }
+
+    function cerrarAcciones(devolverFoco) {
+        const menu = $('menuAcciones');
+        const estabaAbierto = menu.classList.contains('open');
+        menu.classList.remove('open');
+        menu.setAttribute('aria-hidden', 'true');
+        $('abrirAcciones').setAttribute('aria-expanded', 'false');
+        if (devolverFoco && estabaAbierto) $('abrirAcciones').focus();
+    }
+
+    function abrirAcciones() {
+        cerrarMenuPerfil();
+        const menu = $('menuAcciones');
+        menu.classList.add('open');
+        menu.setAttribute('aria-hidden', 'false');
+        $('abrirAcciones').setAttribute('aria-expanded', 'true');
+        $('cerrarAcciones').focus();
+    }
+
     function cambiarSeccion(section) {
-        currentSection = section;
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
         const target = $('section-' + section);
-        if (target) target.classList.add('visible');
+        if (!target) return;
+        currentSection = section;
+        cerrarAcciones(false);
+        cerrarMenuPerfil();
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+        target.classList.add('visible');
 
-        document.querySelectorAll('#bottomMenu button').forEach(b => b.classList.remove('active'));
-        const bottomBtn = document.querySelector('#bottomMenu button[data-section="' + section + '"]');
-        if (bottomBtn) bottomBtn.classList.add('active');
-
+        document.querySelectorAll('#bottomMenu button').forEach(b => { b.classList.remove('active'); b.removeAttribute('aria-current'); });
+        const bottomBtn = section === 'operaciones' ? $('abrirAcciones')
+            : document.querySelector('#bottomMenu button[data-section="' + (section === 'saldo' ? 'inicio' : section) + '"]');
+        if (bottomBtn) { bottomBtn.classList.add('active'); bottomBtn.setAttribute('aria-current', 'page'); }
         document.querySelectorAll('#dropdownMenu button').forEach(b => b.classList.remove('active-drop'));
         const dropBtn = document.querySelector('#dropdownMenu button[data-section="' + section + '"]');
         if (dropBtn) dropBtn.classList.add('active-drop');
-        $('dropdownMenu').classList.remove('open');
-
         refresh();
-
         if (section === 'operaciones') {
             setTimeout(() => {
                 const target2 = opTab === 'recibir' ? $('recibirMonto') : $('transferirMonto');
-                if (target2) target2.focus();
+                if (target2 && currentSection === 'operaciones') target2.focus();
             }, 120);
         }
     }
@@ -2933,6 +3062,9 @@
         }).join('') : '<p class="home-activity-summary">Todavía no hay movimientos.</p>';
         if (usuarioActual) {
             $('usuarioBadge').textContent = '👤 ' + usuarioActual.username;
+            $('profileInitial').textContent = (usuarioActual.username || 'G').trim().charAt(0).toUpperCase() || 'G';
+            const nombre = (usuarioActual.username || '').trim().split(/\s+/)[0];
+            $('homeGreeting').textContent = nombre ? 'Hola, ' + nombre + '.' : 'Tu día, en orden.';
         }
     }
 
@@ -3669,6 +3801,7 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
+                animation: (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) ? false : { duration: 650 },
                 plugins: { legend: { position: 'bottom', labels: { color: colorTexto, font: { size: 11 } } } }
             }
         });
@@ -4333,7 +4466,7 @@
        ============================================================ */
     function aplicarModoOscuro(activar) {
         document.body.classList.toggle('dark-mode', activar);
-        $('btnDarkMode').textContent = activar ? '☀️' : '🌙';
+        $('btnDarkMode').textContent = activar ? '☀️ Modo claro' : '🌙 Modo oscuro';
         localStorage.setItem('gestor_dark_mode', activar ? 'true' : 'false');
         if (currentSection === 'finanzas' && $('sub-grafico').style.display !== 'none') actualizarGrafico();
     }
@@ -4381,8 +4514,8 @@
         $('recoveryEmail').addEventListener('keydown', e => { if (e.key === 'Enter') enviarRecuperacion(); });
 
         /* --- Header --- */
-        $('btnDarkMode').addEventListener('click', toggleDarkMode);
-        $('btnLogout').addEventListener('click', cerrarSesion);
+        $('btnDarkMode').addEventListener('click', () => { toggleDarkMode(); cerrarMenuPerfil(); });
+        $('btnLogout').addEventListener('click', () => { cerrarMenuPerfil(); cerrarSesion(); });
         $('btnSettings').addEventListener('click', () => {
             cambiarSeccion('clientes');
             cambiarPestanaClientes('comisiones');
@@ -4390,12 +4523,12 @@
         });
 
         /* --- Mi cuenta --- */
-        $('usuarioBadge').addEventListener('click', abrirModalCuenta);
+        $('usuarioBadge').addEventListener('click', () => { cerrarMenuPerfil(); abrirModalCuenta(); });
         $('usuarioBadge').addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrirModalCuenta(); }
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); cerrarMenuPerfil(); abrirModalCuenta(); }
         });
         $('btnMiCuenta').addEventListener('click', () => {
-            $('dropdownMenu').classList.remove('open');
+            cerrarMenuPerfil();
             abrirModalCuenta();
         });
         $('cuentaCerrar').addEventListener('click', cerrarModalCuenta);
@@ -4409,12 +4542,13 @@
         $('cuentaPassword2').addEventListener('keydown', e => { if (e.key === 'Enter') cambiarPasswordCuenta(); });
         $('menuHamburguesa').addEventListener('click', e => {
             e.stopPropagation();
-            $('dropdownMenu').classList.toggle('open');
+            const abierto = $('dropdownMenu').classList.toggle('open');
+            $('menuHamburguesa').setAttribute('aria-expanded', String(abierto));
         });
         document.addEventListener('click', e => {
             const dropdown = $('dropdownMenu');
             const hamburger = $('menuHamburguesa');
-            if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) dropdown.classList.remove('open');
+            if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) cerrarMenuPerfil();
         });
 
         document.querySelectorAll('#bottomMenu button[data-section]').forEach(btn => {
@@ -4423,6 +4557,20 @@
         document.querySelectorAll('#dropdownMenu button[data-section]').forEach(btn => {
             btn.addEventListener('click', () => cambiarSeccion(btn.dataset.section));
         });
+
+        $('abrirAcciones').addEventListener('click', abrirAcciones);
+        $('cerrarAcciones').addEventListener('click', () => cerrarAcciones(true));
+        $('menuAcciones').addEventListener('click', e => { if (e.target === $('menuAcciones')) cerrarAcciones(true); });
+        $('menuAcciones').addEventListener('keydown', e => {
+            if (e.key !== 'Tab') return;
+            const elementos = [$('cerrarAcciones'), $('accionRecibir'), $('accionTransferir')];
+            const indice = elementos.indexOf(document.activeElement);
+            if (e.shiftKey && (indice <= 0)) { e.preventDefault(); elementos[elementos.length - 1].focus(); }
+            else if (!e.shiftKey && indice === elementos.length - 1) { e.preventDefault(); elementos[0].focus(); }
+        });
+        $('accionRecibir').addEventListener('click', () => { cambiarPestanaOperaciones('recibir'); cambiarSeccion('operaciones'); });
+        $('accionTransferir').addEventListener('click', () => { cambiarPestanaOperaciones('transferir'); cambiarSeccion('operaciones'); });
+        $('irClientesInicio').addEventListener('click', () => cambiarSeccion('clientes'));
 
         /* --- Clientes --- */
         $('btnMostrarAgregarCliente').addEventListener('click', () => cambiarPestanaClientes('agregar'));
@@ -4619,7 +4767,8 @@
                 $('modalEditarCliente').classList.remove('open');
                 $('modalPassword').classList.remove('open');
                 cerrarModalCuenta();
-                $('dropdownMenu').classList.remove('open');
+                cerrarMenuPerfil();
+                cerrarAcciones(true);
                 const manual = document.querySelector('.modal-mensaje-manual');
                 if (manual) manual.remove();
                 return;

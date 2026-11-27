@@ -20,6 +20,11 @@ const dom = new JSDOM(html, {
 
 const { window } = dom;
 const { document } = window;
+function irSeccion(sec) {
+  const destino = document.querySelector('#bottomMenu button[data-section="' + sec + '"]') || document.querySelector('#dropdownMenu button[data-section="' + sec + '"]');
+  if (!destino) throw new Error('Falta navegación: ' + sec);
+  destino.click();
+}
 window.confirm = () => true;
 window.HTMLCanvasElement.prototype.getContext = () => ({});
 
@@ -174,7 +179,7 @@ function run(label, fn) {
 
   // 4) Agregar cliente
   run('Agregar cliente', () => {
-    document.getElementById('btnMostrarListaClientes').click();
+    document.getElementById('btnMostrarAgregarCliente').click();
     document.getElementById('clienteNombre').value = 'Juan Pérez <b>test</b>';
     document.getElementById('clienteComision').value = '2';
     document.getElementById('btnAgregarCliente').click();
@@ -194,7 +199,7 @@ function run(label, fn) {
   run('Registrar recibo con comisión', () => {
     document.getElementById('btnMostrarRecibir') && null;
     // cambiar a sección operaciones
-    document.querySelector('#bottomMenu button[data-section="operaciones"]').click();
+    irSeccion('operaciones');
     const sel = document.getElementById('recibirCliente');
     if (!sel.options.length) throw new Error('select sin clientes');
     document.getElementById('recibirMonto').value = '100';
@@ -236,7 +241,7 @@ function run(label, fn) {
   });
 
   run('Portada muestra saldo y accesos rápidos funcionan', () => {
-    document.querySelector('#bottomMenu button[data-section="clientes"]').click();
+    irSeccion('inicio');
     if (document.getElementById('saldoInicio').textContent !== '$48.00') throw new Error('saldo inicio incorrecto: ' + document.getElementById('saldoInicio').textContent);
     for (const [id, sec, tab] of [['quickRecibir','operaciones','recibir'], ['quickTransferir','operaciones','transferir'], ['quickSaldo','saldo',null], ['quickHistorial','historial',null]]) {
       document.getElementById(id).click();
@@ -248,7 +253,7 @@ function run(label, fn) {
   // 7) Navegar por todas las secciones
   run('Navegar todas las secciones sin errores', () => {
     ['clientes', 'operaciones', 'saldo', 'historial', 'finanzas', 'bd'].forEach(sec => {
-      document.querySelector('#bottomMenu button[data-section="' + sec + '"]').click();
+      irSeccion(sec);
       const el = document.getElementById('section-' + sec);
       if (!el.classList.contains('visible')) throw new Error('sección no visible: ' + sec);
     });
@@ -296,7 +301,7 @@ function run(label, fn) {
 
   // 11) Saldo section
   run('Sección saldo calcula total', () => {
-    document.querySelector('#bottomMenu button[data-section="saldo"]').click();
+    irSeccion('saldo');
     const total = document.getElementById('saldoTotal').textContent;
     if (total !== '$48.00') throw new Error('total: ' + total);
   });
@@ -357,7 +362,7 @@ function run(label, fn) {
   await new Promise(r => setTimeout(r, 50));
 
   run('Editar saldo mantiene los registros y su posición en historial', () => {
-    document.querySelector('#bottomMenu button[data-section="operaciones"]').click();
+    irSeccion('operaciones');
     document.getElementById('btnMostrarTransferir').click();
     const numero = document.getElementById('numeroDestino');
     numero.value = '9212129938675427'; numero.dispatchEvent(new window.Event('input'));
@@ -435,7 +440,7 @@ function run(label, fn) {
     if (!boton) throw new Error('falta acción compartir');
     boton.click(); await new Promise(r=>setTimeout(r,10));
     if (!compartido || !compartido.includes('no es constancia bancaria') || !compartido.includes('5427') || compartido.includes('9212129938675427')) throw new Error('comprobante incorrecto o destino expuesto');
-    document.querySelector('#bottomMenu button[data-section="operaciones"]').click();
+    irSeccion('operaciones');
     document.getElementById('btnMostrarTransferir').click();
     const buscar=document.getElementById('buscarClienteTransferir');
     buscar.value='no existe'; buscar.dispatchEvent(new window.Event('input'));
@@ -510,12 +515,30 @@ function run(label, fn) {
   });
 
   // 20) Navegación con iconos SVG intacta
-  run('Menú inferior conserva data-section tras cambiar iconos', () => {
-    const btns = document.querySelectorAll('#bottomMenu button[data-section]');
-    if (btns.length !== 6) throw new Error('botones: ' + btns.length);
-    if (!document.querySelector('#bottomMenu button[data-section="saldo"] svg')) throw new Error('falta svg en saldo');
+  run('Menú inferior y acciones rápidas conservan la navegación', () => {
+    const btns = document.querySelectorAll('#bottomMenu button');
+    if (btns.length !== 5) throw new Error('botones: ' + btns.length);
+    for (const sec of ['inicio','clientes','historial','finanzas']) if (!document.querySelector('#bottomMenu button[data-section="'+sec+'"] svg')) throw new Error('falta navegación ' + sec);
+    irSeccion('inicio');
+    if (!document.getElementById('section-inicio').classList.contains('visible') || document.getElementById('section-clientes').classList.contains('visible')) throw new Error('inicio no separado de clientes');
+    document.getElementById('abrirAcciones').click();
+    const menu=document.getElementById('menuAcciones');
+    if (!menu.classList.contains('open') || menu.getAttribute('aria-hidden') !== 'false') throw new Error('no abrió acciones');
+    document.getElementById('accionTransferir').click();
+    if (menu.classList.contains('open') || !document.getElementById('section-operaciones').classList.contains('visible') || document.getElementById('sub-transferir').style.display !== 'block') throw new Error('no abrió transferencia');
+    document.getElementById('abrirAcciones').click();
+    document.getElementById('accionRecibir').click();
+    if (!document.getElementById('section-operaciones').classList.contains('visible') || document.getElementById('sub-recibir').style.display !== 'block') throw new Error('no abrió recibo');
+    irSeccion('inicio');
+    document.getElementById('abrirAcciones').click();
+    document.getElementById('cerrarAcciones').click();
+    if (menu.classList.contains('open') || document.activeElement !== document.getElementById('abrirAcciones')) throw new Error('no cerró o devolvió el foco');
+    document.getElementById('menuHamburguesa').click();
+    if (document.getElementById('menuHamburguesa').getAttribute('aria-expanded') !== 'true') throw new Error('perfil no accesible');
+    if (!document.querySelector('#dropdownMenu [data-section="bd"]')) throw new Error('respaldo inaccesible');
+    irSeccion('bd');
+    if (!document.getElementById('section-bd').classList.contains('visible')) throw new Error('respaldo no abrió');
   });
-
 
   // 21) RECUPERACIÓN CON CÓDIGO DE VERIFICACIÓN
   run('Paso 1 → Paso 2 tras enviar código', async () => {
