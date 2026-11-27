@@ -59,6 +59,7 @@ function qb(result) {
 let remoteSnapshot = null;
 let authCallback = null;
 let signOutCalls = 0;
+let tasasError = false;
 
 window.supabase = {
   createClient: (url, key) => {
@@ -94,6 +95,7 @@ window.supabase = {
         remoteSnapshot = {revision:(remoteSnapshot ? remoteSnapshot.revision : 0)+1,payload:JSON.parse(JSON.stringify(args.p_payload)),updated_at:new Date().toISOString()};
         return Promise.resolve({data:{ok:true,revision:remoteSnapshot.revision},error:null});
       },
+      functions: { invoke: async () => tasasError ? {data:null,error:{message:'offline'}} : {data:{generated_at:'2020-01-01T00:00:00Z',rates:[{code:'USD',cup:100},{code:'EUR',cup:120},{code:'MLC',cup:90},{code:'CAD',cup:80}]},error:null} },
       channel: () => ({ on() { return this; }, subscribe() { return this; } }),
       removeChannel: () => {}
     };
@@ -538,6 +540,24 @@ function run(label, fn) {
     if (!document.querySelector('#dropdownMenu [data-section="bd"]')) throw new Error('respaldo inaccesible');
     irSeccion('bd');
     if (!document.getElementById('section-bd').classList.contains('visible')) throw new Error('respaldo no abrió');
+  });
+
+  run('Tasas: selección, persistencia, pausa y fecha sin alterar saldos', async () => {
+    await new Promise(r => setTimeout(r, 20));
+    const bar = document.getElementById('tasasContenido');
+    if (!bar.textContent.includes('USD') || !bar.textContent.includes('100') || !document.getElementById('tasasNota').textContent.includes('posiblemente desactualizados')) throw new Error('tasas o antigüedad');
+    document.getElementById('menuHamburguesa').click(); document.getElementById('btnMonedas').click();
+    const opts = document.getElementById('opcionesMonedas');
+    opts.querySelectorAll('input').forEach(el => el.checked = el.value === 'CAD');
+    document.getElementById('guardarMonedas').click();
+    if (bar.textContent.includes('USD') || !bar.textContent.includes('CAD') || !bar.textContent.includes('80')) throw new Error('selección no aplicada');
+    if (JSON.parse(window.localStorage.getItem('gestor_monedas_uid-test-123'))[0] !== 'CAD') throw new Error('selección no guardada por cuenta');
+    document.getElementById('pausarTasas').click();
+    if (document.getElementById('pausarTasas').getAttribute('aria-pressed') !== 'true') throw new Error('pausa');
+    document.getElementById('menuHamburguesa').click(); document.getElementById('btnMonedas').click();
+    opts.querySelectorAll('input').forEach(el => el.checked = false);
+    document.getElementById('guardarMonedas').click();
+    if (!bar.textContent.includes('No seleccionaste')) throw new Error('sin selección');
   });
 
   // 21) RECUPERACIÓN CON CÓDIGO DE VERIFICACIÓN
