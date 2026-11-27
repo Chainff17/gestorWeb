@@ -2,14 +2,16 @@
 // - Estáticos: cache-first con actualización en segundo plano
 // - Navegaciones: network-first con fallback offline
 // - Supabase (API/datos): SIEMPRE red — nunca cachear respuestas de datos
-const CACHE_NAME = 'gestor-pagos-v3.9';
+const CACHE_NAME = 'gestor-pagos-v3.10';
 
 const STATIC_ASSETS = [
   './',
   './index.html',
-  './manifest.json',
+  './manifest.json?v=4',
   './offline.html',
-  './icon-192x192.PNG',
+  './icon-app-192.png',
+  './icon-app-512.png',
+  './icon-apple-180.png',
   'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js',
