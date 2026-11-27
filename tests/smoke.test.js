@@ -394,10 +394,9 @@ function run(label, fn) {
     const ids=()=>[...document.querySelectorAll('#listaHistorial [data-action="edit-op"]')].map(x=>x.dataset.id).join(',');
     const ordenAntes=ids();
     document.querySelector('[data-action="edit-op"][data-id="'+data.transferencias[0].id+'"]').click();
-    if (!document.getElementById('modalMonto').readOnly || !document.getElementById('modalFecha').readOnly || !document.getElementById('modalCliente').disabled) throw new Error('los datos originales se pueden modificar');
+    if (document.getElementById('modalMonto').readOnly || !document.getElementById('modalFecha').readOnly || !document.getElementById('modalCliente').disabled) throw new Error('campos de edición inesperados');
     if (document.getElementById('modalSaldoDisponible').value !== '98.00') throw new Error('vista previa no es saldo histórico');
-    // Incluso manipulando el DOM, los datos originales no se usan al guardar.
-    document.getElementById('modalMonto').value='999';
+    // La fecha se mantiene intacta incluso si se manipula el DOM.
     document.getElementById('modalFecha').value='2020-01-01';
     document.getElementById('modalSaldoDisponible').value='150';
     document.getElementById('modalSaldoDisponible').dispatchEvent(new window.Event('input'));
