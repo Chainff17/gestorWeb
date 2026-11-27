@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <meta name="description" content="Gestor de Pagos - Administración de clientes, comisiones y transferencias con sincronización en la nube">
     <meta name="theme-color" content="#007a53">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -211,15 +211,14 @@
             font-size: 0.8rem;
             color: var(--text-muted);
         }
-        #authScreen .auth-card .auth-switch a,
-        #authScreen .auth-card .auth-extra a {
+        #authScreen .auth-card .auth-link {
+            border:0; background:transparent; font:inherit; padding:0 2px; min-height:44px;
             color: var(--primary);
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
         }
-        #authScreen .auth-card .auth-switch a:hover,
-        #authScreen .auth-card .auth-extra a:hover { text-decoration: underline; }
+        #authScreen .auth-card .auth-link:hover { text-decoration: underline; }
         .auth-cloud-note {
             margin-top: 18px;
             font-size: 0.68rem;
@@ -1589,6 +1588,88 @@
         .backup-reminder[hidden] { display:none; }
         .backup-reminder button { flex:none; border:0; border-radius:10px; background:var(--btn-secondary-bg); color:var(--btn-secondary-text); padding:9px; cursor:pointer; font-weight:700; }
 
+
+        /* Ajustes táctiles y de espacio para teléfonos, sin recortar contenido. */
+        .campos-dobles { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+        .campos-dobles > *, .filtros-row > *, .stat-card, .operacion-card .tipo { min-width:0; }
+        .preview-box, .operacion-card .tipo, .operacion-card .detalle, .stat-card .monto,
+        .balance-amount, .saldo-total, #saldosPorCliente span, #listaPendientes button { overflow-wrap:anywhere; }
+        #saldosPorCliente > div { gap:10px; flex-wrap:wrap; }
+        #saldosPorCliente > div > span:first-child { flex:1 1 110px; min-width:0; }
+        #saldosPorCliente > div > span:last-child { flex:0 1 auto; }
+        .toast { z-index:1100; bottom:calc(90px + env(safe-area-inset-bottom, 0px)); overflow-wrap:anywhere; }
+        @media (max-width:600px) {
+            body { width:100%; min-width:0; }
+            button, summary, [role="button"] { touch-action:manipulation; }
+            button:focus-visible, summary:focus-visible, [role="button"]:focus-visible,
+            input:focus-visible, select:focus-visible, textarea:focus-visible { outline:3px solid var(--primary); outline-offset:2px; }
+            header { padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); padding-top:calc(12px + env(safe-area-inset-top, 0px)); }
+            .section { padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
+            .rates-bar { margin-left:max(16px, env(safe-area-inset-left, 0px)); margin-right:max(16px, env(safe-area-inset-right, 0px)); }
+            .bottom-menu { padding-left:max(8px, env(safe-area-inset-left, 0px)); padding-right:max(8px, env(safe-area-inset-right, 0px)); }
+            .bottom-menu button { font-size:.68rem; }
+            .header-info { gap:0 8px; }
+            .sync-status { min-height:44px; }
+            .profile-menu-heading .usuario-badge { display:flex; align-items:center; min-height:44px; }
+            .form-group input:not([type="checkbox"]):not([type="radio"]), .form-group select,
+            .form-group textarea, .buscador-cliente, .bd-import-row input[type="file"] {
+                min-width:0; max-width:100%; min-height:48px; height:auto; font-size:16px;
+            }
+            .filtros-row .form-group input, .filtros-row .form-group select { font-size:16px; }
+            .form-group input[type="date"], .filtros-row input[type="date"] { width:100%; min-height:48px; }
+            .form-group label, .filtros-row .form-group label { font-size:.8rem; line-height:1.3; margin-bottom:5px; }
+            .form-group .hint { font-size:.75rem; line-height:1.4; }
+            .form-group input + select { margin-top:8px; }
+            .btn-small, .btn-cliente-opcion, .tab-btn, .btn-load-more, .modal-actions button,
+            #listaClientesResumen .cliente-card .acciones button, .dropdown-menu button,
+            .profile-config summary, .rates-head button, .backup-reminder button { min-height:44px; height:auto; }
+            .btn-small, #listaClientesResumen .cliente-card .acciones button { font-size:.8rem; line-height:1.25; }
+            .home-activity-header button, .balance-toggle, #listaFinanzas [data-action=del-finanza] { min-height:44px; }
+            #listaFinanzas [data-action=del-finanza], #btnInvertirFinanzas, #btnDictarMontoRecibo, #btnDictarMontoTransferir { min-width:44px; }
+            #listaComisiones .cliente-card { flex-wrap:wrap; gap:10px; }
+            #listaComisiones .info { min-width:0; overflow-wrap:anywhere; flex:1 1 130px; }
+            #listaComisiones .input-comision { min-height:44px; font-size:16px !important; }
+            #listaComisiones [data-action=save-comision] { min-width:44px; }
+            .btn-cliente-opcion, .tab-btn { min-width:0; padding:9px 8px; line-height:1.25; }
+            .operacion-card .acciones-botones { gap:6px; }
+            .operacion-card .acciones-botones .btn-icono { min-width:44px; min-height:44px; padding:8px; background:var(--bg-card); }
+            .operacion-card .tipo, .operacion-card .detalle { font-size:.8rem; line-height:1.4; }
+            #listaClientesResumen .cliente-card .saldo { flex:0 1 auto; min-width:0; overflow-wrap:anywhere; text-align:right; }
+            .home-movement > strong { max-width:45%; min-width:0; white-space:normal; overflow-wrap:anywhere; text-align:right; }
+            .operacion-card .fecha, .operacion-card .numero-op { font-size:.72rem; }
+            .operacion-card .numero-op { flex:none; margin-left:8px; }
+            .saldo-total { font-size:clamp(1.35rem, 7vw, 2rem); line-height:1.15; }
+            .stat-card .monto { font-size:clamp(.95rem, 4vw, 1.25rem); }
+            #section-historial .filtros-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+            #section-historial .filtros-row .form-group:first-child { grid-column:1/-1; }
+            #section-historial .acciones-fila { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+            #section-historial .acciones-fila button { width:100%; }
+            .bd-import-row { flex-wrap:wrap; }
+            .bd-import-row input[type="file"] { min-width:0; width:100%; flex:1 1 100%; }
+            .bd-import-row .btn-small { flex:1 1 100%; }
+            #authScreen { align-items:safe center; padding:calc(16px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+            #authScreen .auth-card { margin:auto; padding:24px 20px; }
+            #authScreen .auth-card .form-group input { min-height:48px; height:auto; font-size:16px; }
+            .modal-overlay { padding-left:env(safe-area-inset-left, 0px); padding-right:env(safe-area-inset-right, 0px); }
+            .modal { max-height:calc(100vh - 16px - env(safe-area-inset-top, 0px)); max-height:calc(100dvh - 16px - env(safe-area-inset-top, 0px)); padding-bottom:calc(24px + env(safe-area-inset-bottom, 0px)); overscroll-behavior:contain; overflow-wrap:anywhere; }
+            .modal .modal-actions button { min-width:0; line-height:1.3; }
+            .rates-options label { min-height:44px; }
+            .modal details summary { min-height:44px; padding:10px 0; line-height:1.4; cursor:pointer; }
+            .modal .hint { font-size:.8rem; line-height:1.5; color:var(--text-secondary); }
+            .action-sheet { max-height:calc(100vh - 16px - env(safe-area-inset-top, 0px)); max-height:calc(100dvh - 16px - env(safe-area-inset-top, 0px)); overflow-y:auto; overscroll-behavior:contain; }
+            .sheet-close, .profile-trigger { min-height:44px; min-width:44px; }
+            .dropdown-menu { max-width:calc(100vw - 32px); max-height:calc(100dvh - 90px); overscroll-behavior:contain; }
+        }
+        @media (max-width:375px) {
+            .campos-dobles, #section-historial .filtros-row { grid-template-columns:minmax(0,1fr); }
+            #section-historial .filtros-row .form-group:first-child { grid-column:auto; }
+            .resumen-diario-grid { gap:6px; }
+        }
+        @media (max-width:600px) and (max-height:500px) {
+            header { position:relative; }
+            .action-backdrop { overflow-y:auto; }
+        }
+
         @media (prefers-reduced-motion:reduce) { .rates-track { animation:none !important; } }
     </style>
 </head>
@@ -1614,10 +1695,10 @@
                 <button class="btn-primary" id="btnLogin">🚪 Iniciar Sesión</button>
                 <div class="auth-error" id="loginError">❌ Error al iniciar sesión.</div>
                 <div class="auth-switch">
-                    ¿No tienes cuenta? <a id="switchToRegister">Regístrate aquí</a>
+                    ¿No tienes cuenta? <button class="auth-link" type="button" id="switchToRegister">Regístrate aquí</button>
                 </div>
                 <div class="auth-extra">
-                    <a id="switchToRecovery">¿Olvidaste tu contraseña?</a>
+                    <button class="auth-link" type="button" id="switchToRecovery">¿Olvidaste tu contraseña?</button>
                 </div>
             </div>
 
@@ -1642,7 +1723,7 @@
                 <button class="btn-primary" id="btnRegister">📝 Crear Cuenta</button>
                 <div class="auth-error" id="registerError">❌ Error en el registro.</div>
                 <div class="auth-switch">
-                    ¿Ya tienes cuenta? <a id="switchToLogin">Inicia sesión aquí</a>
+                    ¿Ya tienes cuenta? <button class="auth-link" type="button" id="switchToLogin">Inicia sesión aquí</button>
                 </div>
             </div>
 
@@ -1673,7 +1754,7 @@
                     <p id="recoveryCodeInfo" style="font-size:0.72rem; color:var(--text-muted); margin-top:10px; text-align:center;"></p>
                 </div>
                 <div class="auth-switch">
-                    <a id="switchToLoginFromRecovery">Volver a iniciar sesión</a>
+                    <button class="auth-link" type="button" id="switchToLoginFromRecovery">Volver a iniciar sesión</button>
                 </div>
             </div>
 
@@ -1974,7 +2055,7 @@
                     <label>Monto a recibir</label>
                     <input type="number" id="recibirMonto" placeholder="0.00" step="0.01" min="0" inputmode="decimal" autofocus>
                 </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div class="campos-dobles">
                     <div class="form-group">
                         <label>Fecha</label>
                         <input type="date" id="recibirFecha">
@@ -2022,7 +2103,7 @@
                     <label>Monto a transferir</label>
                     <input type="number" id="transferirMonto" placeholder="0.00" step="0.01" min="0" inputmode="decimal" autofocus>
                 </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div class="campos-dobles">
                     <div class="form-group">
                         <label>Fecha</label>
                         <input type="date" id="transferirFecha">
@@ -3490,8 +3571,8 @@
                         <div class="comision">Comisión actual: ${esc(c.comision)}%</div>
                     </div>
                     <div style="display:flex; gap:4px; align-items:center;">
-                        <input type="number" step="0.1" min="0" value="${esc(c.comision)}" data-id="${c.id}" class="input-comision" style="width:55px; padding:4px 6px; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-input); color:var(--text-primary); font-size:0.85rem;" inputmode="decimal">
-                        <button class="btn-small btn-primary" data-action="save-comision" data-id="${c.id}" style="width:auto; padding:3px 8px; font-size:0.65rem;" title="Guardar comisión">✓</button>
+                        <input type="number" step="0.1" min="0" value="${esc(c.comision)}" data-id="${c.id}" class="input-comision" aria-label="Comisión de ${esc(c.nombre)}" style="width:55px; padding:4px 6px; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-input); color:var(--text-primary); font-size:0.85rem;" inputmode="decimal">
+                        <button class="btn-small btn-primary" data-action="save-comision" data-id="${c.id}" style="width:auto; padding:3px 8px; font-size:0.65rem;" title="Guardar comisión" aria-label="Guardar comisión de ${esc(c.nombre)}">✓</button>
                     </div>
                 </div>`;
         });

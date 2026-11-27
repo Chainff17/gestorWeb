@@ -2,7 +2,7 @@
 // - Estáticos: cache-first con actualización en segundo plano
 // - Navegaciones: network-first con fallback offline
 // - Supabase (API/datos): SIEMPRE red — nunca cachear respuestas de datos
-const CACHE_NAME = 'gestor-pagos-v3.12';
+const CACHE_NAME = 'gestor-pagos-v3.13';
 
 const STATIC_ASSETS = [
   './',
