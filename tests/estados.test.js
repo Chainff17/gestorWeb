@@ -1,0 +1,18 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+const html = fs.readFileSync('index.html', 'utf8');
+const balance = html.slice(html.indexOf('    function operacionesCronologicas()'), html.indexOf('    function recalcularSaldos('));
+const statement = html.slice(html.indexOf('    function datosEstadoCuenta('), html.indexOf('    function generarEstadoCuenta('));
+const fecha = (s) => new Date(s + 'T12:00:00').getTime();
+const state = {clientes:[{id:'a', saldo:65}], recibos:[{id:'r',clienteId:'a',numeroOp:1,fecha:fecha('2025-01-01'),monto:100,neto:90}], transferencias:[{id:'t',clienteId:'a',numeroOp:2,fecha:fecha('2025-01-02'),monto:30,ajusteSaldo:5}],finanzas:[]};
+const context = {state,getCliente:id=>state.clientes.find(c=>c.id===id), fechaLocalISO:ts=>new Date(ts).toISOString().slice(0,10)};
+vm.createContext(context); vm.runInContext(balance + statement,context);
+let r = context.datosEstadoCuenta('a','2025-01-02','2025-01-02');
+assert.equal(r.inicial,90); assert.equal(r.final,65); assert.equal(r.filas.length,2); assert.equal(r.filas[0][2],5); assert.equal(r.filas[1][2],-30);
+r=context.datosEstadoCuenta('a','2024-01-01','2024-12-31'); assert.equal(r.inicial,0); assert.equal(r.final,0); assert.equal(r.filas.length,0);
+r=context.datosEstadoCuenta('a','2025-02-01','2025-03-01'); assert.equal(r.inicial,65); assert.equal(r.final,65);
+assert.throws(()=>context.datosEstadoCuenta('a','2025-02-01','2025-01-01'),/período/);
+state.transferencias[0].fecha=fecha('2024-12-01'); assert.throws(()=>context.datosEstadoCuenta('a','2024-01-01','2025-01-01'),/fuera del orden/);
+state.transferencias[0].fecha=fecha('2025-01-02'); delete state.recibos[0].neto; assert.throws(()=>context.datosEstadoCuenta('a','2025-01-01','2025-01-02'),/sin neto/);
+console.log('OK: estados de cuenta, ajustes, períodos vacíos y datos inseguros');

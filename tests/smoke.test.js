@@ -59,6 +59,7 @@ function qb(result) {
 }
 
 let remoteSnapshot = null;
+let remoteCopies = [];
 let authCallback = null;
 let signOutCalls = 0;
 let tasasError = false;
@@ -95,12 +96,20 @@ window.supabase = {
           insert: async row => { if (prefsError) return {error:{message:'offline'}}; if (remotePreferencias) return {error:{code:'23505'}}; remotePreferencias = {preferencias:JSON.parse(JSON.stringify(row.preferencias))}; return {error:null}; },
           upsert: async row => { if (prefsError) return {error:{message:'offline'}}; remotePreferencias = { preferencias:JSON.parse(JSON.stringify(row.preferencias)) }; return {error:null}; }
         };
+        if (table === 'gestor_copias') return { select: () => {
+          let revision = null;
+          const builder = {eq: (key,value) => {if (key === 'revision') revision=value; return builder;}, order:()=>builder,
+            limit: async () => ({data:remoteCopies.map(x=>({revision:x.revision,creado_en:x.creado_en})).reverse(),error:null}),
+            maybeSingle: async () => ({data:remoteCopies.find(x=>x.revision===revision)||null,error:null})};
+          return builder;
+        }};
         if (table !== 'gestor_snapshots') throw new Error('tabla inesperada: ' + table);
         return qb({ data: remoteSnapshot, error: null });
       },
       rpc: (name, args) => {
         if ((remoteSnapshot ? remoteSnapshot.revision : null) !== args.p_revision) return Promise.resolve({data:{ok:false},error:null});
         remoteSnapshot = {revision:(remoteSnapshot ? remoteSnapshot.revision : 0)+1,payload:JSON.parse(JSON.stringify(args.p_payload)),updated_at:new Date().toISOString()};
+        remoteCopies.push({revision:remoteSnapshot.revision,creado_en:remoteSnapshot.updated_at,payload:JSON.parse(JSON.stringify(remoteSnapshot.payload))});
         return Promise.resolve({data:{ok:true,revision:remoteSnapshot.revision},error:null});
       },
       functions: { invoke: async () => tasasError ? {data:null,error:{message:'offline'}} : {data:{generated_at:'2020-01-01T00:00:00Z',rates:[{code:'USD',cup:100},{code:'EUR',cup:120},{code:'MLC',cup:90},{code:'CAD',cup:80}]},error:null} },
@@ -395,7 +404,7 @@ function run(label, fn) {
     document.getElementById('modalGuardar').click();
     data=JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123'));
     if (data.transferencias[0].ajusteSaldo!==52 || data.transferencias[0].saldoAntes!==150 || data.transferencias[1].saldoAntes!==100 || data.clientes[0].saldo!==80) throw new Error('ajuste no propagado: '+JSON.stringify(data));
-    const strip=o=>{const c={...o};delete c.saldoAntes;delete c.ajusteSaldo;return JSON.stringify(c)};
+    const strip=o=>{const c={...o};delete c.saldoAntes;delete c.ajusteSaldo;delete c.historialAjustes;delete c.ajustePrevioSinDetalle;return JSON.stringify(c)};
     data.transferencias.forEach((t,i)=>{if(strip(t)!==strip(antes.transferencias[i]))throw new Error('cambió el registro '+i)});
     if(JSON.stringify(data.recibos)!==JSON.stringify(antes.recibos) || JSON.stringify(data.finanzas)!==JSON.stringify(antes.finanzas)) throw new Error('cambiaron otros registros');
     if (ids()!==ordenAntes) throw new Error('cambió el orden o desapareció una operación');
@@ -416,6 +425,42 @@ function run(label, fn) {
     document.querySelector('[data-action="edit-op"][data-id="'+data.transferencias[0].id+'"]').click();
     document.getElementById('modalGuardar').click();
     if (window.localStorage.getItem('gestor_cloud_uid-test-123')!==sinCambios) throw new Error('guardar sin cambios alteró los datos');
+  });
+
+  run('Notas, auditoría y copias en nube se revisan sin reemplazos silenciosos', async () => {
+    irSeccion('clientes'); document.getElementById('btnMostrarListaClientes').click();
+    document.querySelector('#listaClientesResumen [data-action="ficha-cliente"]').click();
+    document.getElementById('fichaNota').value = '<observación privada>';
+    document.getElementById('guardarNota').click();
+    const guardado = JSON.parse(window.localStorage.getItem('gestor_cloud_uid-test-123'));
+    if (guardado.clientes[0].nota !== '<observación privada>') throw new Error('no guardó nota');
+    if (!guardado.transferencias[0].historialAjustes[0].dispositivo || guardado.transferencias[0].historialAjustes[0].diferencia!==52) throw new Error('no registró ajuste');
+    document.getElementById('cerrarFicha').click();
+    document.querySelector('#listaClientesResumen [data-action="ficha-cliente"]').click();
+    if (document.getElementById('fichaNota').value !== '<observación privada>' || !document.getElementById('fichaAjustes').textContent.includes('dispositivo')) throw new Error('ficha no muestra nota o auditoría');
+    let pdf = null;
+    const originalPdf=window.jspdf;
+    window.jspdf={jsPDF:class {setFontSize(){} text(){} splitTextToSize(t){return [t]} autoTable(x){pdf=x;this.lastAutoTable={finalY:100}} save(name){if(!name.startsWith('estado_cuenta_')) throw new Error('nombre PDF inesperado')} }};
+    document.getElementById('estadoDesde').value='2000-01-01'; document.getElementById('estadoHasta').value='2099-12-31';
+    document.getElementById('estadoPDF').click(); window.jspdf=originalPdf;
+    if (!pdf || !pdf.body.some(r=>r[1].includes('Ajuste')) || !pdf.foot[0][1].includes('Saldo final')) throw new Error('PDF sin movimientos, ajustes o saldo');
+    document.getElementById('cerrarFicha').click();
+    irSeccion('bd'); document.getElementById('btnSyncNow').click(); await new Promise(r=>setTimeout(r,40));
+    document.getElementById('btnVerCopias').click(); await new Promise(r=>setTimeout(r,40));
+    const botones=document.querySelectorAll('#listaCopias button'); if (!botones.length) throw new Error('sin historial de copias');
+    botones[botones.length-1].click(); await new Promise(r=>setTimeout(r,40));
+    if (!document.getElementById('modalRespaldo').classList.contains('open')) throw new Error('no abrió revisión');
+    const antes=window.localStorage.getItem('gestor_cloud_uid-test-123');
+    window.confirm=()=>false; document.getElementById('confirmarRespaldo').click();
+    if (window.localStorage.getItem('gestor_cloud_uid-test-123') !== antes) throw new Error('restauró sin autorización');
+    window.confirm=()=>true; document.getElementById('cancelarRespaldo').click();
+    botones[botones.length-1].click(); await new Promise(r=>setTimeout(r,40));
+    irSeccion('clientes'); document.getElementById('btnMostrarListaClientes').click();
+    document.querySelector('#listaClientesResumen [data-action="ficha-cliente"]').click();
+    document.getElementById('fichaNota').value='Cambio posterior'; document.getElementById('guardarNota').click(); document.getElementById('cerrarFicha').click();
+    const actual=window.localStorage.getItem('gestor_cloud_uid-test-123');
+    document.getElementById('confirmarRespaldo').click();
+    if(window.localStorage.getItem('gestor_cloud_uid-test-123')!==actual || !actual.includes('Cambio posterior')) throw new Error('se restauró pese a cambios posteriores');
   });
 
   run('Conflicto de sincronización conserva ambas copias', async () => {

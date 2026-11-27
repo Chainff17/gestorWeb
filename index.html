@@ -1571,6 +1571,7 @@
         .rates-options label { display:flex; align-items:center; gap:8px; padding:10px; background:var(--bg-card-alt); border:1px solid var(--border-color); border-radius:12px; font-size:.8rem; }
         .rates-options input { accent-color:#087f5b; }
         #modalImportacion button:disabled { opacity:.45; cursor:not-allowed; }
+        #fichaNota { width:100%; box-sizing:border-box; padding:10px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-card-alt); color:var(--text-primary); font:inherit; resize:vertical; }
         .preview-box { margin:12px 0; padding:12px; border:1px solid var(--border-color); border-radius:14px; background:var(--bg-card-alt); color:var(--text-primary); font-size:.78rem; line-height:1.55; white-space:pre-line; }
         .backup-reminder { display:flex; gap:10px; align-items:center; justify-content:space-between; margin:0 0 20px; padding:12px; border:1px solid var(--border-color); border-radius:16px; background:var(--bg-card); font-size:.76rem; line-height:1.4; }
         #listaClientesResumen .cliente-card { display:block; }
@@ -1771,6 +1772,9 @@
 
     <div class="modal-overlay" id="modalFicha" role="dialog" aria-modal="true" aria-labelledby="fichaTitulo"><div class="modal">
         <h3 id="fichaTitulo">Cliente</h3><div id="fichaContenido" class="preview-box"></div>
+        <div class="form-group"><label for="fichaNota">Notas privadas del cliente</label><textarea id="fichaNota" rows="3" maxlength="3000" placeholder="Observaciones, sin movimientos financieros"></textarea><button type="button" id="guardarNota" class="btn-small btn-secondary">Guardar nota</button></div>
+        <details><summary>Historial de ajustes de saldo</summary><div id="fichaAjustes" class="preview-box"></div></details>
+        <details><summary>Estado de cuenta en PDF</summary><p class="hint">En orden de operación. Los saldos históricos se infieren de los datos actuales; pueden no reflejar datos anteriores o cambios antiguos.</p><div class="form-group"><label for="estadoDesde">Desde</label><input type="date" id="estadoDesde"></div><div class="form-group"><label for="estadoHasta">Hasta</label><input type="date" id="estadoHasta"></div><button type="button" id="estadoPDF" class="btn-small btn-secondary">Generar PDF</button></details>
         <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="cerrarFicha">Cerrar</button><button type="button" class="btn-modal-save" id="fichaHistorial">Ver historial</button></div>
         <div class="modal-actions"><button type="button" class="btn-modal-cancel" id="fichaRecibir">Recibir</button><button type="button" class="btn-modal-save" id="fichaTransferir">Transferir</button></div>
     </div></div>
@@ -2073,6 +2077,7 @@
                 <h3 style="margin-bottom:10px;">Saldo por Cliente</h3>
                 <div id="saldosPorCliente"></div>
             </div>
+            <div class="card"><h3>Préstamos y saldos pendientes</h3><p class="hint">Importes calculados a partir del saldo negativo actual, no necesariamente préstamos registrados por separado.</p><div id="listaPendientes"></div></div>
             <div id="alertaSaldosNegativos" style="display:none; background:var(--gasto-bg); color:var(--gasto-text); padding:10px; border-radius:8px; margin-top:10px; font-size:0.85rem; text-align:center;">
                 ⚠️ <span id="cantidadNegativos">0</span> cliente(s) con saldo negativo
             </div>
@@ -2226,6 +2231,7 @@
                 <button class="btn-small btn-primary" id="btnSyncNow" style="width:100%; margin-bottom:6px;">☁️ Sincronizar ahora</button>
                 <button class="btn-small btn-secondary" id="btnInstalarApp" type="button" style="display:none;width:100%;margin-bottom:6px">📲 Instalar aplicación</button>
                 <button class="btn-small btn-success" id="btnExportarJSON" style="width:100%; margin-bottom:6px;">📤 Exportar JSON</button>
+                <button class="btn-small btn-secondary" type="button" id="btnVerCopias" style="width:100%; margin-bottom:6px;">☁️ Ver copias automáticas</button><p class="hint">Se conservan las últimas 30 versiones sincronizadas, no cambios pendientes de subir.</p><div id="listaCopias"></div>
                 <button class="btn-small btn-secondary" id="btnImportarJSON" style="width:100%; margin-bottom:6px;">📥 Importar JSON</button>
                 <input type="file" id="inputImportarJSON" accept=".json" style="display:none;">
 
@@ -2941,7 +2947,7 @@
     }
 
     async function salirDeApp() {
-        cerrarRespaldo(); cerrarFicha(); cerrarImportacion(); $('modalEstadoSync').classList.remove('open'); mostrandoArchivados = false;
+        cerrarRespaldo(); cerrarFicha(); cerrarImportacion(); $('modalEstadoSync').classList.remove('open'); $('listaCopias').replaceChildren(); mostrandoArchivados = false;
         preferenciasActuales = null; preferenciasPendientes = false; versionPreferencias++;
         clearInterval(tasasTimer); tasasTimer = null; tasasActuales = null; solicitudTasas++;
         if (realtimeChannel && sb) { sb.removeChannel(realtimeChannel); realtimeChannel = null; }
@@ -3451,6 +3457,10 @@
         });
         $('fichaTitulo').textContent = c.nombre + (c.archivado ? ' · Archivado' : '');
         $('fichaContenido').textContent = 'Saldo: ' + mostrarSaldo(c.saldo) + '\nComisión: ' + c.comision + '%\nDestinos recientes: ' + (destinos.join(', ') || 'ninguno') + '\nÚltimos movimientos:\n' + (recientes.slice(0,5).map(x => '#' + x.op.numeroOp + ' · ' + (x.tipo === 'recibo' ? 'Recibo' : 'Transferencia') + ' · ' + formatearFecha(x.op.fecha) + ' · ' + (saldoInicioOculto ? '••••••' : formatearMoneda(x.op.monto))).join('\n') || 'Sin movimientos');
+        $('fichaNota').value = c.nota || '';
+        const ajustes = recientes.flatMap(({tipo, op}) => (Array.isArray(op.historialAjustes) ? op.historialAjustes : []).map(a => ({...a, tipo, numero:op.numeroOp})));
+        const antiguos = recientes.filter(({op}) => op.ajustePrevioSinDetalle || (Number(op.ajusteSaldo) && !Array.isArray(op.historialAjustes))).length;
+        $('fichaAjustes').textContent = (ajustes.map(a => '#' + a.numero + ' · ' + a.tipo + ' · ' + (a.fecha ? new Date(a.fecha).toLocaleString('es-ES') : 'fecha desconocida') + ' · ' + (saldoInicioOculto ? '••••••' : formatearMoneda(a.diferencia) + ' (' + formatearMoneda(a.antes) + ' → ' + formatearMoneda(a.despues) + ')') + ' · dispositivo ' + (a.dispositivo || 'desconocido')).join('\n') || 'Sin ajustes detallados') + (antiguos ? '\n' + antiguos + ' operación(es) con ajuste previo sin detalle de fecha o dispositivo.' : '');
         $('fichaRecibir').disabled = $('fichaTransferir').disabled = !!c.archivado;
         $('modalFicha').classList.add('open'); $('cerrarFicha').focus();
     }
@@ -3878,7 +3888,7 @@
         if (!container) return;
         if (state.clientes.length === 0) {
             container.innerHTML = '<div class="empty-msg"><p>No hay clientes</p></div>';
-            return;
+            renderPendientes(); return;
         }
         const ordenados = [...state.clientes].sort((a, b) => (b.saldo || 0) - (a.saldo || 0));
         let html = '';
@@ -3891,6 +3901,20 @@
                 </div>`;
         });
         container.innerHTML = html;
+        renderPendientes();
+    }
+
+    function renderPendientes() {
+        const lista = $('listaPendientes');
+        lista.replaceChildren();
+        const clientes = state.clientes.filter(c => Number(c.saldo) < 0).sort((a,b) => Number(a.saldo)-Number(b.saldo));
+        if (!clientes.length) { lista.textContent = 'No hay saldos negativos.'; return; }
+        clientes.forEach(c => {
+            const boton = document.createElement('button'); boton.type = 'button'; boton.className = 'btn-small btn-secondary';
+            boton.style.cssText = 'display:block;width:100%;margin:6px 0;text-align:left';
+            boton.textContent = c.nombre + (c.archivado ? ' · Archivado' : '') + ' · Pendiente: ' + mostrarSaldo(-Number(c.saldo)) + ' · Ver historial';
+            boton.addEventListener('click', () => abrirFicha(c.id)); lista.appendChild(boton);
+        });
     }
 
     /* ============================================================
@@ -4202,9 +4226,12 @@
         if (!texto || !Number.isFinite(saldoIndicado)) { showToast('Ingresa un saldo anterior válido.', 'error'); return; }
         // El valor mostrado tiene dos decimales; si no se modificó, no redondear datos existentes.
         if (input.dataset.modificado !== 'true' || saldoIndicado === Number(saldoActual.toFixed(2))) { cerrarModal(); return; }
+        const ajusteAnterior = Number(operacion.ajusteSaldo) || 0;
         if (!aplicarAjusteSaldo(tipo, operacion.id, saldoIndicado - saldoActual)) {
             showToast('No se pudo ajustar el saldo.', 'error'); return;
         }
+        if (!Array.isArray(operacion.historialAjustes)) { operacion.ajustePrevioSinDetalle = !!ajusteAnterior; operacion.historialAjustes = []; }
+        operacion.historialAjustes.push({ fecha: new Date().toISOString(), dispositivo: identificadorDispositivo(), diferencia: saldoIndicado - saldoActual, antes: saldoActual, despues: saldoIndicado });
         persist(); refresh(); cerrarModal();
         showToast('Saldo actualizado. La operación conserva su número y posición.', 'success');
     }
@@ -4351,6 +4378,70 @@
             try { await navigator.clipboard.writeText(text); showToast('Comprobante copiado.', 'success'); return; } catch (error) {}
         }
         mostrarMensajeManual(text);
+    }
+
+    function identificadorDispositivo() {
+        try {
+            const key = 'gestor_dispositivo_' + usuarioActual.id;
+            let id = localStorage.getItem(key);
+            if (!id) { id = generarId().slice(0, 12); localStorage.setItem(key, id); }
+            return id;
+        } catch (_) { return 'no disponible'; }
+    }
+
+    // Un intervalo solo tiene saldo inicial/final inequívoco si sus operaciones
+    // son contiguas en el orden de registro, que es el orden financiero de la app.
+    function datosEstadoCuenta(clienteId, desde, hasta) {
+        const cliente = getCliente(clienteId);
+        if (!cliente || cliente.saldo === null || cliente.saldo === '' || !Number.isFinite(Number(cliente.saldo))) throw new Error('El saldo actual no es válido.');
+        const ops = operacionesCronologicas().filter(x => x.op.clienteId === clienteId);
+        if (!desde || !hasta || desde > hasta) throw new Error('Elegí un período válido.');
+        if (ops.some(x => !Number.isFinite(Number(x.op.fecha)) || !Number(x.op.fecha))) throw new Error('Hay movimientos con fecha inválida; revisalos antes de generar el estado.');
+        if (ops.some(x => !Number.isFinite(Number(x.op.monto)) || (x.tipo === 'recibo' && (x.op.neto === undefined || x.op.neto === null || !Number.isFinite(Number(x.op.neto)))) || (x.op.ajusteSaldo != null && !Number.isFinite(Number(x.op.ajusteSaldo))))) throw new Error('Hay importes inválidos o recibos sin neto; revisalos antes de generar el estado.');
+        const fechas = ops.map(x => fechaLocalISO(x.op.fecha));
+        if (fechas.some((f, i) => i && f < fechas[i-1])) throw new Error('Las fechas están fuera del orden de registro; no se puede calcular un saldo por período con seguridad.');
+        const seleccion = fechas.map(f => f >= desde && f <= hasta);
+        const primero = seleccion.indexOf(true), ultimo = seleccion.lastIndexOf(true);
+        if (primero < 0) {
+            let saldo = saldosIniciales().get(clienteId) || 0;
+            ops.filter(x => fechaLocalISO(x.op.fecha) < desde).forEach(x => saldo += (Number(x.op.ajusteSaldo) || 0) + (x.tipo === 'recibo' ? Number(x.op.neto) : -Number(x.op.monto)));
+            return {inicial:saldo, final:saldo, filas:[]};
+        }
+        if (seleccion.slice(primero, ultimo + 1).some(x => !x)) throw new Error('Las fechas están fuera del orden de registro. Elegí un período que incluya las operaciones intercaladas.');
+        let saldo = saldosIniciales().get(clienteId) || 0;
+        const cambio = x => (Number(x.op.ajusteSaldo) || 0) + (x.tipo === 'recibo' ? (Number(x.op.neto) || 0) : -(Number(x.op.monto) || 0));
+        ops.slice(0, primero).forEach(x => saldo += cambio(x));
+        const inicial = saldo, filas = [];
+        ops.slice(primero, ultimo + 1).forEach(({tipo, op}) => {
+            const ajuste = Number(op.ajusteSaldo) || 0;
+            if (ajuste) { saldo += ajuste; filas.push([fechaLocalISO(op.fecha), '#' + op.numeroOp + ' Ajuste', ajuste, saldo]); }
+            const monto = tipo === 'recibo' ? Number(op.neto) || 0 : -(Number(op.monto) || 0);
+            saldo += monto; filas.push([fechaLocalISO(op.fecha), '#' + op.numeroOp + (tipo === 'recibo' ? ' Recibo neto' : ' Transferencia'), monto, saldo]);
+        });
+        return {inicial, final:saldo, filas};
+    }
+
+    function generarEstadoCuenta() {
+        const cliente = getCliente(fichaClienteId); if (!cliente) return;
+        if (!window.jspdf || !window.jspdf.jsPDF) { showToast('PDF no disponible sin conexión.', 'error'); return; }
+        try {
+            const desde = val('estadoDesde'), hasta = val('estadoHasta');
+            const datos = datosEstadoCuenta(cliente.id, desde, hasta);
+            const doc = new window.jspdf.jsPDF();
+            if (typeof doc.autoTable !== 'function') throw new Error('La tabla PDF no está disponible sin conexión.');
+            doc.setFontSize(16); doc.text('Estado de cuenta', 14, 18);
+            doc.setFontSize(10);
+            const nombre = doc.splitTextToSize('Cliente: ' + cliente.nombre, 180);
+            doc.text(nombre, 14, 27);
+            const inicio = 31 + nombre.length * 5;
+            doc.text('Período: ' + desde + ' a ' + hasta, 14, inicio);
+            doc.text('Saldo inicial inferido: ' + formatearMoneda(datos.inicial), 14, inicio + 7);
+            doc.autoTable({startY:inicio + 12, head:[['Fecha','Movimiento','Cambio','Saldo']], body:datos.filas.map(f => [f[0], f[1], formatearMoneda(f[2]), formatearMoneda(f[3])]), foot:[['','Saldo final','',formatearMoneda(datos.final)]]});
+            let y = (doc.lastAutoTable ? doc.lastAutoTable.finalY : 52) + 10;
+            if (y > 265) { doc.addPage(); y = 20; }
+            doc.setFontSize(9); doc.text(doc.splitTextToSize('Saldos inferidos de los datos actuales, en orden de registro. Cambios anteriores sin detalle y datos legados pueden no reflejar el historial original.', 180), 14, y);
+            doc.save('estado_cuenta_' + String(cliente.id).replace(/[^a-zA-Z0-9_-]/g, '') + '_' + desde + '_' + hasta + '.pdf');
+        } catch (error) { showToast(error.message, 'error'); }
     }
 
     function pdfComprobante(id, tipo) {
@@ -4628,6 +4719,43 @@
         showToast('Descarga iniciada. Comprobá que el archivo se haya guardado.', 'success');
     }
 
+    async function listarCopias() {
+        const usuario = usuarioActual && usuarioActual.id, lista = $('listaCopias');
+        if (!usuario || !sb) return;
+        lista.textContent = 'Cargando versiones...';
+        try {
+            const {data, error} = await sb.from('gestor_copias').select('revision,creado_en').eq('user_id', usuario).order('revision', {ascending:false}).limit(30);
+            if (!usuarioActual || usuarioActual.id !== usuario) return;
+            if (error) throw error;
+            lista.replaceChildren();
+            if (!data || !data.length) { lista.textContent = 'Todavía no hay versiones sincronizadas.'; return; }
+            data.forEach(copia => {
+                const b = document.createElement('button'); b.type = 'button'; b.className = 'btn-small btn-secondary'; b.style.cssText = 'display:block;width:100%;margin:6px 0;text-align:left';
+                b.textContent = 'Versión ' + copia.revision + ' · ' + new Date(copia.creado_en).toLocaleString('es-ES') + ' · Revisar';
+                b.addEventListener('click', () => revisarCopia(copia.revision)); lista.appendChild(b);
+            });
+        } catch (_) { lista.textContent = 'No se pudieron consultar las copias. Revisá la conexión.'; }
+    }
+    async function revisarCopia(revision) {
+        if (!usuarioActual || !sb) return;
+        if (pendingPush || hayConflicto || !revisionConocida || pushEnCurso) { showToast('Sincronizá o resolvé el conflicto antes de revisar una copia.', 'error'); return; }
+        const usuario = usuarioActual.id, version = serializeState(), revisionAlAbrir = revisionBase;
+        try {
+            const {data, error} = await sb.from('gestor_copias').select('revision,creado_en,payload').eq('user_id', usuario).eq('revision', revision).maybeSingle();
+            if (error || !data) throw new Error('No se pudo leer la copia.');
+            if (!usuarioActual || usuarioActual.id !== usuario || serializeState() !== version || revisionBase !== revisionAlAbrir || pendingPush || hayConflicto) throw new Error('Los datos cambiaron; volvé a revisar la copia.');
+            const p = data.payload;
+            if (!p || !['clientes','recibos','transferencias','finanzas'].every(k => Array.isArray(p[k]))) throw new Error('La copia no tiene un formato válido.');
+            respaldoPendiente = {data:p, usuario, estadoAlAbrir:version, revisionAlAbrir, nube:true};
+            const resumen = p.clientes.slice(0, 15).map(c => {
+                const actual = getCliente(c.id);
+                return String(c.nombre || 'Sin nombre') + ': ' + mostrarSaldo(c.saldo) + (actual ? ' (actual: ' + mostrarSaldo(actual.saldo) + ')' : ' (no está actualmente)');
+            }).join('\n');
+            $('detalleRespaldo').textContent = 'Copia de nube · versión ' + data.revision + '\nGuardada: ' + new Date(data.creado_en).toLocaleString('es-ES') + '\nClientes: ' + p.clientes.length + ' (ahora ' + state.clientes.length + ') · Recibos: ' + p.recibos.length + ' (ahora ' + state.recibos.length + ')\nTransferencias: ' + p.transferencias.length + ' (ahora ' + state.transferencias.length + ') · Finanzas: ' + p.finanzas.length + ' (ahora ' + state.finanzas.length + ')\n\nSaldos en la copia (primeros 15):\n' + (resumen || 'Sin clientes') + (p.clientes.length > 15 ? '\n… y ' + (p.clientes.length - 15) + ' más.' : '') + '\n\nSe reemplazarán todos los datos actuales, incluso notas y ajustes; la copia actual queda en el historial sujeto a retención.';
+            $('modalRespaldo').classList.add('open'); $('cancelarRespaldo').focus();
+        } catch (e) { showToast(e.message || 'No se pudo leer la copia.', 'error'); }
+    }
+
     let respaldoPendiente = null;
     function actualizarAvisoRespaldo() {
         if (!usuarioActual) return;
@@ -4666,7 +4794,7 @@
     function restaurarRespaldo() {
         const respaldo = respaldoPendiente;
         if (!respaldo || !usuarioActual || usuarioActual.id !== respaldo.usuario) { cerrarRespaldo(); return; }
-        if (serializeState() !== respaldo.estadoAlAbrir) { cerrarRespaldo(); showToast('Los datos cambiaron; revisá el archivo nuevamente antes de restaurar.', 'error'); return; }
+        if (serializeState() !== respaldo.estadoAlAbrir || (respaldo.nube && (revisionBase !== respaldo.revisionAlAbrir || pendingPush || hayConflicto || pushEnCurso))) { cerrarRespaldo(); showToast('Los datos cambiaron; revisá el archivo nuevamente antes de restaurar.', 'error'); return; }
         if (!confirm('Se reemplazarán todos los datos actuales. ¿Ya guardaste una copia y querés continuar?')) return;
         aplicarPayload(respaldo.data); renumerar(); persist(); refresh(); cerrarRespaldo();
         showToast('Respaldo restaurado; se sincronizará con la nube.', 'success');
@@ -4944,6 +5072,8 @@
         $('modalFicha').addEventListener('click', e => { if (e.target === $('modalFicha')) cerrarFicha(); });
         $('fichaRecibir').addEventListener('click', () => operarDesdeFicha('recibir'));
         $('fichaTransferir').addEventListener('click', () => operarDesdeFicha('transferir'));
+        $('guardarNota').addEventListener('click', () => { const c = getCliente(fichaClienteId); if (!c) return; c.nota = $('fichaNota').value.trim(); persist(); showToast('Nota guardada.', 'success'); });
+        $('estadoPDF').addEventListener('click', generarEstadoCuenta);
         $('fichaHistorial').addEventListener('click', () => { const id = fichaClienteId; cerrarFicha(); cambiarSeccion('historial'); $('historialCliente').value = id; $('historialFecha').value = ''; $('historialFechaHasta').value = ''; $('historialTipo').value = 'todos'; $('historialBusqueda').value = ''; historialVisibles = 50; renderHistorial(); });
 
         /* --- Operaciones --- */
@@ -5076,6 +5206,7 @@
             if (e.shiftKey && document.activeElement === $('cancelarRespaldo')) { e.preventDefault(); $('confirmarRespaldo').focus(); }
             else if (!e.shiftKey && document.activeElement === $('confirmarRespaldo')) { e.preventDefault(); $('cancelarRespaldo').focus(); }
         });
+        $('btnVerCopias').addEventListener('click', listarCopias);
         $('btnExportarJSON').addEventListener('click', exportarJSON);
         $('conflictoExportar').addEventListener('click', exportarJSON);
         $('conflictoNube').addEventListener('click', () => resolverConflicto(false));
@@ -5100,7 +5231,7 @@
         });
         ['modalFicha','modalEstadoSync','modalImportacion'].forEach(id => $(id).addEventListener('keydown', e => {
             if (e.key !== 'Tab') return;
-            const controls = [...$(id).querySelectorAll('button:not(:disabled)')];
+            const controls = [...$(id).querySelectorAll('button:not(:disabled), input:not(:disabled), textarea:not(:disabled), select:not(:disabled), summary')].filter(el => { const detalle = el.closest('details'); return !detalle || detalle.open || el.tagName === 'SUMMARY'; });
             if (!controls.length) return;
             if (e.shiftKey && document.activeElement === controls[0]) { e.preventDefault(); controls[controls.length-1].focus(); }
             else if (!e.shiftKey && document.activeElement === controls[controls.length-1]) { e.preventDefault(); controls[0].focus(); }
