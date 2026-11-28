@@ -113,4 +113,26 @@ function fixture() {
  s.transferencias[0].numeroOp=1; // un duplicado histórico no debe cambiarse al recargar
  c.renumerar(); assert.equal(s.recibos[0].numeroOp,1); assert.equal(s.transferencias[0].numeroOp,1);
 }
+{
+ const c=fixture(), {state:s}=c;
+ s.transferencias[0].saldoAntes=777; // un saldo legado anterior no debe reconstruirse
+ const antes=JSON.parse(JSON.stringify(s));
+ const plan=c.prepararCambioMonto('transferencia','t2',30,null);
+ c.validarEfectosEdicion('transferencia',s.transferencias[1],0,plan);
+ c.aplicarCambioMonto(plan);
+ assert.equal(s.transferencias[0].saldoAntes,777); assert.equal(s.transferencias[1].saldoAntes,70);
+ assert.equal(s.transferencias[1].numeroOp,3); assert.equal(s.clientes[0].saldo,40);
+ assert.deepEqual(s.clientes[1],antes.clientes[1]);
+}
+{
+ const c=fixture(), {state:s}=c;
+ s.finanzas.push({id:'x',tipo:'gasto',transferenciaId:'t2',monto:1},{id:'y',tipo:'gasto',transferenciaId:'t2',monto:1});
+ const antes=JSON.stringify(s);
+ assert.throws(()=>c.prepararCambioMonto('recibo','r1',200,20),/vínculos financieros ambiguos/);
+ assert.equal(JSON.stringify(s),antes);
+ s.finanzas.pop(); s.finanzas[0].tipo='ingreso';
+ assert.throws(()=>c.prepararCambioMonto('recibo','r1',200,20),/vínculos financieros ambiguos/);
+ s.finanzas=[]; s.transferencias[1].saldoAntes='';
+ assert.throws(()=>c.prepararCambioMonto('recibo','r1',200,20),/inválido/);
+}
 console.log('OK: ajuste de saldos, operaciones preservadas y numeración estable');

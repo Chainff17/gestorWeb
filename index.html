@@ -1786,8 +1786,8 @@
                 <select id="modalCliente" disabled></select>
             </div>
             <div class="form-group">
-                <label>Monto</label>
-                <input type="number" id="modalMonto" readonly>
+                <label for="modalMonto">Monto de la operación</label>
+                <input type="number" id="modalMonto" step="0.01" min="0.01" inputmode="decimal">
             </div>
             <div class="form-group">
                 <label>Fecha</label>
@@ -1796,7 +1796,7 @@
             <div class="form-group"><label for="modalNumero">Número de operación</label><input type="text" id="modalNumero" readonly></div>
             <div id="modalCamposExtra"></div>
             <div id="vistaAjuste" role="status" class="preview-box"></div>
-            <p style="font-size:.78rem;color:var(--text-secondary);margin:10px 0;">Solo se ajusta el saldo; el número, tipo, cliente, monto, fecha y posición de las operaciones permanecen iguales.</p>
+            <p style="font-size:.78rem;color:var(--text-secondary);margin:10px 0;">Podés corregir el monto y el saldo anterior. El número, tipo, cliente, fecha y posición de la operación se conservan.</p>
             <div class="modal-actions">
                 <button class="btn-modal-cancel" id="modalCancelar">Cancelar</button>
                 <button class="btn-modal-save" id="modalGuardar">💾 Guardar</button>
@@ -2790,6 +2790,81 @@
         }
         cliente.saldo = (Number(cliente.saldo) || 0) + diferencia;
         return true;
+    }
+
+    // Un cambio de importe propaga únicamente su diferencia, sin reconstruir
+    // saldos anteriores ni inventar vínculos de movimientos financieros legados.
+    function numeroFinancieroValido(x) { return (typeof x === 'number' || (typeof x === 'string' && !!x.trim())) && Number.isFinite(Number(x)); }
+
+    function prepararCambioMonto(tipo, id, montoNuevo, comisionNueva) {
+        const ops = operacionesCronologicas();
+        const indice = ops.findIndex(x => x.tipo === tipo && x.op.id === id);
+        if (indice < 0) throw new Error('La operación ya no existe.');
+        const op = ops[indice].op, cliente = getCliente(op.clienteId);
+        const original = Number(op.monto);
+        if (!cliente || !numeroFinancieroValido(cliente.saldo) || !numeroFinancieroValido(op.monto) || original < 0 || !Number.isFinite(montoNuevo) || montoNuevo <= 0) throw new Error('Ingresá un monto mayor que cero y verificá el saldo del cliente.');
+        let diferencia, netoNuevo, comisiones = [];
+        if (tipo === 'recibo') {
+            if (!numeroFinancieroValido(op.neto)) throw new Error('El neto histórico del recibo es inválido; revisá los datos antes de editar.');
+            if (!Number.isFinite(comisionNueva) || comisionNueva < 0 || comisionNueva > montoNuevo) throw new Error('Ingresá una comisión válida, entre cero y el monto recibido.');
+            netoNuevo = montoNuevo - comisionNueva;
+            diferencia = netoNuevo - Number(op.neto);
+            comisiones = state.finanzas.filter(f => f.reciboId === id && f.tipo === 'comision');
+            if (comisiones.length > 1) throw new Error('Hay varias comisiones vinculadas a este recibo; revisá las finanzas antes de editarlo.');
+        } else diferencia = original - montoNuevo;
+        const posteriores = ops.slice(indice + 1).filter(x => x.op.clienteId === op.clienteId && x.tipo === 'transferencia');
+        const transferencias = (tipo === 'transferencia' ? [op] : []).concat(posteriores.map(x => x.op));
+        for (const transferencia of transferencias) {
+            if (!numeroFinancieroValido(transferencia.saldoAntes) || !numeroFinancieroValido(transferencia.monto)) throw new Error('Una transferencia afectada tiene un saldo o monto inválido; revisá los datos antes de editar.');
+            const prestamos = state.finanzas.filter(f => f.transferenciaId === transferencia.id);
+            if (prestamos.length > 1 || prestamos.some(f => f.tipo !== 'gasto')) throw new Error('Una transferencia afectada tiene vínculos financieros ambiguos; revisá las finanzas antes de editar.');
+        }
+        if (!Number.isFinite(diferencia) || (tipo === 'recibo' && !Number.isFinite(netoNuevo))) throw new Error('El importe es demasiado grande para calcularlo con seguridad.');
+        return {tipo, op, cliente, montoNuevo, comisionNueva, netoNuevo, diferencia, posteriores, transferencias, comisiones};
+    }
+
+    function validarEfectosEdicion(tipo, op, difSaldo, plan) {
+        const cliente = getCliente(op.clienteId), ops = operacionesCronologicas();
+        const indice = ops.findIndex(x => x.tipo === tipo && x.op.id === op.id);
+        const diferencia = difSaldo + (plan ? plan.diferencia : 0);
+        if (difSaldo && op.ajusteSaldo != null && !numeroFinancieroValido(op.ajusteSaldo)) throw new Error('El ajuste anterior no es válido.');
+        if (!cliente || !numeroFinancieroValido(cliente.saldo) || !Number.isFinite(difSaldo) || !Number.isFinite(diferencia) || !Number.isFinite(Number(cliente.saldo) + diferencia)) throw new Error('El saldo resultante no es válido.');
+        const posteriores = ops.slice(indice + 1).filter(x => x.op.clienteId === op.clienteId && x.tipo === 'transferencia');
+        for (const item of posteriores) {
+            if (!numeroFinancieroValido(item.op.saldoAntes) || !Number.isFinite(Number(item.op.saldoAntes) + diferencia)) throw new Error('Una transferencia posterior tiene un saldo inválido.');
+        }
+        if (tipo === 'transferencia' && (!numeroFinancieroValido(op.saldoAntes) || !Number.isFinite(Number(op.saldoAntes) + difSaldo))) throw new Error('El saldo anterior no es válido.');
+        if (plan) for (const t of plan.transferencias) {
+            const antes = Number(t.saldoAntes) + (t === op ? difSaldo : diferencia);
+            const monto = t === op ? plan.montoNuevo : Number(t.monto);
+            if (!Number.isFinite(antes - monto)) throw new Error('El saldo resultante no se puede calcular con seguridad.');
+        }
+    }
+
+    function aplicarCambioMonto(plan) {
+        const {op, cliente, tipo, montoNuevo, comisionNueva, netoNuevo, diferencia, posteriores, transferencias, comisiones} = plan;
+        const comisionOriginal = Number(op.comision), comisionOriginalConocida = op.comision != null && op.comision !== '' && Number.isFinite(comisionOriginal);
+        op.monto = montoNuevo;
+        if (tipo === 'recibo') {
+            op.comision = comisionNueva; op.neto = netoNuevo;
+            if (comisiones.length) comisiones[0].monto = comisionNueva;
+            // Solo crear una comisión si sabemos que antes era cero; de otro
+            // modo podría existir una comisión antigua sin enlace y duplicarse.
+            else if (comisionOriginalConocida && comisionOriginal === 0 && comisionNueva > 0) state.finanzas.push({id:generarId(), tipo:'comision', monto:comisionNueva, descripcion:'Comisión de ' + cliente.nombre, clienteId:cliente.id, reciboId:op.id, fecha:op.fecha});
+        }
+        posteriores.forEach(x => { x.op.saldoAntes = Number(x.op.saldoAntes) + diferencia; });
+        cliente.saldo = Number(cliente.saldo) + diferencia;
+        // Recalcular únicamente préstamos explícitamente vinculados o marcados
+        // como automáticos. Nunca asociar gastos legados por nombre o fecha.
+        transferencias.forEach(t => {
+            const vinculado = state.finanzas.find(f => f.transferenciaId === t.id);
+            if (!t.prestamoAutomatico && !vinculado) return;
+            const antes = Number(t.saldoAntes), monto = Number(t.monto);
+            const prestamo = Math.max(0, -(antes - monto)) - Math.max(0, -antes);
+            if (prestamo <= 0) { if (vinculado) vinculado.monto = 0; }
+            else if (vinculado) vinculado.monto = prestamo;
+            else state.finanzas.push({id:generarId(), tipo:'gasto', monto:prestamo, clienteId:t.clienteId, fecha:t.fecha, descripcion:'Préstamo a ' + cliente.nombre, transferenciaId:t.id});
+        });
     }
 
     // Completar solo números ausentes; conservar incluso duplicados históricos.
@@ -4237,84 +4312,113 @@
        ============================================================ */
     function abrirModalEdicion(id, tipo) {
         if (saldoInicioOculto) { showToast('Mostrá los saldos en Inicio para editar.', 'info'); return; }
-        const operacion = tipo === 'recibo'
-            ? state.recibos.find(r => r.id === id)
-            : state.transferencias.find(t => t.id === id);
+        const operacion = tipo === 'recibo' ? state.recibos.find(r => r.id === id) : state.transferencias.find(t => t.id === id);
         if (!operacion) { showToast('Operación no encontrada.', 'error'); return; }
         const cliente = getCliente(operacion.clienteId);
         if (!cliente) { showToast('El cliente de esta operación ya no existe.', 'error'); return; }
-        const saldoAnterior = tipo === 'transferencia'
-            ? Number(operacion.saldoAntes) || 0
-            : saldoAntesProyectado(operacion.clienteId, operacion.fecha, { ...operacion, tipo }) + (Number(operacion.ajusteSaldo) || 0);
+        const saldoAnterior = tipo === 'transferencia' ? Number(operacion.saldoAntes) : saldoAntesProyectado(operacion.clienteId, operacion.fecha, { ...operacion, tipo }) + (Number(operacion.ajusteSaldo) || 0);
+        if (!Number.isFinite(saldoAnterior) || (tipo === 'transferencia' && !numeroFinancieroValido(operacion.saldoAntes))) { showToast('El saldo anterior es inválido; revisá los datos de esta operación.', 'error'); return; }
         operacionEditando = Object.assign({}, operacion, { tipo, saldoAnteriorAlAbrir: saldoAnterior, snapshotAlAbrir: serializeState() });
-        $('modalTitulo').textContent = tipo === 'recibo' ? '✏️ Ajustar saldo del recibo' : '✏️ Ajustar saldo de la transferencia';
-        const selectCliente = $('modalCliente');
-        selectCliente.innerHTML = '';
+        $('modalTitulo').textContent = tipo === 'recibo' ? '✏️ Editar recibo' : '✏️ Editar transferencia';
+        const selectCliente = $('modalCliente'); selectCliente.innerHTML = '';
         const opt = document.createElement('option'); opt.value = cliente.id; opt.textContent = cliente.nombre; selectCliente.appendChild(opt);
-        $('modalMonto').value = operacion.monto;
-        $('modalFecha').value = fechaLocalISO(operacion.fecha);
-        $('modalNumero').value = '#' + operacion.numeroOp;
-        $('modalCamposExtra').innerHTML = `
-            <div class="form-group">
-                <label for="modalSaldoDisponible">Saldo anterior a esta operación</label>
+        const montoInput = $('modalMonto'); montoInput.value = operacion.monto;
+        $('modalFecha').value = fechaLocalISO(operacion.fecha); $('modalNumero').value = '#' + operacion.numeroOp;
+        $('modalCamposExtra').innerHTML = (tipo === 'recibo' ? `
+            <div class="form-group"><label for="modalComision">Comisión del recibo</label>
+                <input type="number" id="modalComision" step="any" min="0" inputmode="decimal">
+                <div id="avisoComisionEdicion" class="hint"></div></div>` : '') + `
+            <div class="form-group"><label for="modalSaldoDisponible">Saldo anterior a esta operación</label>
                 <input type="number" id="modalSaldoDisponible" step="0.01" inputmode="decimal">
-                <div class="hint">Se registra un ajuste antes de esta operación. Las operaciones anteriores y los datos de cada registro no cambian.</div>
-            </div>
-            <div class="form-group" style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); text-align:center; font-weight:500;">
-                <span id="modalSaldoRestante"></span>
-            </div>`;
-        const input = $('modalSaldoDisponible');
-        input.value = saldoAnterior.toFixed(2);
-        const recalc = () => {
-            const saldo = Number(input.value) || 0;
-            const resultado = saldo + (tipo === 'recibo' ? (Number(operacion.neto) || 0) : -(Number(operacion.monto) || 0));
-            $('modalSaldoRestante').textContent = 'Saldo después de la operación: ' + formatearMoneda(resultado);
-            $('modalSaldoRestante').style.color = resultado < 0 ? 'var(--saldo-negativo)' : 'var(--text-primary)';
-            const texto = input.value.trim();
-            if (!texto || !Number.isFinite(Number(texto))) { $('vistaAjuste').textContent = 'Ingresá un saldo válido para ver la proyección.'; return; }
-            const diferencia = input.dataset.modificado !== 'true' || Number(texto) === Number(saldoAnterior.toFixed(2)) ? 0 : Number(texto) - saldoAnterior;
-            const ops = operacionesCronologicas();
-            const indice = ops.findIndex(x => x.tipo === tipo && x.op.id === operacion.id);
-            const posteriores = ops.slice(indice + 1).filter(x => x.op.clienteId === operacion.clienteId);
-            const transferencias = posteriores.filter(x => x.tipo === 'transferencia');
-            const detalle = transferencias.slice(0, 3).map(x => 'Transferencia #' + x.op.numeroOp + ': saldo anterior ' + formatearMoneda(x.op.saldoAntes) + ' → ' + formatearMoneda((Number(x.op.saldoAntes) || 0) + diferencia));
-            $('vistaAjuste').textContent = 'Vista previa · ajuste previo: ' + formatearMoneda(diferencia) + '\nSaldo final del cliente: ' + formatearMoneda(cliente.saldo) + ' → ' + formatearMoneda((Number(cliente.saldo) || 0) + diferencia) + '\nOperaciones posteriores del cliente: ' + posteriores.length + (detalle.length ? '\n' + detalle.join('\n') : '') + (transferencias.length > 3 ? '\n…y ' + (transferencias.length - 3) + ' transferencias más.' : '') + '\nLos números, registros y posiciones no cambian.';
+                <div class="hint">Si cambiás este saldo, se registra un ajuste antes de la operación.</div></div>
+            <div class="form-group" style="background:var(--bg-card-alt); padding:8px; border-radius:var(--radius-sm); text-align:center; font-weight:500;"><span id="modalSaldoRestante"></span></div>`;
+        const saldoInput = $('modalSaldoDisponible'), comisionInput = $('modalComision');
+        saldoInput.value = saldoAnterior.toFixed(2);
+        const montoOriginal = Number(operacion.monto), comisionOriginal = Number(operacion.comision), netoOriginal = Number(operacion.neto);
+        const tasaConfiable = tipo === 'recibo' && numeroFinancieroValido(operacion.comision) && numeroFinancieroValido(operacion.neto) && numeroFinancieroValido(operacion.monto) && montoOriginal > 0 && Number.isFinite(comisionOriginal) && comisionOriginal >= 0 && comisionOriginal <= montoOriginal && Number.isFinite(netoOriginal) && Math.abs(netoOriginal + comisionOriginal - montoOriginal) <= Math.max(1e-8, Math.abs(montoOriginal) * 1e-10);
+        if (comisionInput) {
+            comisionInput.value = numeroFinancieroValido(operacion.comision) ? comisionOriginal : '';
+            $('avisoComisionEdicion').textContent = tasaConfiable ? 'Al cambiar el monto se conserva el porcentaje original del recibo, no la comisión actual del cliente. Podés corregir la comisión.' : 'Los datos históricos no permiten calcular una comisión confiable. Si cambiás el monto, indicá la comisión manualmente.';
+        }
+        const recalc = (cambioMonto) => {
+            const textoMonto = montoInput.value.trim(), monto = Number(textoMonto), textoSaldo = saldoInput.value.trim(), saldo = Number(textoSaldo);
+            const montoCambiado = textoMonto && Number.isFinite(monto) && monto !== montoOriginal;
+            if (comisionInput && cambioMonto && comisionInput.dataset.manual !== 'true') {
+                comisionInput.value = montoCambiado ? (tasaConfiable && monto > 0 ? String(monto * (comisionOriginal / montoOriginal)) : '') : (numeroFinancieroValido(operacion.comision) ? comisionOriginal : '');
+            }
+            if (!textoMonto || !Number.isFinite(monto) || monto <= 0 || !textoSaldo || !Number.isFinite(saldo)) { $('modalSaldoRestante').textContent = ''; $('vistaAjuste').textContent = 'Ingresá un monto mayor que cero y un saldo válido para ver la proyección.'; return; }
+            const difSaldo = saldoInput.dataset.modificado !== 'true' || saldo === Number(saldoAnterior.toFixed(2)) ? 0 : saldo - saldoAnterior;
+            const comisionTexto = comisionInput ? comisionInput.value.trim() : '';
+            const comision = comisionInput ? Number(comisionTexto) : null;
+            const comisionCambiada = comisionInput && comisionInput.dataset.manual === 'true' && (!numeroFinancieroValido(operacion.comision) || comision !== comisionOriginal);
+            let plan = null;
+            try {
+                if (comisionInput && comisionInput.dataset.manual === 'true' && !comisionTexto) throw new Error('Indicá la comisión del recibo.');
+                if (montoCambiado || comisionCambiada) {
+                    if (comisionInput && !comisionTexto) throw new Error('Indicá la comisión del recibo para calcular el neto.');
+                    plan = prepararCambioMonto(tipo, operacion.id, monto, comision);
+                }
+                validarEfectosEdicion(tipo, operacion, difSaldo, plan);
+                const difMonto = plan ? plan.diferencia : 0, saldoEfectivo = saldoAnterior + difSaldo;
+                if (tipo === 'recibo' && !plan && !numeroFinancieroValido(operacion.neto)) throw new Error('El neto histórico del recibo es inválido.');
+                const neto = plan ? plan.netoNuevo : Number(operacion.neto) || 0;
+                const resultado = saldoEfectivo + (tipo === 'recibo' ? neto : -monto);
+                if (!Number.isFinite(resultado)) throw new Error('El saldo resultante no se puede calcular con seguridad.');
+                $('modalSaldoRestante').textContent = 'Saldo después de la operación: ' + formatearMoneda(resultado);
+                $('modalSaldoRestante').style.color = resultado < 0 ? 'var(--saldo-negativo)' : 'var(--text-primary)';
+                const ops = operacionesCronologicas(), indice = ops.findIndex(x => x.tipo === tipo && x.op.id === operacion.id);
+                const posteriores = ops.slice(indice + 1).filter(x => x.op.clienteId === operacion.clienteId);
+                const transferencias = posteriores.filter(x => x.tipo === 'transferencia');
+                const diferencia = difSaldo + difMonto;
+                const detalle = transferencias.slice(0, 3).map(x => 'Transferencia #' + x.op.numeroOp + ': saldo anterior ' + formatearMoneda(x.op.saldoAntes) + ' → ' + formatearMoneda((Number(x.op.saldoAntes) || 0) + diferencia));
+                const avisoLegado = (plan && tipo === 'recibo' && !plan.comisiones.length && (!numeroFinancieroValido(operacion.comision) || comisionOriginal !== 0) ? '\nLa comisión financiera antigua sin vínculo no se modificará automáticamente.' : '') + (plan && plan.transferencias.some(t => !t.prestamoAutomatico && !state.finanzas.some(f => f.transferenciaId === t.id)) ? '\nLos préstamos antiguos sin vínculo no se recalculan automáticamente.' : '');
+                $('vistaAjuste').textContent = 'Vista previa · ajuste previo: ' + formatearMoneda(difSaldo) + (tipo === 'recibo' && plan ? '\nComisión: ' + formatearMoneda(plan.comisionNueva) + ' · Neto: ' + formatearMoneda(plan.netoNuevo) : '') + '\nSaldo final del cliente: ' + formatearMoneda(cliente.saldo) + ' → ' + formatearMoneda(Number(cliente.saldo) + diferencia) + '\nOperaciones posteriores del cliente: ' + posteriores.length + (detalle.length ? '\n' + detalle.join('\n') : '') + (transferencias.length > 3 ? '\n…y ' + (transferencias.length - 3) + ' transferencias más.' : '') + avisoLegado + '\nLos números, tipos y posiciones no cambian.';
+            } catch (error) { $('modalSaldoRestante').textContent = ''; $('vistaAjuste').textContent = error.message; }
         };
-        input.addEventListener('input', () => { input.dataset.modificado = 'true'; recalc(); });
-        recalc();
-        $('modalEditar').classList.add('open');
+        montoInput.oninput = () => recalc(true);
+        saldoInput.addEventListener('input', () => { saldoInput.dataset.modificado = 'true'; recalc(false); });
+        if (comisionInput) comisionInput.addEventListener('input', () => { comisionInput.dataset.manual = 'true'; recalc(false); });
+        recalc(false); $('modalEditar').classList.add('open');
     }
 
     function guardarEdicion() {
         if (!operacionEditando) return;
         if (serializeState() !== operacionEditando.snapshotAlAbrir) { showToast('Los datos cambiaron. Cerrá y abrí la operación nuevamente.', 'error'); return; }
         const tipo = operacionEditando.tipo;
-        const operacion = tipo === 'recibo'
-            ? state.recibos.find(r => r.id === operacionEditando.id)
-            : state.transferencias.find(t => t.id === operacionEditando.id);
+        const operacion = tipo === 'recibo' ? state.recibos.find(r => r.id === operacionEditando.id) : state.transferencias.find(t => t.id === operacionEditando.id);
         if (!operacion) { cerrarModal(); showToast('La operación ya no existe.', 'error'); return; }
-        const saldoActual = tipo === 'transferencia'
-            ? Number(operacion.saldoAntes) || 0
-            : saldoAntesProyectado(operacion.clienteId, operacion.fecha, { ...operacion, tipo }) + (Number(operacion.ajusteSaldo) || 0);
-        if (operacion.clienteId !== operacionEditando.clienteId || operacion.numeroOp !== operacionEditando.numeroOp
-            || operacion.fecha !== operacionEditando.fecha || operacion.monto !== operacionEditando.monto
-            || operacion.neto !== operacionEditando.neto || saldoActual !== operacionEditando.saldoAnteriorAlAbrir) {
-            showToast('Los datos cambiaron. Cerrá y abrí la operación nuevamente.', 'error'); return;
+        const saldoActual = tipo === 'transferencia' ? Number(operacion.saldoAntes) : saldoAntesProyectado(operacion.clienteId, operacion.fecha, { ...operacion, tipo }) + (Number(operacion.ajusteSaldo) || 0);
+        if (operacion.clienteId !== operacionEditando.clienteId || operacion.numeroOp !== operacionEditando.numeroOp || operacion.fecha !== operacionEditando.fecha || operacion.monto !== operacionEditando.monto || operacion.neto !== operacionEditando.neto || saldoActual !== operacionEditando.saldoAnteriorAlAbrir) { showToast('Los datos cambiaron. Cerrá y abrí la operación nuevamente.', 'error'); return; }
+        const saldoInput = $('modalSaldoDisponible'), saldoTexto = saldoInput.value.trim(), saldoIndicado = Number(saldoTexto);
+        const montoTexto = $('modalMonto').value.trim(), monto = Number(montoTexto), comisionInput = $('modalComision');
+        if (!saldoTexto || !Number.isFinite(saldoIndicado)) { showToast('Ingresá un saldo anterior válido.', 'error'); return; }
+        if (!montoTexto || !Number.isFinite(monto) || monto <= 0) { showToast('Ingresá un monto mayor que cero.', 'error'); return; }
+        const difSaldo = saldoInput.dataset.modificado !== 'true' || saldoIndicado === Number(saldoActual.toFixed(2)) ? 0 : saldoIndicado - saldoActual;
+        const comisionTexto = comisionInput ? comisionInput.value.trim() : '', comision = comisionInput ? Number(comisionTexto) : null;
+        const montoCambiado = monto !== Number(operacion.monto), comisionCambiada = comisionInput && comisionInput.dataset.manual === 'true' && (!numeroFinancieroValido(operacion.comision) || comision !== Number(operacion.comision));
+        let plan = null;
+        try {
+            if (comisionInput && comisionInput.dataset.manual === 'true' && !comisionTexto) throw new Error('Indicá la comisión del recibo.');
+            if (montoCambiado || comisionCambiada) {
+                if (comisionInput && !comisionTexto) throw new Error('Indicá la comisión del recibo para calcular el neto.');
+                plan = prepararCambioMonto(tipo, operacion.id, monto, comision);
+            }
+            validarEfectosEdicion(tipo, operacion, difSaldo, plan);
+            if ((difSaldo || plan) && tipo === 'recibo' && !plan && !numeroFinancieroValido(operacion.neto)) throw new Error('El neto histórico del recibo es inválido.');
+            const resultado = saldoActual + difSaldo + (tipo === 'recibo' ? (plan ? plan.netoNuevo : Number(operacion.neto)) : -monto);
+            if ((difSaldo || plan) && !Number.isFinite(resultado)) throw new Error('El saldo resultante no se puede calcular con seguridad.');
+        } catch (error) { showToast(error.message, 'error'); return; }
+        if (!difSaldo && !plan) { cerrarModal(); return; }
+        if (difSaldo) {
+            const ajusteAnterior = Number(operacion.ajusteSaldo) || 0;
+            if (!aplicarAjusteSaldo(tipo, operacion.id, difSaldo)) { showToast('No se pudo ajustar el saldo.', 'error'); return; }
+            if (!Array.isArray(operacion.historialAjustes)) { operacion.ajustePrevioSinDetalle = !!ajusteAnterior; operacion.historialAjustes = []; }
+            operacion.historialAjustes.push({ fecha: new Date().toISOString(), dispositivo: identificadorDispositivo(), diferencia: difSaldo, antes: saldoActual, despues: saldoIndicado });
         }
-        const input = $('modalSaldoDisponible');
-        const texto = input.value.trim();
-        const saldoIndicado = Number(texto);
-        if (!texto || !Number.isFinite(saldoIndicado)) { showToast('Ingresa un saldo anterior válido.', 'error'); return; }
-        // El valor mostrado tiene dos decimales; si no se modificó, no redondear datos existentes.
-        if (input.dataset.modificado !== 'true' || saldoIndicado === Number(saldoActual.toFixed(2))) { cerrarModal(); return; }
-        const ajusteAnterior = Number(operacion.ajusteSaldo) || 0;
-        if (!aplicarAjusteSaldo(tipo, operacion.id, saldoIndicado - saldoActual)) {
-            showToast('No se pudo ajustar el saldo.', 'error'); return;
-        }
-        if (!Array.isArray(operacion.historialAjustes)) { operacion.ajustePrevioSinDetalle = !!ajusteAnterior; operacion.historialAjustes = []; }
-        operacion.historialAjustes.push({ fecha: new Date().toISOString(), dispositivo: identificadorDispositivo(), diferencia: saldoIndicado - saldoActual, antes: saldoActual, despues: saldoIndicado });
+        if (plan) aplicarCambioMonto(plan);
+        const avisoComision = plan && tipo === 'recibo' && !plan.comisiones.length && (!numeroFinancieroValido(operacionEditando.comision) || Number(operacionEditando.comision) !== 0);
         persist(); refresh(); cerrarModal();
-        showToast('Saldo actualizado. La operación conserva su número y posición.', 'success');
+        showToast(avisoComision ? 'Operación guardada; revisá la comisión antigua sin vínculo en Finanzas.' : 'Operación actualizada sin cambiar su número ni posición.', 'success');
     }
 
     function cerrarModal() {

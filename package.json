@@ -2,7 +2,7 @@
   "name": "gestor-pagos-tests",
   "private": true,
   "scripts": {
-    "test": "node tests/saldos.test.js && node tests/estados.test.js && node tests/smoke.test.js && node tests/legacy.test.js && node tests/icons.test.js",
+    "test": "node tests/saldos.test.js && node tests/estados.test.js && node tests/edicion-montos.test.js && node tests/smoke.test.js && node tests/legacy.test.js && node tests/icons.test.js",
     "test:mobile": "node tests/mobile-browser.cjs"
   },
   "devDependencies": {
